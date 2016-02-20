@@ -106,6 +106,7 @@ public class GUIUtil {
 			return;
 		}
 		String hostName = GUIDomain.propertiesReader.getProperty("server.host.name");
+		
 		int portNumber = Integer.parseInt(GUIDomain.propertiesReader.getProperty("server.socket.port"));
 
 		try (Socket socket = new Socket("localhost", 4444);
