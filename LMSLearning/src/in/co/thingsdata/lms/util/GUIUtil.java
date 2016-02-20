@@ -1,5 +1,8 @@
 package in.co.thingsdata.lms.util;
 
+import in.co.thingsdata.lms.domain.User;
+import in.co.thingsdata.lms.server.Server;
+
 import java.awt.Component;
 import java.awt.Container;
 import java.io.BufferedReader;
@@ -18,8 +21,6 @@ import java.sql.SQLException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-
-import in.co.thingsdata.lms.server.Server;
 
 public class GUIUtil {
 
@@ -186,10 +187,39 @@ public class GUIUtil {
 				
 	}
 	
-	public static String[] getUserDetails(String Username){
-		String[] userdetails = null;
+
+	public static User getUserDetails(int userid) throws NumberFormatException, IOException{
+		String name = null;
+		String address = null;
+		String emailid = null;
+		String dob = null; 
+		String course = null;
+		String line;
+		BufferedReader reader=null;
+		try{
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("resources/Userdetail.txt"))));
+			while (null != (line = reader.readLine())) {
+				if (null != line.split(",")[0] && Integer.valueOf(line.split(",")[0])==userid)
+				{
+				//userid = Integer.valueOf(line.split(",")[0]);
+				name = line.split(",")[1];
+				address =line.split(",")[2];
+				emailid=line.split(",")[3];
+				dob=line.split(",")[4];
+				course=line.split(",")[5];
+				}
+			}
+
+		}finally{
+				if(null != reader){
+					reader.close();
+				}
+		}
 		
+		User userdetails = new User(userid, name, address, emailid, dob, course);
 		return userdetails;
 	}
+	
+
 
 }
