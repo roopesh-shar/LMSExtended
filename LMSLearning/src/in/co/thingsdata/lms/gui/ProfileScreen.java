@@ -1,7 +1,8 @@
 package in.co.thingsdata.lms.gui;
 
-import in.co.thingsdata.lms.domain.User;
+
 import in.co.thingsdata.lms.util.GUIUtil;
+import in.sg.rpc.common.domain.User;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -11,16 +12,21 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -29,8 +35,6 @@ import javax.swing.UIManager;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
-
-import in.co.thingsdata.lms.util.GUIUtil;
 
 public class ProfileScreen {
 
@@ -46,7 +50,9 @@ public class ProfileScreen {
 	private JTextField txtcourse = new JTextField();
 	private int userId;
 	private String userName;
-
+	private JButton btnEditProfile = new JButton("Edit Profile");
+	private JButton btnSaveProfile = new JButton("Save");
+	User user = null;
 	public static void main(String[] args) {
 
 		ProfileScreen screen = new ProfileScreen(); // Comments to revert
@@ -56,6 +62,7 @@ public class ProfileScreen {
 			public void run() {
 
 				screen.go();
+				
 
 			}
 		});
@@ -66,7 +73,7 @@ public class ProfileScreen {
 
 		JFrame frame = new JFrame("Profile");
 		JPanel profilepanel = new JPanel();
-		User user = null;
+
 		try {
 			user = GUIUtil.getUserDetails(12345);
 			setUserName(user.getName());
@@ -80,7 +87,49 @@ public class ProfileScreen {
 
 		addComponents(frame.getContentPane(), profilepanel);
 		setUserData(user);
-
+		setTextUneditable();
+		
+		
+		/*Handle Click Edit profile button*/
+	btnEditProfile.addActionListener (new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				setTextEditable();
+				btnEditProfile.setVisible(false);
+				btnSaveProfile.setVisible(true);
+			
+			}
+			
+		});
+		
+		
+	btnSaveProfile.addActionListener (new ActionListener() {
+		
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			//User saveUser = new User(12345);
+			try {
+				saveProfile(user);
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			setTextUneditable();
+			btnEditProfile.setVisible(true);
+			btnSaveProfile.setVisible(false);
+			
+		}
+		
+	});
+		
+		
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		frame.setSize(800, 600);
@@ -106,8 +155,37 @@ public class ProfileScreen {
 
 	}
 
-	protected void setUser(JFrame frame) {
+	protected  void setTextUneditable() {
+		txtname.setEditable(false);
+		txtaddress.setEditable(false);
+		txtemail.setEditable(false);
+		txtdob.setEditable(false);
+		txtcourse.setEditable(false);
+	}
+	
+	protected  void setTextEditable() {
+		txtname.setEditable(true);
+		txtaddress.setEditable(true);
+		txtemail.setEditable(true);
+		txtdob.setEditable(true);
+		txtcourse.setEditable(true);
+	}
+	
+	private void saveProfile(User user) throws NumberFormatException, FileNotFoundException, IOException{
+		//user.setUserid(12345);
 
+		user.setName(txtname.getText());
+		user.setEmailid(txtemail.getText());
+		user.setDob(txtdob.getText());
+		user.setCourse(txtcourse.getText());
+		user.setAddress(txtaddress.getText());
+		boolean status =GUIUtil.saveUserDetails(user);
+		if (status=true){
+			JOptionPane.showMessageDialog(new JFrame("Success"), "Profile Successfully Updated");
+		}
+		else{
+			JOptionPane.showMessageDialog(new JFrame("Success"), "Error in Profile Update, Please try again later");
+		}
 	}
 
 	private void addComponents(Container contentPane, JPanel profilepanel) {
@@ -184,7 +262,15 @@ public class ProfileScreen {
 		profiledtlpanel.add(txtcourse, gBC);
 
 		// profiledtlpanel.add(lblname);
-
+		JPanel btnPanel = new JPanel();
+		btnPanel.setBorder(BorderFactory.createEtchedBorder());
+		btnPanel.add(btnEditProfile);
+		btnPanel.add(btnSaveProfile);
+		btnSaveProfile.setVisible(false);
+		contentPane.add(btnPanel, BorderLayout.SOUTH);
+		
+		
+		
 	}
 
 	private String getUserName() {

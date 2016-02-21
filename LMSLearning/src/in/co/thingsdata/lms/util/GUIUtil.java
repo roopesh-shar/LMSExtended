@@ -1,17 +1,24 @@
 package in.co.thingsdata.lms.util;
 
-import in.co.thingsdata.lms.domain.User;
+
 import in.co.thingsdata.lms.server.Server;
+import in.sg.rpc.common.domain.User;
+import in.sg.rpc.server.service.DBService;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.image.ReplicateScaleFilter;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -188,38 +195,15 @@ public class GUIUtil {
 	}
 	
 
-	public static User getUserDetails(int userid) throws NumberFormatException, IOException{
-		String name = null;
-		String address = null;
-		String emailid = null;
-		String dob = null; 
-		String course = null;
-		String line;
-		BufferedReader reader=null;
-		try{
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("resources/Userdetail.txt"))));
-			while (null != (line = reader.readLine())) {
-				if (null != line.split(",")[0] && Integer.valueOf(line.split(",")[0])==userid)
-				{
-				//userid = Integer.valueOf(line.split(",")[0]);
-				name = line.split(",")[1];
-				address =line.split(",")[2];
-				emailid=line.split(",")[3];
-				dob=line.split(",")[4];
-				course=line.split(",")[5];
-				}
-			}
-
-		}finally{
-				if(null != reader){
-					reader.close();
-				}
-		}
-		
-		User userdetails = new User(userid, name, address, emailid, dob, course);
-		return userdetails;
+	public static User getUserDetails(int userId) throws NumberFormatException, IOException{
+		return DBService.getInstance().getUserDetails(userId);
 	}
 	
+	public static boolean saveUserDetails(User user) throws NumberFormatException, FileNotFoundException, IOException{
+		return DBService.getInstance().saveUserDetails(user);
+	}
 
+	
+	
 
 }

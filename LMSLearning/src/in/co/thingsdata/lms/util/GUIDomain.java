@@ -1,5 +1,7 @@
 package in.co.thingsdata.lms.util;
 
+import in.sg.rpc.common.RPCService;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
@@ -27,6 +29,7 @@ public class GUIDomain {
 	public static PrintWriter FILE_WRITER;
 	public static String DB_DRIVER;
 	public static String STUDENT_COURSE;
+	public static RPCService REMOTE_RPC_SERVICE;
 	
 
 }

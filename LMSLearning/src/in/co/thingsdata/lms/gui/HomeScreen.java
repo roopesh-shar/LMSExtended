@@ -22,13 +22,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.RowFilter;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
-import com.sun.prism.Image;
+
 
 public class HomeScreen {
 
@@ -105,6 +106,16 @@ public class HomeScreen {
         for(String link : linksArray) {
         	model.addRow(new Object[]{link});
         }
+        
+        /*Action Listner for Profile page - Start       */
+        
+        int row= table.getSelectedRow();
+        int col = table.getSelectedColumn();
+        System.out.println(row+","+col);
+ 
+        table.getValueAt(3, 0);
+        
+        /*Action Listner for Profile page - End       */
         table.setRowHeight(40);
         table.setBackground(UIManager.getColor(linkPanel));
         table.setFont(new JLabel().getFont());
