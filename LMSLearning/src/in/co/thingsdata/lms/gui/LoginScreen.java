@@ -1,5 +1,11 @@
 package in.co.thingsdata.lms.gui;
 
+import in.co.thingsdata.lms.util.GUIDomain;
+import in.sg.rpc.client.RPCClient;
+import in.sg.rpc.common.RPCService;
+import in.sg.rpc.common.exception.UserExistsException;
+import in.sg.rpc.common.exception.UserLoginException;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -7,7 +13,9 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -50,7 +58,29 @@ public class LoginScreen {
 			
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+				RPCClient client = new RPCClient();
+				RPCService stub = null;
+				try {
+					
+					stub =client.getRemoteService();
+					
+					GUIDomain.REMOTE_RPC_SERVICE = stub;
+					
+					GUIDomain.REMOTE_RPC_SERVICE.register("Roopesh", "Roopeshsh");
+					GUIDomain.REMOTE_RPC_SERVICE.login(userNameTextField.getText(), String.valueOf(passwordTextField.getPassword()));
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (UserLoginException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (UserExistsException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				if (isValidUser (userNameTextField.getText(), passwordTextField.getPassword(), instructionsLabel, userDatailPanel)) {
 					//TODO: Go to home screen
 					System.out.println("Validation successful");
