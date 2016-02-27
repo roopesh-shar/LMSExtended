@@ -9,6 +9,10 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.LayoutManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.nio.charset.MalformedInputException;
@@ -33,6 +37,26 @@ import javax.swing.table.TableColumnModel;
 
 public class HomeScreen {
 
+	
+	private JPanel headerPanel;
+	private JPanel cmpinfoPanel;
+	private JPanel centerpanel;
+	private JLabel cmpnamelebel;
+	private JLabel cmpimage;
+	private JLabel welcomeLabel;
+	private JLabel noticelabel;
+	private JPanel noticepanel;
+	private DefaultTableModel model;
+	private JPanel discusspanel;
+	private JLabel discusslabel;
+	private JTable table;
+	private Color color;
+	private int row;
+	private int col;
+	
+	
+	
+	
 	
 	public static void main (String[] args) {
 	
@@ -69,35 +93,44 @@ public class HomeScreen {
 			}
 		});
 		
+		table.addMouseListener(new MouseAdapter() {	
+			public void mouseClicked(MouseEvent e){
+				int row=table.rowAtPoint(e.getPoint());
+				int col= table.columnAtPoint(e.getPoint());
+				String goToPage =table.getValueAt(row,col).toString();
+				GUIUtil.goToRequestedPage(goToPage);
+
+			}
+			
+			
+		});		
 	}
-	
-	
 
 	private void addComponents(Container contentPane, JPanel linkPanel) {
 		
 	/* Adding Header panel */
-		JPanel headerPanel = new JPanel();
+		headerPanel = new JPanel();
 		headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
-		JPanel cmpinfoPanel = new JPanel();
-		JLabel cmpnamelebel = new JLabel(GUIUtil.getHeaderTitle());
+		cmpinfoPanel = new JPanel();
+		cmpnamelebel = new JLabel(GUIUtil.getHeaderTitle());
 		cmpinfoPanel.add(cmpnamelebel);
-		JLabel cmpimage = new JLabel(GUIUtil.getIcon());
+		cmpimage = new JLabel(GUIUtil.getIcon());
 		cmpinfoPanel.add(cmpimage);
 		
 		
 		headerPanel.add(cmpinfoPanel);
 		
-		JLabel welcomeLabel = new JLabel("Welcome " + getUser());
+		welcomeLabel = new JLabel("Welcome " + getUser());
 		headerPanel.add(welcomeLabel);
 		contentPane.add(headerPanel, BorderLayout.PAGE_START);
 	
 	/* Adding Header Panel*/	
-		DefaultTableModel model = new DefaultTableModel(); 
-        JTable table = new JTable(model); 
+		model = new DefaultTableModel(); 
+        table = new JTable(model); 
         model.addColumn("Col1"); 
         TableColumnModel columnModel = table.getColumnModel();
         columnModel.getColumn(0).setPreferredWidth(130);
-        Color color = UIManager.getColor("Table.gridColor");
+        color = UIManager.getColor("Table.gridColor");
         MatteBorder border = new MatteBorder(1, 1, 0, 0, color);
         table.setBorder(border);
         
@@ -109,8 +142,8 @@ public class HomeScreen {
         
         /*Action Listner for Profile page - Start       */
         
-        int row= table.getSelectedRow();
-        int col = table.getSelectedColumn();
+        row= table.getSelectedRow();
+        col = table.getSelectedColumn();
         System.out.println(row+","+col);
  
         table.getValueAt(3, 0);
@@ -124,21 +157,21 @@ public class HomeScreen {
 		contentPane.add(linkPanel, BorderLayout.WEST);
 	
 	/* Adding Center Panel for Bulletin Board and */	
-		JPanel centerpanel = new JPanel();
+		centerpanel = new JPanel();
 		centerpanel.setBorder(BorderFactory.createEtchedBorder());
 		contentPane.add(centerpanel,BorderLayout.CENTER);
 		centerpanel.setLayout(new BoxLayout(centerpanel, 1));
 	/*Adding Bulletin Panel in Center panel*/	
-		JPanel noticepanel = new JPanel();
-		JLabel noticelabel = new JLabel("Bulletin Board");
+		noticepanel = new JPanel();
+		noticelabel = new JLabel("Bulletin Board");
 		noticepanel.add(noticelabel);
 		noticepanel.setBorder(BorderFactory.createEtchedBorder());
 		
 		centerpanel.add(noticepanel);
 		
 		/*Adding Discussion Panel in Center panel*/	
-		JPanel discusspanel = new JPanel();
-		JLabel discusslabel = new JLabel(" Discussion Forum");
+		discusspanel = new JPanel();
+		discusslabel = new JLabel(" Discussion Forum");
 		discusspanel.setBorder(BorderFactory.createEtchedBorder());
 		discusspanel.add(discusslabel);
 		centerpanel.add(discusspanel);

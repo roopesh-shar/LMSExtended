@@ -9,8 +9,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 public class DBService {
@@ -117,11 +119,69 @@ public class DBService {
 	}
 	
 
-	public Course getCourseDetailsForUser (Integer userId) {
+	@SuppressWarnings("resource")
+	public Course getCourseDetailForUser(int userId) {
+		String line;
+		BufferedReader reader=null;
+		Course course = null;
+		int courseId;
+		try {
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("resources/CourseDetails.txt"))));
+			while (null != (line = reader.readLine())) {
+				if (null != line.split(",")[0] && Integer.valueOf(line.split(",")[1])==userId)
+				{
+					courseId = Integer.valueOf(line.split(",")[0]);
+					course = new Course(courseId);
+					course.setUserId(userId);
+					course.setCourseName(line.split(",")[2]);
+					course.setContentPath(line.split(",")[3]);
+				}
+			}	
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		
-		return new Course();
+		return course;
 		
 	}
+	
 
+	public String getCourseContent(String path){
+		BufferedReader reader = null;
+		String line=null;;
+		String courseContent ="";
+		try {
+			reader = new BufferedReader(new FileReader(new File(path)));
+				while (null!=(line = reader.readLine())) {
+				courseContent=courseContent.concat(line).concat("\n");
+				}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally{
+			if(null != reader){
+				try {
+					reader.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+	}
+		
+
+		return courseContent;
+	}
 }

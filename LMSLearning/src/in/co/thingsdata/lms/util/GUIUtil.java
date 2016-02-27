@@ -1,7 +1,10 @@
 package in.co.thingsdata.lms.util;
 
 
+import in.co.thingsdata.lms.gui.CourseContentDetails;
+import in.co.thingsdata.lms.gui.ProfileScreen;
 import in.co.thingsdata.lms.server.Server;
+import in.sg.rpc.common.domain.Course;
 import in.sg.rpc.common.domain.User;
 import in.sg.rpc.server.service.DBService;
 
@@ -28,6 +31,7 @@ import java.sql.SQLException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 public class GUIUtil {
 
@@ -203,7 +207,50 @@ public class GUIUtil {
 		return DBService.getInstance().saveUserDetails(user);
 	}
 
+	public static Course getCourseDetailForUser(int userId){
+		return DBService.getInstance().getCourseDetailForUser(userId);
+
+	}
 	
+	public static String getCourseContent(String path) throws IOException{
+		return DBService.getInstance().getCourseContent(path);
+		
+	}
+	
+	public static void goToRequestedPage(String goToPage){
+		if(goToPage.equals("Course Content"))
+		{
+			CourseContentDetails courseContent = new CourseContentDetails(); // Comments to revert
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+
+					try {
+						courseContent.go();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				}
+			});
+		}
+		if(goToPage.equals("Profile"))
+		{
+			ProfileScreen screen = new ProfileScreen(); // Comments to revert
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+
+					screen.go();
+					
+
+				}
+			});
+		}
+	}
 	
 
 }

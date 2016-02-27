@@ -140,7 +140,7 @@ public class RPCServer implements RPCService {
 
 	@Override
 	public String displayCourseDetails(Integer userId) throws Exception {
-		DBService.getInstance().getCourseDetailsForUser (userId);
+		DBService.getInstance().getCourseDetailForUser (userId);
 		return null;
 	}
 }

@@ -66,15 +66,12 @@ public class LoginScreen {
 					
 					GUIDomain.REMOTE_RPC_SERVICE = stub;
 					
-					GUIDomain.REMOTE_RPC_SERVICE.register("Roopesh", "Roopeshsh");
+					//GUIDomain.REMOTE_RPC_SERVICE.register("Rsharma", "Qwerty");
 					GUIDomain.REMOTE_RPC_SERVICE.login(userNameTextField.getText(), String.valueOf(passwordTextField.getPassword()));
-				} catch (MalformedURLException e) {
+					} catch (MalformedURLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (UserLoginException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (UserExistsException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
@@ -116,7 +113,6 @@ public class LoginScreen {
 		try {
 			String loginUser = user;
 			String loginPassword = String.valueOf(pass);
-			
 			if (null == loginUser || null == loginPassword) {
 				throw new Exception ("user name or password is null");
 			}
