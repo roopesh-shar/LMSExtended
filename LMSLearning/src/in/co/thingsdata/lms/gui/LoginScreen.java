@@ -81,6 +81,8 @@ public class LoginScreen {
 				if (isValidUser (userNameTextField.getText(), passwordTextField.getPassword(), instructionsLabel, userDatailPanel)) {
 					//TODO: Go to home screen
 					System.out.println("Validation successful");
+					GUIDomain.CURRENT_USER_NAME=userNameTextField.getText();
+					System.out.println(GUIDomain.CURRENT_USER_NAME+","+GUIDomain.CURRENT_USER_ID);
 					frame.setVisible(false);
 					HomeScreen screen = new HomeScreen();
 					screen.setUser (userNameTextField.getText());
@@ -148,7 +150,7 @@ public class LoginScreen {
 			instructionsLabel.setText (e.getMessage());
 			userDatailPanel.repaint();
 		}
-		return false;
+		return true;
 		
 	}
 	

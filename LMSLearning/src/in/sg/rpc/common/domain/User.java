@@ -9,10 +9,10 @@ public class User implements Serializable,Cloneable {
 	 */
 	private static final long serialVersionUID = 252097048550406218L;
 	private String name;
-	String address;
-	String emailid;
-	String dob;
-	String course;
+	private String address;
+	private String emailid;
+	private String dob;
+	private String course;
 	private int userid;
 
 	public User() {

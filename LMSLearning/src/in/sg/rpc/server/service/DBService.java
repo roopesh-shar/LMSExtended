@@ -1,6 +1,10 @@
 package in.sg.rpc.server.service;
 
+import in.co.thingsdata.lms.gui.CourseContentDetails;
+import in.co.thingsdata.lms.gui.FeeReceipt;
+import in.co.thingsdata.lms.gui.ProfileScreen;
 import in.sg.rpc.common.domain.Course;
+import in.sg.rpc.common.domain.FeeDetails;
 import in.sg.rpc.common.domain.User;
 
 import java.io.BufferedReader;
@@ -14,6 +18,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+
+import javax.swing.SwingUtilities;
 
 public class DBService {
 
@@ -120,21 +126,19 @@ public class DBService {
 	
 
 	@SuppressWarnings("resource")
-	public Course getCourseDetailForUser(int userId) {
+	public String getCourseDetailForUser(int userId) {
 		String line;
 		BufferedReader reader=null;
 		Course course = null;
-		int courseId;
+		String courseContent ="";
+		String coursecontentpath=null;
+
 		try {
 			reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("resources/CourseDetails.txt"))));
 			while (null != (line = reader.readLine())) {
 				if (null != line.split(",")[0] && Integer.valueOf(line.split(",")[1])==userId)
 				{
-					courseId = Integer.valueOf(line.split(",")[0]);
-					course = new Course(courseId);
-					course.setUserId(userId);
-					course.setCourseName(line.split(",")[2]);
-					course.setContentPath(line.split(",")[3]);
+					coursecontentpath=line.split(",")[3];
 				}
 			}	
 		} catch (FileNotFoundException e) {
@@ -147,18 +151,19 @@ public class DBService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return course;
+
+		courseContent=DBService.getCourseContent(coursecontentpath);
+		return courseContent;
 		
 	}
 	
 
-	public String getCourseContent(String path){
+	public static String getCourseContent(String ContentPath){
 		BufferedReader reader = null;
 		String line=null;;
 		String courseContent ="";
 		try {
-			reader = new BufferedReader(new FileReader(new File(path)));
+			reader = new BufferedReader(new FileReader(new File(ContentPath)));
 				while (null!=(line = reader.readLine())) {
 				courseContent=courseContent.concat(line).concat("\n");
 				}
@@ -184,4 +189,47 @@ public class DBService {
 
 		return courseContent;
 	}
+
+	
+	public FeeDetails getFeeDetailsforUserid(int userId){
+		FeeDetails feeDetails = null;
+		String line;
+		BufferedReader reader=null;
+		try {
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("resources/FeeReceipt.txt"))));
+			while (null != (line = reader.readLine())) {
+				if (null != line.split(",")[0] && Integer.valueOf(line.split(",")[0])==userId)
+				{
+					feeDetails = new FeeDetails(userId);
+					feeDetails.setCourseId(Integer.valueOf(line.split(",")[1]));
+					feeDetails.setCourseName(String.valueOf(line.split(",")[2]));
+					feeDetails.setCourseFee((Integer.valueOf(line.split(",")[3])));
+					feeDetails.setPaidFees(Integer.valueOf(line.split(",")[4]));
+					feeDetails.setRemainingFees(Integer.valueOf(line.split(",")[4]));
+			
+				}
+			}	
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally{
+			if(null != reader){
+				try {
+					reader.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		
+		return feeDetails;
+	}
+
+
 }

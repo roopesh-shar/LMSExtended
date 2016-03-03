@@ -1,6 +1,7 @@
 package in.co.thingsdata.lms.gui;
 
 import in.co.thingsdata.lms.util.GUIUtil;
+import in.sg.rpc.server.service.DBService;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -49,11 +50,10 @@ public class HomeScreen {
 	private DefaultTableModel model;
 	private JPanel discusspanel;
 	private JLabel discusslabel;
+	private JScrollPane scrollpane;
 	private JTable table;
 	private Color color;
-	private int row;
-	private int col;
-	
+
 	
 	
 	
@@ -99,6 +99,7 @@ public class HomeScreen {
 				int col= table.columnAtPoint(e.getPoint());
 				String goToPage =table.getValueAt(row,col).toString();
 				GUIUtil.goToRequestedPage(goToPage);
+				frame.setVisible(false);
 
 			}
 			
@@ -127,7 +128,9 @@ public class HomeScreen {
 	/* Adding Header Panel*/	
 		model = new DefaultTableModel(); 
         table = new JTable(model); 
+        
         model.addColumn("Col1"); 
+        
         TableColumnModel columnModel = table.getColumnModel();
         columnModel.getColumn(0).setPreferredWidth(130);
         color = UIManager.getColor("Table.gridColor");
@@ -140,15 +143,6 @@ public class HomeScreen {
         	model.addRow(new Object[]{link});
         }
         
-        /*Action Listner for Profile page - Start       */
-        
-        row= table.getSelectedRow();
-        col = table.getSelectedColumn();
-        System.out.println(row+","+col);
- 
-        table.getValueAt(3, 0);
-        
-        /*Action Listner for Profile page - End       */
         table.setRowHeight(40);
         table.setBackground(UIManager.getColor(linkPanel));
         table.setFont(new JLabel().getFont());
@@ -168,6 +162,8 @@ public class HomeScreen {
 		noticepanel.setBorder(BorderFactory.createEtchedBorder());
 		
 		centerpanel.add(noticepanel);
+		
+		
 		
 		/*Adding Discussion Panel in Center panel*/	
 		discusspanel = new JPanel();

@@ -6,9 +6,18 @@ public class Course {
 	int courseId;
 	int userId;
 	String contentPath;
+	float feesCourse;
 	
 	public String getContentPath() {
 		return contentPath;
+	}
+
+	public float getFeesCourse() {
+		return feesCourse;
+	}
+
+	public void setFeesCourse(float feesCourse) {
+		this.feesCourse = feesCourse;
 	}
 
 	public void setContentPath(String contentPath) {
@@ -24,6 +33,7 @@ public class Course {
 		this.userId=userId;
 		this.courseName=courseName;
 		this.contentPath=contentPath;
+		
 	}
 	
 	public Course(int courseId){

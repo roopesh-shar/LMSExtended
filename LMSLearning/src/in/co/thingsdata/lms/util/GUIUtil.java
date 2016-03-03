@@ -2,9 +2,11 @@ package in.co.thingsdata.lms.util;
 
 
 import in.co.thingsdata.lms.gui.CourseContentDetails;
+import in.co.thingsdata.lms.gui.FeeReceipt;
 import in.co.thingsdata.lms.gui.ProfileScreen;
 import in.co.thingsdata.lms.server.Server;
 import in.sg.rpc.common.domain.Course;
+import in.sg.rpc.common.domain.FeeDetails;
 import in.sg.rpc.common.domain.User;
 import in.sg.rpc.server.service.DBService;
 
@@ -207,14 +209,15 @@ public class GUIUtil {
 		return DBService.getInstance().saveUserDetails(user);
 	}
 
-	public static Course getCourseDetailForUser(int userId){
-		return DBService.getInstance().getCourseDetailForUser(userId);
+	public static String getCourseDetailForUser(int userId) throws Exception{
+		//return DBService.getInstance().getCourseDetailForUser(userId);
+		return GUIDomain.REMOTE_RPC_SERVICE.getCourseDetailForUser(userId);
+		
 
 	}
 	
-	public static String getCourseContent(String path) throws IOException{
-		return DBService.getInstance().getCourseContent(path);
-		
+	public static FeeDetails getFeeDetailsforUserid(int userId) throws Exception{
+		return GUIDomain.REMOTE_RPC_SERVICE.getFeeDetailsforUserid(userId);
 	}
 	
 	public static void goToRequestedPage(String goToPage){
@@ -229,6 +232,9 @@ public class GUIUtil {
 					try {
 						courseContent.go();
 					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -250,7 +256,28 @@ public class GUIUtil {
 				}
 			});
 		}
+		if(goToPage.equals("Fee Receipt"))
+		{
+			FeeReceipt feeReceipt = new FeeReceipt();
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+
+					try {
+						feeReceipt.go();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+
+				}
+			});
+		}
 	}
-	
 
 }

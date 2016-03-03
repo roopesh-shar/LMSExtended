@@ -14,6 +14,8 @@ import in.sg.rpc.common.PropertiesReader;
 import in.sg.rpc.common.RPCService;
 import in.sg.rpc.common.UserLogin;
 import in.sg.rpc.common.UserRegistration;
+import in.sg.rpc.common.domain.Course;
+import in.sg.rpc.common.domain.FeeDetails;
 import in.sg.rpc.common.exception.UserExistsException;
 import in.sg.rpc.common.exception.UserLoginException;
 import in.sg.rpc.server.service.DBService;
@@ -138,9 +140,24 @@ public class RPCServer implements RPCService {
 
 	}
 
+
+
 	@Override
-	public String displayCourseDetails(Integer userId) throws Exception {
-		DBService.getInstance().getCourseDetailForUser (userId);
-		return null;
+	public String getCourseDetailForUser(int userId) throws Exception {
+		return DBService.getInstance().getCourseDetailForUser(userId);
 	}
+
+	@Override
+	public FeeDetails getFeeDetailsforUserid(int userId) throws Exception {
+		return DBService.getInstance().getFeeDetailsforUserid(userId);
+	}
+
+
+
+
+
+
+
+	
+	
 }

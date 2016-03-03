@@ -2,7 +2,7 @@ package in.co.thingsdata.lms.gui;
 
 import in.co.thingsdata.lms.util.GUIDomain;
 import in.co.thingsdata.lms.util.GUIUtil;
-import in.sg.rpc.common.domain.Course;
+import in.sg.rpc.common.domain.FeeDetails;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -20,38 +21,39 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.border.Border;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
-public class CourseContentDetails {
-	
+public class FeeReceipt {
+
 	private JFrame frame;
 	private JPanel linkPanel;
 	private JPanel headerPanel;
 	private JPanel cmpinfoPanel;
 	private JLabel cmpnamelebel;
 	private JLabel welcomeLabel;
-	private JPanel contentPanel;
-	private JTextArea txtAreacourseContent;
-	private JPanel backButtonPanel;
 	private JButton goHomePageButton;
+	private JPanel btnpnl;
+	private JButton printButton;
+	private JTable table;
+	private DefaultTableModel model;
+	private Color color;
+	
 	
 
 	public static void main(String[] args) {
 
-		CourseContentDetails courseContent = new CourseContentDetails(); // Comments to revert
+		FeeReceipt feeReciept = new FeeReceipt(); // Comments to revert
 		SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
 			public void run() {
 
 				try {
-					courseContent.go();
+					feeReciept.go();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -66,7 +68,7 @@ public class CourseContentDetails {
 
 	public void go() throws Exception {
 
-		frame = new JFrame("Course Contents");
+		frame = new JFrame("Fee Receipt");
 		linkPanel = new JPanel();
 
 		addComponents(frame.getContentPane(), linkPanel);
@@ -83,9 +85,9 @@ public class CourseContentDetails {
 				System.exit(0);
 			}
 		});
+		
 
 		goHomePageButton.addActionListener (new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				frame.setVisible(false);
@@ -100,6 +102,8 @@ public class CourseContentDetails {
 			});
 		}
 
+
+	
 	private void addComponents(Container contentPane, JPanel linkPanel) throws Exception {
 
 		/* Adding Header panel */
@@ -116,28 +120,53 @@ public class CourseContentDetails {
 		welcomeLabel = new JLabel("Welcome " + getUser());
 		headerPanel.add(welcomeLabel);
 		contentPane.add(headerPanel, BorderLayout.PAGE_START);
-		String courseContent= GUIUtil.getCourseDetailForUser(12345);
-		//System.out.println(course.getCourseId()+","+course.getContentPath());
-		//String coursePath = course.getContentPath();
-		//System.out.println(coursePath);
-		//String courseContent =GUIDomain.REMOTE_RPC_SERVICE.displayCourseDetails(course.getContentPath());//GUIUtil.getCourseContent(coursePath).toString();
-		contentPanel = new JPanel();
-		contentPane.add(contentPanel,BorderLayout.EAST);
-		txtAreacourseContent = new JTextArea(100,50);
-		txtAreacourseContent.setBackground(UIManager.getColor(contentPanel));
-		txtAreacourseContent.setEditable(false);
-		txtAreacourseContent.setText(courseContent);
-		contentPanel.add(txtAreacourseContent);
 		
-
-		backButtonPanel = new JPanel();
+		JPanel feeReceiptpnl = new JPanel();
+		feeReceiptpnl.setBorder(BorderFactory.createEtchedBorder());
+		
+		contentPane.add(feeReceiptpnl,BorderLayout.CENTER);
+		
+		
+		btnpnl = new JPanel();
+		btnpnl.setBorder(BorderFactory.createEtchedBorder());
+		contentPane.add(btnpnl,BorderLayout.SOUTH);
+		
+		printButton = new JButton("print");
 		goHomePageButton = new JButton("Back");
-		backButtonPanel.add(goHomePageButton);
-		contentPane.add(backButtonPanel,BorderLayout.WEST);
 		
-		cmpinfoPanel.setBorder(BorderFactory.createEtchedBorder());
-		contentPanel.setBorder(BorderFactory.createEtchedBorder());
-		//backButtonPanel.setBorder(BorderFactory.createEtchedBorder());
+		btnpnl.add(printButton);
+		btnpnl.add(goHomePageButton);
+		
+		/*Adding JTable for Receipt*/
+		model = new DefaultTableModel(); 
+		table = new JTable(model); 
+
+		model.addColumn("");
+		model.addColumn(""); 	
+		TableColumnModel columnModel = table.getColumnModel();
+		columnModel.getColumn(0).setPreferredWidth(200);
+		columnModel.getColumn(1).setPreferredWidth(200);
+		color = UIManager.getColor("Table.gridColor");
+		MatteBorder border = new MatteBorder(1, 1, 0, 0, color);
+		table.setBorder(border);
+		
+		String[] linksArray = {"Name", "Course Name","Course Fees","Fees Submitted", "Fees pending"};
+        for(String link : linksArray) {
+        	model.addRow(new Object[]{link});
+        }
+        
+        table.setRowHeight(50);
+        table.setBackground(UIManager.getColor(linkPanel));
+        table.setFont(new JLabel().getFont());
+		feeReceiptpnl.add(table);
+		
+		
+		FeeDetails feeDetails = GUIUtil.getFeeDetailsforUserid(12345);
+		table.setValueAt((Object)GUIDomain.CURRENT_USER_NAME, 0, 1);
+		table.setValueAt((Object)String.valueOf(feeDetails.getCourseName()), 1, 1);
+		table.setValueAt((Object)String.valueOf(feeDetails.getCourseFee()).concat(" INR"), 2, 1);
+		table.setValueAt((Object)String.valueOf(feeDetails.getPaidFees()).concat(" INR"), 3, 1);
+		table.setValueAt((Object)String.valueOf(feeDetails.getRemainingFees()).concat(" INR"), 4, 1);
 		
 	}
 
@@ -149,7 +178,7 @@ public class CourseContentDetails {
 
 	public void setUser(String user) {
 
-		this.user = user;
+		this.user = GUIDomain.CURRENT_USER_NAME;
 
 	}
 
