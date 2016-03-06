@@ -53,6 +53,7 @@ public class ProfileScreen {
 	private JButton btnEditProfile = new JButton("Edit Profile");
 	private JButton btnSaveProfile = new JButton("Save");
 	private JButton btnBack = new JButton("Back");
+	private int i=100;
 	User user = null;
 	public static void main(String[] args) {
 
