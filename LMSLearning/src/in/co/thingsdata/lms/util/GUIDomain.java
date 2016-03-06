@@ -30,6 +30,7 @@ public class GUIDomain {
 	public static String DB_DRIVER;
 	public static String STUDENT_COURSE;
 	public static RPCService REMOTE_RPC_SERVICE;
-	
+	public static String CURRENT_USER_ID;
+	public static String CURRENT_USER_NAME;
 
 }

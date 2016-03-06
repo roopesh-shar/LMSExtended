@@ -1,6 +1,12 @@
 package in.sg.rpc.server.service;
 
+import in.co.thingsdata.lms.gui.CourseContentDetails;
+import in.co.thingsdata.lms.gui.FeeReceipt;
+import in.co.thingsdata.lms.gui.ProfileScreen;
+import in.co.thingsdata.lms.util.GUIDomain;
+import in.co.thingsdata.lms.util.PropertiesReader;
 import in.sg.rpc.common.domain.Course;
+import in.sg.rpc.common.domain.FeeDetails;
 import in.sg.rpc.common.domain.User;
 
 import java.io.BufferedReader;
@@ -9,13 +15,26 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicLong;
+
+import javax.swing.SwingUtilities;
 
 public class DBService {
 
 	private final static DBService _INSTANCE = new DBService();
+	private static final String DATABASE_URL = PropertiesReader.getInstance().getProperty("db.url");
+	private static final String DATABASE_USER = PropertiesReader.getInstance().getProperty("db.user");
+	private static final String DATABASE_PASSWORD = PropertiesReader.getInstance().getProperty("db.password");
+	private static final String DATABASE_DRIVER = PropertiesReader.getInstance().getProperty("db.driver");
+	private long sequenceId;
 	
 	private DBService() {
 		
@@ -117,11 +136,154 @@ public class DBService {
 	}
 	
 
-	public Course getCourseDetailsForUser (Integer userId) {
-		
-		
-		return new Course();
+	@SuppressWarnings("resource")
+	public String getCourseDetailForUser(int userId) {
+		String line;
+		BufferedReader reader=null;
+		Course course = null;
+		String courseContent ="";
+		String coursecontentpath=null;
+
+		try {
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("resources/CourseDetails.txt"))));
+			while (null != (line = reader.readLine())) {
+				if (null != line.split(",")[0] && Integer.valueOf(line.split(",")[1])==userId)
+				{
+					coursecontentpath=line.split(",")[3];
+				}
+			}	
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		courseContent=DBService.getCourseContent(coursecontentpath);
+		return courseContent;
 		
 	}
+	
+
+	public static String getCourseContent(String ContentPath){
+		BufferedReader reader = null;
+		String line=null;;
+		String courseContent ="";
+		try {
+			reader = new BufferedReader(new FileReader(new File(ContentPath)));
+				while (null!=(line = reader.readLine())) {
+				courseContent=courseContent.concat(line).concat("\n");
+				}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally{
+			if(null != reader){
+				try {
+					reader.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+	}
+		
+
+		return courseContent;
+	}
+
+	
+	public FeeDetails getFeeDetailsforUserid(int userId){
+		FeeDetails feeDetails = null;
+		String line;
+		BufferedReader reader=null;
+		try {
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("resources/FeeReceipt.txt"))));
+			while (null != (line = reader.readLine())) {
+				if (null != line.split(",")[0] && Integer.valueOf(line.split(",")[0])==userId)
+				{
+					feeDetails = new FeeDetails(userId);
+					feeDetails.setCourseId(Integer.valueOf(line.split(",")[1]));
+					feeDetails.setCourseName(String.valueOf(line.split(",")[2]));
+					feeDetails.setCourseFee((Integer.valueOf(line.split(",")[3])));
+					feeDetails.setPaidFees(Integer.valueOf(line.split(",")[4]));
+					feeDetails.setRemainingFees(Integer.valueOf(line.split(",")[4]));
+			
+				}
+			}	
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally{
+			if(null != reader){
+				try {
+					reader.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		
+		return feeDetails;
+	}
+
+	public void init() {
+		
+		try {
+			Class.forName(DATABASE_DRIVER);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public Connection getConnection () throws SQLException {
+		Connection con = DriverManager.getConnection(DATABASE_URL, DATABASE_USER, DATABASE_PASSWORD);
+		return con;
+	}
+	public void closeConnection (Connection con) throws SQLException {
+
+		try {
+			if (null != con) {
+				if (!con.isClosed()) {
+					con.close();
+				}
+			}
+		}catch (Exception e) {
+			System.err.println("Error occured while closing connection." + e.getMessage());
+			e.printStackTrace();
+		}
+
+	}
+
+	public void commit (Connection con) throws Exception {
+		con.commit();
+	}
+	
+	public void rollBack(Connection con) throws SQLException {
+		con.rollback();
+	}
+	
+	public synchronized long getSequenceId() {
+		sequenceId += 1;
+		return sequenceId;
+	}
+
 
 }

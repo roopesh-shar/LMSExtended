@@ -1,7 +1,14 @@
 package in.co.thingsdata.lms.util;
 
 
+import in.co.thingsdata.lms.gui.CourseContentDetails;
+import in.co.thingsdata.lms.gui.FeeReceipt;
+import in.co.thingsdata.lms.gui.FeedBack;
+import in.co.thingsdata.lms.gui.HomeScreen;
+import in.co.thingsdata.lms.gui.ProfileScreen;
 import in.co.thingsdata.lms.server.Server;
+import in.sg.rpc.common.domain.Course;
+import in.sg.rpc.common.domain.FeeDetails;
 import in.sg.rpc.common.domain.User;
 import in.sg.rpc.server.service.DBService;
 
@@ -28,6 +35,7 @@ import java.sql.SQLException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 public class GUIUtil {
 
@@ -73,7 +81,7 @@ public class GUIUtil {
 
 			Class.forName(GUIDomain.DB_DRIVER);
 			Connection con = DriverManager.getConnection(GUIDomain.DB_URL, GUIDomain.DB_USER, GUIDomain.DB_PASSWORD);
-			GUIDomain.DB_CONNECTION = con;
+			//GUIDomain.DB_CONNECTION = con;
 
 			System.out.println("Database major version=" + con.getMetaData().getDatabaseMajorVersion());
 			System.out.println("Database minor version=" + con.getMetaData().getDatabaseMinorVersion());
@@ -203,7 +211,116 @@ public class GUIUtil {
 		return DBService.getInstance().saveUserDetails(user);
 	}
 
+	public static String getCourseDetailForUser(int userId) throws Exception{
+		//return DBService.getInstance().getCourseDetailForUser(userId);
+		return GUIDomain.REMOTE_RPC_SERVICE.getCourseDetailForUser(userId);
+		
+
+	}
 	
+	public static FeeDetails getFeeDetailsforUserid(int userId) throws Exception{
+		return GUIDomain.REMOTE_RPC_SERVICE.getFeeDetailsforUserid(userId);
+	}
 	
+	public static void goToRequestedPage(String goToPage){
+		if(goToPage.equals("Course Content"))
+		{
+			CourseContentDetails courseContent = new CourseContentDetails(); // Comments to revert
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+
+					try {
+						courseContent.go();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				}
+			});
+		}
+		else if(goToPage.equals("Profile"))
+		{
+			ProfileScreen screen = new ProfileScreen(); // Comments to revert
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+
+					screen.go();
+					
+
+				}
+			});
+		}
+		else if(goToPage.equals("Fee Receipt"))
+		{
+			FeeReceipt feeReceipt = new FeeReceipt();
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+
+					try {
+						feeReceipt.go();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+
+				}
+			});
+		}
+		
+		else if(goToPage.equals("FeedBack")){
+			FeedBack feedBack = new FeedBack();
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+
+					try {
+						feedBack.go();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+								
+				}
+			});
+		}
+		
+		else{
+			HomeScreen homeScreen = new HomeScreen();
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+
+					try {
+						homeScreen.go();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+								
+				}
+			});
+		}
+			
+			
+	}
 
 }

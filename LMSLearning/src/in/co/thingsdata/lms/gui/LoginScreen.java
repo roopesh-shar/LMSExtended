@@ -66,15 +66,12 @@ public class LoginScreen {
 					
 					GUIDomain.REMOTE_RPC_SERVICE = stub;
 					
-					GUIDomain.REMOTE_RPC_SERVICE.register("Roopesh", "Roopeshsh");
+					//GUIDomain.REMOTE_RPC_SERVICE.register("Rsharma", "Qwerty");
 					GUIDomain.REMOTE_RPC_SERVICE.login(userNameTextField.getText(), String.valueOf(passwordTextField.getPassword()));
-				} catch (MalformedURLException e) {
+					} catch (MalformedURLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (UserLoginException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (UserExistsException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
@@ -84,6 +81,8 @@ public class LoginScreen {
 				if (isValidUser (userNameTextField.getText(), passwordTextField.getPassword(), instructionsLabel, userDatailPanel)) {
 					//TODO: Go to home screen
 					System.out.println("Validation successful");
+					GUIDomain.CURRENT_USER_NAME=userNameTextField.getText();
+					System.out.println(GUIDomain.CURRENT_USER_NAME+","+GUIDomain.CURRENT_USER_ID);
 					frame.setVisible(false);
 					HomeScreen screen = new HomeScreen();
 					screen.setUser (userNameTextField.getText());
@@ -116,7 +115,7 @@ public class LoginScreen {
 		try {
 			String loginUser = user;
 			String loginPassword = String.valueOf(pass);
-			
+			System.out.println(loginUser+","+loginPassword);
 			if (null == loginUser || null == loginPassword) {
 				throw new Exception ("user name or password is null");
 			}
@@ -130,13 +129,16 @@ public class LoginScreen {
 			String line;
 			
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("resources/out.txt"))));
-			
-			while (null != (line = reader.readLine())) {
-				
+			while (null != (line = reader.readLine())  ) {
+				if(String.valueOf(line.split(",")[0]).equalsIgnoreCase(user)){
+				System.out.println(String.valueOf(line.split(",")[0]));
 				userName = line.split(",")[0];
 				password = line.split(",")[1];
-				
-			}
+				//System.out.println(userName+","+password);
+			
+				}
+			}	
+			
 			
 			if (!loginUser.equalsIgnoreCase(userName)) {
 				throw new Exception ("Invalid user name.");

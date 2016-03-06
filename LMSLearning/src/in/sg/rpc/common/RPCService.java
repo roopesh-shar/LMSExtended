@@ -7,6 +7,7 @@ import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
 
+import in.sg.rpc.common.domain.FeeDetails;
 import in.sg.rpc.common.exception.UserExistsException;
 import in.sg.rpc.common.exception.UserLoginException;
 
@@ -19,6 +20,7 @@ public interface RPCService {
 	@WebMethod
 	public String login (String userName, String password) throws UserLoginException;
 	@WebMethod
-	public String displayCourseDetails(Integer userId) throws Exception;
-
+	public String getCourseDetailForUser(int userId) throws Exception;
+	@WebMethod
+	public FeeDetails getFeeDetailsforUserid(int userId) throws Exception;
 }

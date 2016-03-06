@@ -52,6 +52,7 @@ public class ProfileScreen {
 	private String userName;
 	private JButton btnEditProfile = new JButton("Edit Profile");
 	private JButton btnSaveProfile = new JButton("Save");
+	private JButton btnBack = new JButton("Back");
 	User user = null;
 	public static void main(String[] args) {
 
@@ -69,7 +70,7 @@ public class ProfileScreen {
 
 	}
 
-	protected void go() {
+	public void go() {
 
 		JFrame frame = new JFrame("Profile");
 		JPanel profilepanel = new JPanel();
@@ -142,6 +143,21 @@ public class ProfileScreen {
 				System.exit(0);
 			}
 		});
+		
+		btnBack.addActionListener (new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				frame.setVisible(false);
+				HomeScreen screen = new HomeScreen(); // Comments to revert
+			    SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+					screen.go();
+					}
+				});
+			}
+			});
 
 	}
 
@@ -264,6 +280,7 @@ public class ProfileScreen {
 		// profiledtlpanel.add(lblname);
 		JPanel btnPanel = new JPanel();
 		btnPanel.setBorder(BorderFactory.createEtchedBorder());
+		btnPanel.add(btnBack);
 		btnPanel.add(btnEditProfile);
 		btnPanel.add(btnSaveProfile);
 		btnSaveProfile.setVisible(false);
