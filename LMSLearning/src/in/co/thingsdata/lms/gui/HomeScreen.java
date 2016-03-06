@@ -73,7 +73,7 @@ public class HomeScreen {
 		
 	}
 
-	protected void go() {
+	public void go() {
 		
 		JFrame frame = new JFrame ("LMS HOME");
 		JPanel linkPanel = new JPanel();

@@ -40,6 +40,8 @@ public class RPCServer implements RPCService {
 		server.setMaxIdleTimeLimit(Integer.valueOf(args[0]));
 
 		server.start();
+		
+		DBService.getInstance().init();
 
 		System.out.println("RPC Server started. host= " + PropertiesReader.getProperty("server.ip") + " port=" + PropertiesReader.getProperty("server.port"));
 	

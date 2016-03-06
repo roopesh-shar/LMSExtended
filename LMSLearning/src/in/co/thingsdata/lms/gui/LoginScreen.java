@@ -115,6 +115,7 @@ public class LoginScreen {
 		try {
 			String loginUser = user;
 			String loginPassword = String.valueOf(pass);
+			System.out.println(loginUser+","+loginPassword);
 			if (null == loginUser || null == loginPassword) {
 				throw new Exception ("user name or password is null");
 			}
@@ -128,13 +129,16 @@ public class LoginScreen {
 			String line;
 			
 			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("resources/out.txt"))));
-			
-			while (null != (line = reader.readLine())) {
-				
+			while (null != (line = reader.readLine())  ) {
+				if(String.valueOf(line.split(",")[0]).equalsIgnoreCase(user)){
+				System.out.println(String.valueOf(line.split(",")[0]));
 				userName = line.split(",")[0];
 				password = line.split(",")[1];
-				
-			}
+				//System.out.println(userName+","+password);
+			
+				}
+			}	
+			
 			
 			if (!loginUser.equalsIgnoreCase(userName)) {
 				throw new Exception ("Invalid user name.");
@@ -150,7 +154,7 @@ public class LoginScreen {
 			instructionsLabel.setText (e.getMessage());
 			userDatailPanel.repaint();
 		}
-		return true;
+		return false;
 		
 	}
 	

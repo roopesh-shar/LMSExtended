@@ -3,6 +3,8 @@ package in.co.thingsdata.lms.util;
 
 import in.co.thingsdata.lms.gui.CourseContentDetails;
 import in.co.thingsdata.lms.gui.FeeReceipt;
+import in.co.thingsdata.lms.gui.FeedBack;
+import in.co.thingsdata.lms.gui.HomeScreen;
 import in.co.thingsdata.lms.gui.ProfileScreen;
 import in.co.thingsdata.lms.server.Server;
 import in.sg.rpc.common.domain.Course;
@@ -79,7 +81,7 @@ public class GUIUtil {
 
 			Class.forName(GUIDomain.DB_DRIVER);
 			Connection con = DriverManager.getConnection(GUIDomain.DB_URL, GUIDomain.DB_USER, GUIDomain.DB_PASSWORD);
-			GUIDomain.DB_CONNECTION = con;
+			//GUIDomain.DB_CONNECTION = con;
 
 			System.out.println("Database major version=" + con.getMetaData().getDatabaseMajorVersion());
 			System.out.println("Database minor version=" + con.getMetaData().getDatabaseMinorVersion());
@@ -242,7 +244,7 @@ public class GUIUtil {
 				}
 			});
 		}
-		if(goToPage.equals("Profile"))
+		else if(goToPage.equals("Profile"))
 		{
 			ProfileScreen screen = new ProfileScreen(); // Comments to revert
 			SwingUtilities.invokeLater(new Runnable() {
@@ -256,7 +258,7 @@ public class GUIUtil {
 				}
 			});
 		}
-		if(goToPage.equals("Fee Receipt"))
+		else if(goToPage.equals("Fee Receipt"))
 		{
 			FeeReceipt feeReceipt = new FeeReceipt();
 			SwingUtilities.invokeLater(new Runnable() {
@@ -278,6 +280,47 @@ public class GUIUtil {
 				}
 			});
 		}
+		
+		else if(goToPage.equals("FeedBack")){
+			FeedBack feedBack = new FeedBack();
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+
+					try {
+						feedBack.go();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+								
+				}
+			});
+		}
+		
+		else{
+			HomeScreen homeScreen = new HomeScreen();
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+
+					try {
+						homeScreen.go();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+								
+				}
+			});
+		}
+			
+			
 	}
 
 }
