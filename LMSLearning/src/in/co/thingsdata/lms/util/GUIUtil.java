@@ -180,6 +180,8 @@ public class GUIUtil {
 	public static FeeDetails getFeeDetailsforUserid(int userId) throws Exception{
 		return GUIDomain.REMOTE_RPC_SERVICE.getFeeDetailsforUserid(userId);
 	}
+
+	
 	
 	public static void goToRequestedPage(String goToPage){
 		if(goToPage.equals("Course Content"))

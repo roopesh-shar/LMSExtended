@@ -137,9 +137,10 @@ public class RPCServer implements RPCService {
 			return usrlogin.login(userName, password);
 		} else {
 			stop();
+			return null;
 		}
 
-		return null;
+		
 
 	}
 

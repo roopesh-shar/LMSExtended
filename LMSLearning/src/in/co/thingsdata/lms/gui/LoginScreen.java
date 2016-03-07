@@ -25,6 +25,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import org.omg.CORBA.UserException;
+
 public class LoginScreen {
 
 	public void initializeLoginScreen() {
@@ -65,21 +67,8 @@ public class LoginScreen {
 					stub =client.getRemoteService();
 					
 					GUIDomain.REMOTE_RPC_SERVICE = stub;
-					
 					//GUIDomain.REMOTE_RPC_SERVICE.register("Rsharma", "Qwerty");
-					GUIDomain.REMOTE_RPC_SERVICE.login(userNameTextField.getText(), String.valueOf(passwordTextField.getPassword()));
-					} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (UserLoginException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if (isValidUser (userNameTextField.getText(), passwordTextField.getPassword(), instructionsLabel, userDatailPanel)) {
-					//TODO: Go to home screen
+					String test =GUIDomain.REMOTE_RPC_SERVICE.login(userNameTextField.getText(), String.valueOf(passwordTextField.getPassword()));
 					System.out.println("Validation successful");
 					GUIDomain.CURRENT_USER_NAME=userNameTextField.getText();
 					System.out.println(GUIDomain.CURRENT_USER_NAME+","+GUIDomain.CURRENT_USER_ID);
@@ -87,7 +76,13 @@ public class LoginScreen {
 					HomeScreen screen = new HomeScreen();
 					screen.setUser (userNameTextField.getText());
 					screen.go();
-				}
+					} catch (UserLoginException | MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					}
+
+
+				
 			}
 			
 		});
@@ -110,54 +105,7 @@ public class LoginScreen {
 		
 	}
 	
-	private boolean isValidUser(String user, char[] pass, JLabel instructionsLabel, JPanel userDatailPanel) {
-		
-		try {
-			String loginUser = user;
-			String loginPassword = String.valueOf(pass);
-			System.out.println(loginUser+","+loginPassword);
-			if (null == loginUser || null == loginPassword) {
-				throw new Exception ("user name or password is null");
-			}
-			if (loginUser.isEmpty() || loginPassword.isEmpty()) {
-				throw new Exception ("user name or password is empty");
-			}
-			
-			//TODO:[Brajveer] The value for username and password shall come from the database/file
-			String userName = "";
-			String password = "";
-			String line;
-			
-			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("resources/out.txt"))));
-			while (null != (line = reader.readLine())  ) {
-				if(String.valueOf(line.split(",")[0]).equalsIgnoreCase(user)){
-				System.out.println(String.valueOf(line.split(",")[0]));
-				userName = line.split(",")[0];
-				password = line.split(",")[1];
-				//System.out.println(userName+","+password);
-			
-				}
-			}	
-			
-			
-			if (!loginUser.equalsIgnoreCase(userName)) {
-				throw new Exception ("Invalid user name.");
-			}
-			if (!loginPassword.equals(password)) {
-				throw new Exception ("Invalid password.");
-			}
-				
-			return true;
-			
-		}catch (Exception e) {
-			instructionsLabel.setForeground(Color.RED);
-			instructionsLabel.setText (e.getMessage());
-			userDatailPanel.repaint();
-		}
-		return false;
-		
-	}
-	
+
 	public static void main(String[] args) {
 		
 		SwingUtilities.invokeLater(new Runnable() {

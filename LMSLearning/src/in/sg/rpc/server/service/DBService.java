@@ -288,6 +288,34 @@ public class DBService {
 		 closeConnection(conn);
 	}
 	
+	public String returnUserId(String userName, String password) throws SQLException {
+		Connection conn;
+		conn = getConnection();
+		try {
+			java.sql.Statement stmt = conn.createStatement();
+			String validUser=null;
+			String lSqlString = "select user_name from users where user_name='"+userName+"' and password = '"+password+"'";
+			ResultSet rs = null;
+			rs= stmt.executeQuery(lSqlString);
+			if(rs.next()){
+			validUser=rs.getString("user_name");
+			if(userName.equalsIgnoreCase(validUser)){
+				return validUser;
+			}else{
+				return null;
+			}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			closeConnection(conn);
+		}
+		
+		return null;
+	}
+	
+	
 	public Connection getConnection () throws SQLException {
 		System.out.println("DBURL"+GUIDomain.DATABASE_URL);
 		System.out.println("DBUSER"+GUIDomain.DATABASE_USER);
