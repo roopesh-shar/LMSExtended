@@ -165,6 +165,7 @@ public class DBService {
 
 		courseContent=DBService.getCourseContent(coursecontentpath);
 		return courseContent;
+<<<<<<< HEAD
 		
 	}
 	
@@ -244,6 +245,87 @@ public class DBService {
 
 	public void init() {
 		
+=======
+		
+	}
+	
+
+	public static String getCourseContent(String ContentPath){
+		BufferedReader reader = null;
+		String line=null;;
+		String courseContent ="";
+		try {
+			reader = new BufferedReader(new FileReader(new File(ContentPath)));
+				while (null!=(line = reader.readLine())) {
+				courseContent=courseContent.concat(line).concat("\n");
+				}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally{
+			if(null != reader){
+				try {
+					reader.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+	}
+		
+
+		return courseContent;
+	}
+
+	
+	public FeeDetails getFeeDetailsforUserid(int userId){
+		FeeDetails feeDetails = null;
+		String line;
+		BufferedReader reader=null;
+		try {
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("resources/FeeReceipt.txt"))));
+			while (null != (line = reader.readLine())) {
+				if (null != line.split(",")[0] && Integer.valueOf(line.split(",")[0])==userId)
+				{
+					feeDetails = new FeeDetails(userId);
+					feeDetails.setCourseId(Integer.valueOf(line.split(",")[1]));
+					feeDetails.setCourseName(String.valueOf(line.split(",")[2]));
+					feeDetails.setCourseFee((Integer.valueOf(line.split(",")[3])));
+					feeDetails.setPaidFees(Integer.valueOf(line.split(",")[4]));
+					feeDetails.setRemainingFees(Integer.valueOf(line.split(",")[4]));
+			
+				}
+			}	
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally{
+			if(null != reader){
+				try {
+					reader.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		
+		return feeDetails;
+	}
+
+	public void init() {
+		
+>>>>>>> origin/master
 		try {
 			Class.forName(DATABASE_DRIVER);
 		} catch (ClassNotFoundException e) {
