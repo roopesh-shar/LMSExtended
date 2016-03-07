@@ -37,7 +37,7 @@ public class DBService {
 	private long sequenceId;
 	
 	private DBService() {
-		
+		PropertiesReader.getInstance().init("resources/");
 	}
 	
 	public static DBService getInstance() {
