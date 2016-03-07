@@ -48,7 +48,6 @@ public class View  extends JFrame {
 		GUIUtil.initProperties();
 		initializeGUI();
 		GUIUtil.setupNetworking();
-		GUIUtil.setupDB();
 		GUIUtil.setupFileIO();
 		GUIUtil.refreshGUI(view);
 		

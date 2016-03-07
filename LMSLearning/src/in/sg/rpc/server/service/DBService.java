@@ -4,11 +4,13 @@ import in.co.thingsdata.lms.gui.CourseContentDetails;
 import in.co.thingsdata.lms.gui.FeeReceipt;
 import in.co.thingsdata.lms.gui.ProfileScreen;
 import in.co.thingsdata.lms.util.GUIDomain;
+import in.co.thingsdata.lms.util.GUIUtil;
 import in.co.thingsdata.lms.util.PropertiesReader;
 import in.sg.rpc.common.domain.Course;
 import in.sg.rpc.common.domain.FeeDetails;
 import in.sg.rpc.common.domain.User;
 
+import java.beans.Statement;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -22,26 +24,44 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.swing.SwingUtilities;
 
+import oracle.core.lmx.LmxRepConversion;
+
 public class DBService {
 
+	
+	
 	private final static DBService _INSTANCE = new DBService();
-	private static final String DATABASE_URL = PropertiesReader.getInstance().getProperty("db.url");
-	private static final String DATABASE_USER = PropertiesReader.getInstance().getProperty("db.user");
-	private static final String DATABASE_PASSWORD = PropertiesReader.getInstance().getProperty("db.password");
-	private static final String DATABASE_DRIVER = PropertiesReader.getInstance().getProperty("db.driver");
+	/*GUIDomain.DATABASE_URL = PropertiesReader.getInstance().getProperty("db.url");
+	DATABASE_USER = PropertiesReader.getInstance().getProperty("db.user");
+	DATABASE_PASSWORD = PropertiesReader.getInstance().getProperty("db.password");
+	DATABASE_DRIVER = PropertiesReader.getInstance().getProperty("db.driver");
+	private long sequenceId;*/
 	private long sequenceId;
 	
+	
+	
 	private DBService() {
-		PropertiesReader.getInstance().init("resources/");
+		
 	}
 	
 	public static DBService getInstance() {
 		return _INSTANCE;
+	}
+	
+	public static void setUpDB(){
+		GUIUtil.initProperties();
+		GUIDomain.DATABASE_USER= PropertiesReader.getInstance().getProperty("db.user");
+		GUIDomain.DATABASE_PASSWORD=PropertiesReader.getInstance().getProperty("db.password");
+		GUIDomain.DATABASE_DRIVER=PropertiesReader.getInstance().getProperty("db.driver");
+		GUIDomain.DATABASE_URL=PropertiesReader.getInstance().getProperty("db.url");
+		
 	}
 	
 	public User getUserDetails (int userId) /* throws CUSTOMException*/ {
@@ -165,7 +185,6 @@ public class DBService {
 
 		courseContent=DBService.getCourseContent(coursecontentpath);
 		return courseContent;
-
 		
 	}
 	
@@ -243,100 +262,38 @@ public class DBService {
 		return feeDetails;
 	}
 
-	public void init() {
-		
-
-		
-	}
-	
-
-	public static String getCourseContent(String ContentPath){
-		BufferedReader reader = null;
-		String line=null;;
-		String courseContent ="";
+	public void init() throws SQLException {
+		setUpDB();
 		try {
-			reader = new BufferedReader(new FileReader(new File(ContentPath)));
-				while (null!=(line = reader.readLine())) {
-				courseContent=courseContent.concat(line).concat("\n");
-				}
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		finally{
-			if(null != reader){
-				try {
-					reader.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
-	}
-		
-
-		return courseContent;
-	}
-
-	
-	public FeeDetails getFeeDetailsforUserid(int userId){
-		FeeDetails feeDetails = null;
-		String line;
-		BufferedReader reader=null;
-		try {
-			reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("resources/FeeReceipt.txt"))));
-			while (null != (line = reader.readLine())) {
-				if (null != line.split(",")[0] && Integer.valueOf(line.split(",")[0])==userId)
-				{
-					feeDetails = new FeeDetails(userId);
-					feeDetails.setCourseId(Integer.valueOf(line.split(",")[1]));
-					feeDetails.setCourseName(String.valueOf(line.split(",")[2]));
-					feeDetails.setCourseFee((Integer.valueOf(line.split(",")[3])));
-					feeDetails.setPaidFees(Integer.valueOf(line.split(",")[4]));
-					feeDetails.setRemainingFees(Integer.valueOf(line.split(",")[4]));
-			
-				}
-			}	
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		finally{
-			if(null != reader){
-				try {
-					reader.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
-		}
-		
-		return feeDetails;
-	}
-
-	public void init() {
-		
->>>>>>> db_integration
-		try {
-			Class.forName(DATABASE_DRIVER);
+			Class.forName(GUIDomain.DATABASE_DRIVER);
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally
+		{
+			checkDBConnection();
 		}
 		
 	}
 	
+	public void checkDBConnection() throws SQLException{
+		Connection conn = getConnection();
+		java.sql.Statement stmt = conn.createStatement();
+		 String lSqlString = "select id from LMS.profile";
+		 ResultSet rs = null;
+		 rs= stmt.executeQuery(lSqlString);
+		 while(rs.next()){
+			 System.out.println(rs.getInt("id"));
+		 }
+		 closeConnection(conn);
+	}
+	
 	public Connection getConnection () throws SQLException {
-		Connection con = DriverManager.getConnection(DATABASE_URL, DATABASE_USER, DATABASE_PASSWORD);
+		System.out.println("DBURL"+GUIDomain.DATABASE_URL);
+		System.out.println("DBUSER"+GUIDomain.DATABASE_USER);
+		System.out.println("DBPASSWORD"+GUIDomain.DATABASE_PASSWORD);
+		System.out.println("DBDRIVER"+ GUIDomain.DATABASE_DRIVER);
+		Connection con = DriverManager.getConnection(GUIDomain.DATABASE_URL, GUIDomain.DATABASE_USER, GUIDomain.DATABASE_PASSWORD);
 		return con;
 	}
 	public void closeConnection (Connection con) throws SQLException {

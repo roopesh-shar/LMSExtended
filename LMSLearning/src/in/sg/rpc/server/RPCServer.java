@@ -2,6 +2,7 @@ package in.sg.rpc.server;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -30,7 +31,7 @@ public class RPCServer implements RPCService {
 	private Date previousRequestTime;
 	private Endpoint endpoint;
 
-	public static void main(String[] args) throws InterruptedException, FileNotFoundException, IOException {
+	public static void main(String[] args) throws InterruptedException, FileNotFoundException, IOException, SQLException {
 
 		RPCServer server = new RPCServer();
 
@@ -131,9 +132,9 @@ public class RPCServer implements RPCService {
 		idleTimeInMinute = TimeUnit.MILLISECONDS.toMinutes(requestTime.getTime() - previousRequestTime.getTime());
 
 		if (idleTimeInMinute <= maxIdleTimeLimit) {
-			UserLogin login = new UserLogin();
+			UserLogin usrlogin = new UserLogin();
 			previousRequestTime = requestTime;
-			return login.login(userName, password);
+			return usrlogin.login(userName, password);
 		} else {
 			stop();
 		}
