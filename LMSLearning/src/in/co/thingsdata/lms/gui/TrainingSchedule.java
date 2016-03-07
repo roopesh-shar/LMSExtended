@@ -53,7 +53,11 @@ import in.co.thingsdata.lms.util.GUIUtil;
 
 			    JScrollPane scrollPane = new JScrollPane(table1);
 			    frame.add(scrollPane, BorderLayout.CENTER);
+
 			    frame.setSize(1200, 500);
+
+			    frame.setSize(1000, 400);
+
 			    frame.setVisible(true);
 			    
 
