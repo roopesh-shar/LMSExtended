@@ -1,6 +1,7 @@
 package in.co.thingsdata.lms.gui;
 
 import in.co.thingsdata.lms.util.GUIDomain;
+import in.co.thingsdata.lms.util.GUIUtil;
 import in.sg.rpc.client.RPCClient;
 import in.sg.rpc.common.RPCService;
 import in.sg.rpc.common.exception.UserExistsException;
@@ -63,22 +64,29 @@ public class LoginScreen {
 				RPCClient client = new RPCClient();
 				RPCService stub = null;
 				try {
-					
 					stub =client.getRemoteService();
-					
 					GUIDomain.REMOTE_RPC_SERVICE = stub;
 					//GUIDomain.REMOTE_RPC_SERVICE.register("Rsharma", "Qwerty");
-					String test =GUIDomain.REMOTE_RPC_SERVICE.login(userNameTextField.getText(), String.valueOf(passwordTextField.getPassword()));
-					System.out.println("Validation successful");
-					GUIDomain.CURRENT_USER_NAME=userNameTextField.getText();
-					System.out.println(GUIDomain.CURRENT_USER_NAME+","+GUIDomain.CURRENT_USER_ID);
-					frame.setVisible(false);
-					HomeScreen screen = new HomeScreen();
-					screen.setUser (userNameTextField.getText());
-					screen.go();
+					int userId =GUIUtil.getLoggedInUserId(userNameTextField.getText(), String.valueOf(passwordTextField.getPassword()));
+					if (userId != 0){
+						frame.setVisible(false);
+						GUIDomain.CURRENT_USER_ID=userId;
+						GUIDomain.CURRENT_USER_NAME=userNameTextField.getText();
+						System.out.println(GUIDomain.CURRENT_USER_ID+","+GUIDomain.CURRENT_USER_NAME);
+						HomeScreen screen = new HomeScreen();
+						screen.setUser (userNameTextField.getText());
+						screen.go();	
+						}
+					else{
+						throw new UserExistsException("Invalid Username or Password");
+					}
+					
 					} catch (UserLoginException | MalformedURLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					} catch (UserExistsException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 
 

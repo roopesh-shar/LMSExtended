@@ -26,7 +26,7 @@ public class GUIDomain {
 	public static PrintWriter FILE_WRITER;
 	public static String STUDENT_COURSE;
 	public static RPCService REMOTE_RPC_SERVICE;
-	public static String CURRENT_USER_ID;
+	public static int CURRENT_USER_ID;
 	public static String CURRENT_USER_NAME;
 	public static String DATABASE_URL;
 	public static String DATABASE_USER;

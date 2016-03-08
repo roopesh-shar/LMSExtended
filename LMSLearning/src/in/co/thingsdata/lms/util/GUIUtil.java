@@ -10,6 +10,7 @@ import in.co.thingsdata.lms.server.Server;
 import in.sg.rpc.common.domain.Course;
 import in.sg.rpc.common.domain.FeeDetails;
 import in.sg.rpc.common.domain.User;
+import in.sg.rpc.common.exception.UserLoginException;
 import in.sg.rpc.server.service.DBService;
 
 import java.awt.Component;
@@ -181,7 +182,9 @@ public class GUIUtil {
 		return GUIDomain.REMOTE_RPC_SERVICE.getFeeDetailsforUserid(userId);
 	}
 
-	
+	public static int getLoggedInUserId(String userName, String password) throws UserLoginException{
+		return GUIDomain.REMOTE_RPC_SERVICE.login(userName, password);
+	}
 	
 	public static void goToRequestedPage(String goToPage){
 		if(goToPage.equals("Course Content"))

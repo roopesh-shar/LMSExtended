@@ -288,21 +288,21 @@ public class DBService {
 		 closeConnection(conn);
 	}
 	
-	public String returnUserId(String userName, String password) throws SQLException {
+	public int returnUserId(String userName, String password) throws SQLException {
 		Connection conn;
 		conn = getConnection();
 		try {
 			java.sql.Statement stmt = conn.createStatement();
 			String validUser=null;
-			String lSqlString = "select user_name from users where user_name='"+userName+"' and password = '"+password+"'";
+			String lSqlString = "select id,user_name from users where user_name='"+userName+"' and password = '"+password+"'";
 			ResultSet rs = null;
 			rs= stmt.executeQuery(lSqlString);
 			if(rs.next()){
 			validUser=rs.getString("user_name");
 			if(userName.equalsIgnoreCase(validUser)){
-				return validUser;
+				return rs.getInt("id");
 			}else{
-				return null;
+				return 0;
 			}
 			}
 		} catch (SQLException e) {
@@ -312,7 +312,7 @@ public class DBService {
 			closeConnection(conn);
 		}
 		
-		return null;
+		return 0;
 	}
 	
 	

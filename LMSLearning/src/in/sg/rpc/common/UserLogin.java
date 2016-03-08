@@ -13,22 +13,22 @@ import in.sg.rpc.server.service.DBService;
 
 public class UserLogin {
 
-		public String login(String userName, String password) throws UserLoginException {
+		public int login(String userName, String password) throws UserLoginException {
 		boolean validUser = false;
-		String response = null;
+		int userId = 0 ;
 		try {
-			response =DBService.getInstance().returnUserId(userName, password);
+			userId =DBService.getInstance().returnUserId(userName, password);
 			} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		if (userName.equalsIgnoreCase(response)){
+		if (userId != 0 ){
 			validUser = true;
 			System.out.println("Login successful for"  + userName);
 		}
 		if (!validUser) {
 			throw new UserLoginException("User " + userName + " does not exists in database");
 		} 
-		return response;
+		return userId;
 	}
 }

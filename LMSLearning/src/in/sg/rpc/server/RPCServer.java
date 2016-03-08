@@ -125,7 +125,7 @@ public class RPCServer implements RPCService {
 	}
 
 	@Override
-	public String login(String userName, String password) throws UserLoginException {
+	public int login(String userName, String password) throws UserLoginException {
 
 		requestTime = new Date();
 
@@ -137,7 +137,7 @@ public class RPCServer implements RPCService {
 			return usrlogin.login(userName, password);
 		} else {
 			stop();
-			return null;
+			return 0;
 		}
 
 		

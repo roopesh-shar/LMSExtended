@@ -18,7 +18,7 @@ public interface RPCService {
 	@WebMethod 
 	public String register(String userName, String passWord) throws UserExistsException, IOException;
 	@WebMethod
-	public String login (String userName, String password) throws UserLoginException;
+	public int login (String userName, String password) throws UserLoginException;
 	@WebMethod
 	public String getCourseDetailForUser(int userId) throws Exception;
 	@WebMethod
