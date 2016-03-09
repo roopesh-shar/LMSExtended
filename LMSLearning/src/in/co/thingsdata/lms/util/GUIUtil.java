@@ -186,6 +186,8 @@ public class GUIUtil {
 		return GUIDomain.REMOTE_RPC_SERVICE.login(userName, password);
 	}
 	
+	
+	
 	public static void goToRequestedPage(String goToPage){
 		if(goToPage.equals("Course Content"))
 		{
@@ -286,5 +288,15 @@ public class GUIUtil {
 			
 			
 	}
+
+	
+	
+	public static void registernewUser(User user) throws Exception {
+		System.out.println("Ready to Call");
+		GUIDomain.REMOTE_RPC_SERVICE.registerUser(user);
+		
+	}
+
+
 
 }

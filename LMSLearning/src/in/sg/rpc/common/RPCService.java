@@ -1,6 +1,7 @@
 package in.sg.rpc.common;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
@@ -8,6 +9,7 @@ import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
 
 import in.sg.rpc.common.domain.FeeDetails;
+import in.sg.rpc.common.domain.User;
 import in.sg.rpc.common.exception.UserExistsException;
 import in.sg.rpc.common.exception.UserLoginException;
 
@@ -23,4 +25,6 @@ public interface RPCService {
 	public String getCourseDetailForUser(int userId) throws Exception;
 	@WebMethod
 	public FeeDetails getFeeDetailsforUserid(int userId) throws Exception;
+	@WebMethod
+	public void registerUser(User user) throws SQLException, Exception;
 }

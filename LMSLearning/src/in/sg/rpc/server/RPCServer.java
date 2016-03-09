@@ -17,6 +17,7 @@ import in.sg.rpc.common.UserLogin;
 import in.sg.rpc.common.UserRegistration;
 import in.sg.rpc.common.domain.Course;
 import in.sg.rpc.common.domain.FeeDetails;
+import in.sg.rpc.common.domain.User;
 import in.sg.rpc.common.exception.UserExistsException;
 import in.sg.rpc.common.exception.UserLoginException;
 import in.sg.rpc.server.service.DBService;
@@ -156,7 +157,10 @@ public class RPCServer implements RPCService {
 		return DBService.getInstance().getFeeDetailsforUserid(userId);
 	}
 
-
+	@Override
+	public void registerUser(User user) throws Exception{
+		DBService.getInstance().registerUser(user);
+	}
 
 
 

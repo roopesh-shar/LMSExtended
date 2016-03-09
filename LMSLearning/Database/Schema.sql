@@ -110,3 +110,10 @@ Fees_remaining number(10)
 );
 /
 
+--- Alter Table for Profile ---
+
+ALTER TABLE LMS.PROFILE ADD Country varchar(20);
+ALTER TABLE LMS.PROFILE ADD State varchar(20);
+ALTER TABLE LMS.PROFILE ADD City varchar(20);
+ALTER TABLE LMS.PROFILE ADD Pincode number(6);
+/

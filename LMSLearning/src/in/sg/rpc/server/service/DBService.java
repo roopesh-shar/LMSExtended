@@ -316,6 +316,61 @@ public class DBService {
 	}
 	
 	
+	public void registerUser (User user) throws Exception{
+		Connection conn;
+		conn = getConnection();	
+		
+		PreparedStatement insertProfile = null;
+		PreparedStatement insertUser = null;
+		try{
+				conn.setAutoCommit(false);
+		String insertUserStatement = "insert into LMS.USERS values( ((select max(id) from LMS.Users) +1) , ?, ?,0)" ;
+		insertUser = conn.prepareStatement(insertUserStatement);
+		insertUser.setString(1,user.getName());
+		insertUser.setString(2, user.getPassword());
+		insertUser.executeUpdate();
+		
+		String insertUserProfile = "insert into LMS.PROFILE values("
+				+ " ((select max(id) from profile) +1), (select id from users where user_name = ?) , "
+				+ " ?, 'testfname','testlname' , 'testfathername' ,"
+				+ " ? , ?, ? , ?, ?, ?, ?)";
+			
+		insertProfile = conn.prepareStatement(insertUserProfile);
+		insertProfile.setString(1, user.getName());
+		insertProfile.setString(2, user.getUserType());
+		insertProfile.setString(3,  user.getEmailid());
+		insertProfile.setLong(4, user.getPhoneNum());
+		insertProfile.setString(5, user.getAddress());
+		insertProfile.setString(6, user.getCountry());
+		insertProfile.setString(7, user.getState());
+		insertProfile.setString(8, user.getCity());
+		insertProfile.setLong(9, user.getPinCode());
+		insertProfile.execute();			
+		
+		commit(conn);
+		}catch (SQLException e ){
+			if (conn != null) {
+	            try {
+	                System.err.print("Transaction is being rolled back");
+	                conn.rollback();
+	            } catch(SQLException excep) {
+	               excep.printStackTrace();
+	            }
+	        }
+		}
+		finally {
+	        if (insertUser != null) {
+	        	insertUser.close();
+	        }
+	        if (insertProfile != null) {
+	        	insertProfile.close();
+	        }
+	        conn.close();
+	      //  conn.setAutoCommit(true);
+	    }
+		
+	}
+	
 	public Connection getConnection () throws SQLException {
 		System.out.println("DBURL"+GUIDomain.DATABASE_URL);
 		System.out.println("DBUSER"+GUIDomain.DATABASE_USER);
