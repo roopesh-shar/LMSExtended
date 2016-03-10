@@ -27,6 +27,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.swing.SwingUtilities;
@@ -405,6 +406,33 @@ public class DBService {
 	public synchronized long getSequenceId() {
 		sequenceId += 1;
 		return sequenceId;
+	}
+
+	public HashMap<String, String> getUserFeedback(int userId) throws SQLException {
+		Connection conn;
+		conn = getConnection();
+		
+		HashMap<String,String> feedBackMap= new HashMap<String, String>();
+		
+		try{
+			ResultSet rs = null;
+			java.sql.Statement stmt = conn.createStatement();
+			String lSqlString = "select user_name, Feedback from Users U inner join Feedback F on U.id=f.user_id where F.is_approved=1";
+			rs= stmt.executeQuery(lSqlString);
+			System.out.println(rs.getString("user_name"));
+			System.out.println(rs.getString("feedback"));
+			while(rs.next()){
+				System.out.println(rs.getString("user_name"));
+				System.out.println(rs.getString("feedback"));
+				feedBackMap.put(rs.getString("user_name"), rs.getString("feedback"));
+			}
+		}finally{
+				closeConnection(conn);
+			}
+			
+		return feedBackMap;	
+		
+		
 	}
 
 

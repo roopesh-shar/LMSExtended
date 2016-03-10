@@ -3,7 +3,7 @@ package in.co.thingsdata.lms.util;
 
 import in.co.thingsdata.lms.gui.CourseContentDetails;
 import in.co.thingsdata.lms.gui.FeeReceipt;
-import in.co.thingsdata.lms.gui.FeedBack;
+import in.co.thingsdata.lms.gui.FeedBackScreen;
 import in.co.thingsdata.lms.gui.HomeScreen;
 import in.co.thingsdata.lms.gui.ProfileScreen;
 import in.co.thingsdata.lms.server.Server;
@@ -33,6 +33,7 @@ import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -248,7 +249,7 @@ public class GUIUtil {
 		}
 		
 		else if(goToPage.equals("FeedBack")){
-			FeedBack feedBack = new FeedBack();
+			FeedBackScreen feedBack = new FeedBackScreen();
 			SwingUtilities.invokeLater(new Runnable() {
 
 				@Override
@@ -292,8 +293,12 @@ public class GUIUtil {
 	
 	
 	public static void registernewUser(User user) throws Exception {
-		System.out.println("Ready to Call");
 		GUIDomain.REMOTE_RPC_SERVICE.registerUser(user);
+		
+	}
+
+	public static HashMap<String, String> displayUserFeedback(int userId) throws SQLException {
+		return GUIDomain.REMOTE_RPC_SERVICE.getUserFeedback(userId);
 		
 	}
 

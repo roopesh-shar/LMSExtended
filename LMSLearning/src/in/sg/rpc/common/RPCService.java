@@ -2,6 +2,7 @@ package in.sg.rpc.common;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
@@ -27,4 +28,6 @@ public interface RPCService {
 	public FeeDetails getFeeDetailsforUserid(int userId) throws Exception;
 	@WebMethod
 	public void registerUser(User user) throws SQLException, Exception;
+	@WebMethod
+	public HashMap<String, String> getUserFeedback(int userId) throws SQLException;
 }

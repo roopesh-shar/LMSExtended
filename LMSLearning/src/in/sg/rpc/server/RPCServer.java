@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -162,8 +163,10 @@ public class RPCServer implements RPCService {
 		DBService.getInstance().registerUser(user);
 	}
 
-
-
+	@Override
+	public HashMap<String, String> getUserFeedback(int userId) throws SQLException{
+		return DBService.getInstance().getUserFeedback(userId);
+	}
 
 
 	
