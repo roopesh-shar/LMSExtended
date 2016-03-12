@@ -1,16 +1,13 @@
 package in.sg.rpc.server.service;
 
-import in.co.thingsdata.lms.gui.CourseContentDetails;
-import in.co.thingsdata.lms.gui.FeeReceipt;
-import in.co.thingsdata.lms.gui.ProfileScreen;
 import in.co.thingsdata.lms.util.GUIDomain;
 import in.co.thingsdata.lms.util.GUIUtil;
 import in.co.thingsdata.lms.util.PropertiesReader;
 import in.sg.rpc.common.domain.Course;
 import in.sg.rpc.common.domain.FeeDetails;
+import in.sg.rpc.common.domain.Feedback;
 import in.sg.rpc.common.domain.User;
 
-import java.beans.Statement;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -20,19 +17,15 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicLong;
-
-import javax.swing.SwingUtilities;
-
-import oracle.core.lmx.LmxRepConversion;
+import java.util.Map.Entry;
 
 public class DBService {
 
@@ -409,27 +402,26 @@ public class DBService {
 	}
 
 	public HashMap<String, String> getUserFeedback(int userId) throws SQLException {
-		Connection conn;
-		conn = getConnection();
-		
+		Connection conn = null;
+		ResultSet rs = null;
 		HashMap<String,String> feedBackMap= new HashMap<String, String>();
 		
 		try{
-			ResultSet rs = null;
-			java.sql.Statement stmt = conn.createStatement();
+			conn = getConnection();
+			Statement stmt = conn.createStatement();
 			String lSqlString = "select user_name, Feedback from Users U inner join Feedback F on U.id=f.user_id where F.is_approved=1";
 			rs= stmt.executeQuery(lSqlString);
-			System.out.println(rs.getString("user_name"));
-			System.out.println(rs.getString("feedback"));
 			while(rs.next()){
-				System.out.println(rs.getString("user_name"));
-				System.out.println(rs.getString("feedback"));
-				feedBackMap.put(rs.getString("user_name"), rs.getString("feedback"));
+			feedBackMap.put(rs.getString("user_name"),rs.getString("Feedback"));
+			
 			}
+
 		}finally{
 				closeConnection(conn);
 			}
-			
+		for(Entry<String, String> m:feedBackMap.entrySet()){  
+			   System.out.println(m.getKey()+" "+m.getValue());  
+			  } 
 		return feedBackMap;	
 		
 		

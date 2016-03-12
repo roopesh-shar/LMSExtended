@@ -34,6 +34,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -298,8 +299,13 @@ public class GUIUtil {
 	}
 
 	public static HashMap<String, String> displayUserFeedback(int userId) throws SQLException {
-		return GUIDomain.REMOTE_RPC_SERVICE.getUserFeedback(userId);
+		HashMap<String, String> result = GUIDomain.REMOTE_RPC_SERVICE.getUserFeedback(userId);
+/*		System.out.println(result);
+		System.out.println("hello");*/
+		return result;
 		
+		//return GUIDomain.REMOTE_RPC_SERVICE.getUserFeedback(userId);
+
 	}
 
 

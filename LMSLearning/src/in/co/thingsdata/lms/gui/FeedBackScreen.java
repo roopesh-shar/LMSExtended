@@ -2,6 +2,8 @@ package in.co.thingsdata.lms.gui;
 
 import in.co.thingsdata.lms.util.GUIDomain;
 import in.co.thingsdata.lms.util.GUIUtil;
+import in.sg.rpc.client.RPCClient;
+import in.sg.rpc.common.RPCService;
 import in.sg.rpc.common.domain.FeeDetails;
 
 import java.awt.BorderLayout;
@@ -13,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -183,11 +186,16 @@ public class FeedBackScreen {
 				feedbackSubmitPanel.add(upperPanel, BorderLayout.NORTH);
 				feedbackSubmitPanel.add(lowerPanel, BorderLayout.CENTER);
 				feedbackSubmitPanel.setPreferredSize(new Dimension(600,100));
+				RPCClient client = new RPCClient();
+				RPCService stub = null;
+				stub =client.getRemoteService();
+				GUIDomain.REMOTE_RPC_SERVICE = stub;
 				
 				HashMap<String, String> feedbackMap =GUIUtil.displayUserFeedback(1);
-				for(Entry<String, String> m:feedbackMap.entrySet()){  
+/*				for(Entry<String, String> m:feedbackMap.entrySet()){  
 					   System.out.println(m.getKey()+" "+m.getValue());  
-					  }  
+					  } */ 
+
 				
 				
 				

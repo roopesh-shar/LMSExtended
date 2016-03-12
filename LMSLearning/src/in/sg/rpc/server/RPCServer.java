@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -165,7 +166,15 @@ public class RPCServer implements RPCService {
 
 	@Override
 	public HashMap<String, String> getUserFeedback(int userId) throws SQLException{
-		return DBService.getInstance().getUserFeedback(userId);
+		try{
+		return  DBService.getInstance().getUserFeedback(userId);
+		}catch(Exception e){
+			e.printStackTrace();
+			throw e;
+		}catch(Throwable t){
+			t.printStackTrace();
+			throw t;
+		}
 	}
 
 
