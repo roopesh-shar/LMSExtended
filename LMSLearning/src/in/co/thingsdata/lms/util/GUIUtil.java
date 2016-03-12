@@ -302,12 +302,12 @@ public class GUIUtil {
 
 	public static Feedback[] displayUserFeedback(int userId) throws SQLException {
 		return GUIDomain.REMOTE_RPC_SERVICE.getUserFeedback(userId);
-/*		System.out.println(result);
-		System.out.println("hello");*/
-		
-		
-		//return GUIDomain.REMOTE_RPC_SERVICE.getUserFeedback(userId);
 
+	}
+
+	public static void submitFeedback(Feedback feedbackSubmit) throws SQLException {
+		GUIDomain.REMOTE_RPC_SERVICE.submitFeedback(feedbackSubmit);
+		
 	}
 
 

@@ -52,6 +52,7 @@ public class LoginScreen {
 		JLabel instructionsLabel = new JLabel("Enter user name and password");
 		JLabel userNameLabel = new JLabel("user name ");
 		JLabel passwordLabel = new JLabel("password  ");
+		JLabel exceptionLabel = new JLabel();
 		
 		 JTextField userNameTextField = new JTextField(25);
 		JPasswordField passwordTextField = new JPasswordField(25);
@@ -78,6 +79,7 @@ public class LoginScreen {
 						screen.go();	
 						}
 					else{
+						exceptionLabel.setText("Invalid UserName/password or User is not Active");
 						throw new UserExistsException("Invalid Username or Password");
 					}
 					
@@ -96,7 +98,9 @@ public class LoginScreen {
 		});
 		
 		userDatailPanel.setLayout(null);
-		instructionsLabel.setBounds(10,10,200,25);
+		exceptionLabel.setBounds(10,3,200,25);
+		userDatailPanel.add(exceptionLabel);
+		instructionsLabel.setBounds(10,15,200,25);
 		userDatailPanel.add(instructionsLabel);
 		userNameLabel.setBounds(10,40,80,25);
 		userDatailPanel.add(userNameLabel);

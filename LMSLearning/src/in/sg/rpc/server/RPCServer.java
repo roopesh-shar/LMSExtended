@@ -179,6 +179,12 @@ public class RPCServer implements RPCService {
 		}
 	}
 
+	@Override
+	public void submitFeedback(Feedback feedbackSubmit) throws SQLException {
+		DBService.getInstance().submitFeedback(feedbackSubmit);
+		
+	}
+
 
 	
 	

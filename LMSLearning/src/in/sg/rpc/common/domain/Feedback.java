@@ -7,7 +7,14 @@ public class Feedback {
 	private String feedbackArea;
 	private String feedback;
 	private String userName;
+	private String courseName;
 
+	public String getCourseName() {
+		return courseName;
+	}
+	public void setCourseName(String courseName) {
+		this.courseName = courseName;
+	}
 	public String getUserName() {
 		return userName;
 	}

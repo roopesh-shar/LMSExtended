@@ -32,4 +32,6 @@ public interface RPCService {
 	public void registerUser(User user) throws SQLException, Exception;
 	@WebMethod
 	public Feedback[] getUserFeedback(int userId) throws SQLException;
+	@WebMethod
+	public void submitFeedback(Feedback feedbackSubmit) throws SQLException;
 }

@@ -282,7 +282,7 @@ public class DBService {
 			java.sql.Statement stmt = conn.createStatement();
 			String validUser = null;
 			String lSqlString = "select id,user_name from users where user_name='"
-					+ userName + "' and password = '" + password + "'";
+					+ userName + "' and password = '" + password + "'" + "and is_active=1";
 			ResultSet rs = null;
 			rs = stmt.executeQuery(lSqlString);
 			if (rs.next()) {
@@ -293,6 +293,9 @@ public class DBService {
 					return 0;
 				}
 			}
+			else{
+				return 0;
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -302,52 +305,7 @@ public class DBService {
 		return 0;
 	}
 
-	public void registerUser(User user) throws Exception {
-		Connection conn = null;
-		String insertUserProfile = "insert into LMS.PROFILE values("
-				+ " ((select max(id) from profile) +1), (select id from users where user_name = ?) , "
-				+ " ?, 'testfname','testlname' , 'testfathername' ,"
-				+ " ? , ?, ? , ?, ?, ?, ?)";
-		String insertUserStatement = "insert into LMS.USERS values( ((select max(id) from LMS.Users) +1) , ?, ?,0)";
-		PreparedStatement insertProfile = null;
-		PreparedStatement insertUser = null;
-		try {
-			conn = getConnection();
-			insertUser = conn.prepareStatement(insertUserStatement);
-			insertUser.setString(1, user.getName());
-			insertUser.setString(2, user.getPassword());
-			insertUser.executeUpdate();
-			insertProfile = conn.prepareStatement(insertUserProfile);
-			insertProfile.setString(1, user.getName());
-			insertProfile.setString(2, user.getUserType());
-			insertProfile.setString(3, user.getEmailid());
-			insertProfile.setLong(4, user.getPhoneNum());
-			insertProfile.setString(5, user.getAddress());
-			insertProfile.setString(6, user.getCountry());
-			insertProfile.setString(7, user.getState());
-			insertProfile.setString(8, user.getCity());
-			insertProfile.setLong(9, user.getPinCode());
-			insertProfile.execute();
-			commit(conn);
-		} catch (SQLException e) {
-			if (conn != null) {
-				try {
-					System.err.print("Transaction is being rolled back");
-					conn.rollback();
-				} catch (SQLException excep) {
-					excep.printStackTrace();
-				}
-			}
-		} finally {
-			if (insertUser != null) {
-				insertUser.close();
-			}
-			if (insertProfile != null) {
-				insertProfile.close();
-			}
-			conn.close();
-		}
-	}
+	
 
 	public Connection getConnection() throws SQLException {
 		System.out.println("DBURL" + GUIDomain.DATABASE_URL);
@@ -385,6 +343,7 @@ public class DBService {
 	}
 
 	public synchronized long getSequenceId() {
+		
 		sequenceId += 1;
 		return sequenceId;
 	}
@@ -394,7 +353,7 @@ public class DBService {
 		ResultSet rs = null;
 		Feedback[] feedbacks = null;
 		String rowCountSql = "select count(*) from feedback where  is_approved=1 or user_id = ";
-		String lSqlString = "select User_name, Feedback from Users U inner join Feedback F on U.id=f.user_id where F.is_approved=1";
+		String lSqlString = "select User_name, Feedback from Users U inner join Feedback F on U.id=f.user_id where (F.is_approved=1 or F.user_id ="+userId +")";
 		Statement stmt = null;
 		int count = 0;
 		Feedback feedback = null;
@@ -418,6 +377,97 @@ public class DBService {
 			closeConnection(conn);
 		}
 		return feedbacks;
+	}
+
+	
+	public void registerUser(User user) throws Exception {
+		Connection conn = null;
+		String insertUserProfile = "insert into LMS.PROFILE values("
+				+ " ((select max(id) from profile) +1), (select id from users where user_name = ?) , "
+				+ " ?, 'testfname','testlname' , 'testfathername' ,"
+				+ " ? , ?, ? , ?, ?, ?, ?,(select id from LMS.course where Course_name = ?) )";
+		String insertUserStatement = "insert into LMS.USERS values( ((select max(id) from LMS.Users) +1) , ?, ?,0)";
+		PreparedStatement insertProfile = null;
+		PreparedStatement insertUser = null;
+		try {
+			conn = getConnection();
+			insertUser = conn.prepareStatement(insertUserStatement);
+			insertUser.setString(1, user.getName());
+			insertUser.setString(2, user.getPassword());
+			insertUser.executeUpdate();
+			insertProfile = conn.prepareStatement(insertUserProfile);
+			insertProfile.setString(1, user.getName());
+			insertProfile.setString(2, user.getUserType());
+			insertProfile.setString(3, user.getEmailid());
+			insertProfile.setLong(4, user.getPhoneNum());
+			insertProfile.setString(5, user.getAddress());
+			insertProfile.setString(6, user.getCountry());
+			insertProfile.setString(7, user.getState());
+			insertProfile.setString(8, user.getCity());
+			insertProfile.setLong(9, user.getPinCode());
+			insertProfile.setString(10, user.getCourse());
+			insertProfile.execute();
+			commit(conn);
+		} catch (SQLException e) {
+			if (conn != null) {
+				try {
+					System.err.print("Transaction is being rolled back");
+					conn.rollback();
+				} catch (SQLException excep) {
+					excep.printStackTrace();
+				}
+			}
+		} finally {
+			if (insertUser != null) {
+				insertUser.close();
+			}
+			if (insertProfile != null) {
+				insertProfile.close();
+			}
+			conn.close();
+		}
+	}
+	
+	public void submitFeedback(Feedback feedbackSubmit) throws SQLException {
+		Connection conn = null;
+		String insertFeedbackStatement = "insert into LMS.Feedback Values ((select max(id) from LMS.Feedback) +1,"
+				+ "(select course_id from LMS.Profile where user_id = ?),"
+				+ "?,?,0,?)";
+		
+		
+				
+		PreparedStatement insertFeedback = null;
+		try{
+			conn = getConnection();
+			insertFeedback = conn.prepareStatement(insertFeedbackStatement);
+			insertFeedback.setLong(1, feedbackSubmit.getUserId());
+			insertFeedback.setString(2, feedbackSubmit.getFeedbackArea());
+			insertFeedback.setString(3, feedbackSubmit.getFeedback());
+			insertFeedback.setLong(4, feedbackSubmit.getUserId());
+			//System.out.println(feedbackSubmit.getCourseName()+" "+feedbackSubmit.getFeedbackArea() +" "+feedbackSubmit.getFeedback() +" "+ feedbackSubmit.getUserId());
+			insertFeedback.execute();
+			commit(conn);
+		}catch (SQLException e) {
+			if (conn != null) {
+				try {
+					System.err.print("Transaction is being rolled back");
+					conn.rollback();
+				} catch (SQLException excep) {
+					excep.printStackTrace();
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (insertFeedback != null) {
+				insertFeedback.close();
+			}
+
+			conn.close();
+		}
+		
+		
 	}
 
 }
