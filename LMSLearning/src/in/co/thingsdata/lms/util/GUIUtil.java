@@ -9,6 +9,7 @@ import in.co.thingsdata.lms.gui.ProfileScreen;
 import in.co.thingsdata.lms.server.Server;
 import in.sg.rpc.common.domain.Course;
 import in.sg.rpc.common.domain.FeeDetails;
+import in.sg.rpc.common.domain.Feedback;
 import in.sg.rpc.common.domain.User;
 import in.sg.rpc.common.exception.UserLoginException;
 import in.sg.rpc.server.service.DBService;
@@ -33,6 +34,7 @@ import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -298,11 +300,11 @@ public class GUIUtil {
 		
 	}
 
-	public static HashMap<String, String> displayUserFeedback(int userId) throws SQLException {
-		HashMap<String, String> result = GUIDomain.REMOTE_RPC_SERVICE.getUserFeedback(userId);
+	public static Feedback[] displayUserFeedback(int userId) throws SQLException {
+		return GUIDomain.REMOTE_RPC_SERVICE.getUserFeedback(userId);
 /*		System.out.println(result);
 		System.out.println("hello");*/
-		return result;
+		
 		
 		//return GUIDomain.REMOTE_RPC_SERVICE.getUserFeedback(userId);
 

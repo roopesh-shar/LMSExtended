@@ -38,6 +38,12 @@ public class Feedback {
 	public void setFeedback(String feedback) {
 		this.feedback = feedback;
 	}
+	@Override
+	public String toString() {
+		return "Feedback [id=" + id + ", userId=" + userId + ", feedbackArea="
+				+ feedbackArea + ", feedback=" + feedback + ", userName="
+				+ userName + "]";
+	}
 	
 	
 }

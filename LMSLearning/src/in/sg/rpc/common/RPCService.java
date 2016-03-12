@@ -2,6 +2,7 @@ package in.sg.rpc.common;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.jws.WebMethod;
@@ -10,6 +11,7 @@ import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Style;
 
 import in.sg.rpc.common.domain.FeeDetails;
+import in.sg.rpc.common.domain.Feedback;
 import in.sg.rpc.common.domain.User;
 import in.sg.rpc.common.exception.UserExistsException;
 import in.sg.rpc.common.exception.UserLoginException;
@@ -29,5 +31,5 @@ public interface RPCService {
 	@WebMethod
 	public void registerUser(User user) throws SQLException, Exception;
 	@WebMethod
-	public HashMap<String, String> getUserFeedback(int userId) throws SQLException;
+	public Feedback[] getUserFeedback(int userId) throws SQLException;
 }

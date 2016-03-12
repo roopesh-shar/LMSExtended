@@ -3,6 +3,7 @@ package in.sg.rpc.server;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -19,6 +20,7 @@ import in.sg.rpc.common.UserLogin;
 import in.sg.rpc.common.UserRegistration;
 import in.sg.rpc.common.domain.Course;
 import in.sg.rpc.common.domain.FeeDetails;
+import in.sg.rpc.common.domain.Feedback;
 import in.sg.rpc.common.domain.User;
 import in.sg.rpc.common.exception.UserExistsException;
 import in.sg.rpc.common.exception.UserLoginException;
@@ -165,7 +167,7 @@ public class RPCServer implements RPCService {
 	}
 
 	@Override
-	public HashMap<String, String> getUserFeedback(int userId) throws SQLException{
+	public Feedback[] getUserFeedback(int userId) throws SQLException{
 		try{
 		return  DBService.getInstance().getUserFeedback(userId);
 		}catch(Exception e){
