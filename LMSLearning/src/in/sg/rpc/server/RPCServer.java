@@ -2,7 +2,11 @@ package in.sg.rpc.server;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -16,6 +20,8 @@ import in.sg.rpc.common.UserLogin;
 import in.sg.rpc.common.UserRegistration;
 import in.sg.rpc.common.domain.Course;
 import in.sg.rpc.common.domain.FeeDetails;
+import in.sg.rpc.common.domain.Feedback;
+import in.sg.rpc.common.domain.User;
 import in.sg.rpc.common.exception.UserExistsException;
 import in.sg.rpc.common.exception.UserLoginException;
 import in.sg.rpc.server.service.DBService;
@@ -30,7 +36,7 @@ public class RPCServer implements RPCService {
 	private Date previousRequestTime;
 	private Endpoint endpoint;
 
-	public static void main(String[] args) throws InterruptedException, FileNotFoundException, IOException {
+	public static void main(String[] args) throws InterruptedException, FileNotFoundException, IOException, SQLException {
 
 		RPCServer server = new RPCServer();
 
@@ -124,21 +130,22 @@ public class RPCServer implements RPCService {
 	}
 
 	@Override
-	public String login(String userName, String password) throws UserLoginException {
+	public int login(String userName, String password) throws UserLoginException {
 
 		requestTime = new Date();
 
 		idleTimeInMinute = TimeUnit.MILLISECONDS.toMinutes(requestTime.getTime() - previousRequestTime.getTime());
 
 		if (idleTimeInMinute <= maxIdleTimeLimit) {
-			UserLogin login = new UserLogin();
+			UserLogin usrlogin = new UserLogin();
 			previousRequestTime = requestTime;
-			return login.login(userName, password);
+			return usrlogin.login(userName, password);
 		} else {
 			stop();
+			return 0;
 		}
 
-		return null;
+		
 
 	}
 
@@ -154,10 +161,23 @@ public class RPCServer implements RPCService {
 		return DBService.getInstance().getFeeDetailsforUserid(userId);
 	}
 
+	@Override
+	public void registerUser(User user) throws Exception{
+		DBService.getInstance().registerUser(user);
+	}
 
-
-
-
+	@Override
+	public Feedback[] getUserFeedback(int userId) throws SQLException{
+		try{
+		return  DBService.getInstance().getUserFeedback(userId);
+		}catch(Exception e){
+			e.printStackTrace();
+			throw e;
+		}catch(Throwable t){
+			t.printStackTrace();
+			throw t;
+		}
+	}
 
 
 	

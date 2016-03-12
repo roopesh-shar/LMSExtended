@@ -7,6 +7,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.sql.SQLException;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -25,6 +27,9 @@ import javax.swing.SwingConstants;
 import in.co.thingsdata.lms.util.GUIDomain;
 import in.co.thingsdata.lms.util.GUIUtil;
 import in.co.thingsdata.lms.util.SpringUtilities;
+import in.sg.rpc.client.RPCClient;
+import in.sg.rpc.common.RPCService;
+import in.sg.rpc.common.domain.User;
 
 public class View  extends JFrame {
 	
@@ -48,7 +53,6 @@ public class View  extends JFrame {
 		GUIUtil.initProperties();
 		initializeGUI();
 		GUIUtil.setupNetworking();
-		GUIUtil.setupDB();
 		GUIUtil.setupFileIO();
 		GUIUtil.refreshGUI(view);
 		
@@ -133,20 +137,37 @@ public class View  extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
-				String name = textFieldName.getText();
+				RPCClient client = new RPCClient();
+				RPCService stub = null;
+				try {
+					stub =client.getRemoteService();
+				
+				GUIDomain.REMOTE_RPC_SERVICE = stub; 
+				String userType = "STUDENT";
+				User user = new User();
+				user.setName(textFieldName.getText());
 				char[] pass = fieldPassword.getPassword();
 				String password = new String (pass);
-				String email = textFieldEmail.getText();
-				String phone = textFieldPhoneNumber.getText();
-				String address = textFieldAddress.getText();
-				String city = textFieldCity.getText();
-				String country = textFieldCountry.getText();
-				String state = textFieldState.getText();
-				
-				System.out.println("Name=" + name + " Email=" + email + " Password=" + password+ "Phone Number=" + phone);
-				
-				GUIUtil.writeToFile (name, password, email, phone, address, city, country, state, courseSelected);	
+				user.setPassword(password);
+				user.setEmailid(textFieldEmail.getText());
+				user.setPhoneNum(Long.valueOf(textFieldPhoneNumber.getText()));
+				user.setAddress(textFieldAddress.getText());
+				user.setCity(textFieldCity.getText());
+				user.setCountry(textFieldCountry.getText());
+				user.setState(textFieldState.getText());
+				user.setCourse(courseList.getSelectedItem().toString());
+				user.setUserType(userType);
+				GUIUtil.registernewUser(user);
+				} catch (MalformedURLException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+				 catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+						
+					
 				view.getContentPane().add(panelHeader, BorderLayout.PAGE_END);
 				
 			}

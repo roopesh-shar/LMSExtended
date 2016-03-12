@@ -3,13 +3,15 @@ package in.co.thingsdata.lms.util;
 
 import in.co.thingsdata.lms.gui.CourseContentDetails;
 import in.co.thingsdata.lms.gui.FeeReceipt;
-import in.co.thingsdata.lms.gui.FeedBack;
+import in.co.thingsdata.lms.gui.FeedBackScreen;
 import in.co.thingsdata.lms.gui.HomeScreen;
 import in.co.thingsdata.lms.gui.ProfileScreen;
 import in.co.thingsdata.lms.server.Server;
 import in.sg.rpc.common.domain.Course;
 import in.sg.rpc.common.domain.FeeDetails;
+import in.sg.rpc.common.domain.Feedback;
 import in.sg.rpc.common.domain.User;
+import in.sg.rpc.common.exception.UserLoginException;
 import in.sg.rpc.server.service.DBService;
 
 import java.awt.Component;
@@ -32,6 +34,9 @@ import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -70,47 +75,6 @@ public class GUIUtil {
 
 	}
 
-	public static void setupDB() {
-
-		GUIDomain.DB_DRIVER = GUIDomain.propertiesReader.getProperty("db.driver");
-		GUIDomain.DB_URL = GUIDomain.propertiesReader.getProperty("db.url");
-		GUIDomain.DB_USER = GUIDomain.propertiesReader.getProperty("db.user");
-		GUIDomain.DB_PASSWORD = GUIDomain.propertiesReader.getProperty("db.password");
-
-		try {
-
-			Class.forName(GUIDomain.DB_DRIVER);
-			Connection con = DriverManager.getConnection(GUIDomain.DB_URL, GUIDomain.DB_USER, GUIDomain.DB_PASSWORD);
-			//GUIDomain.DB_CONNECTION = con;
-
-			System.out.println("Database major version=" + con.getMetaData().getDatabaseMajorVersion());
-			System.out.println("Database minor version=" + con.getMetaData().getDatabaseMinorVersion());
-			System.out.println("Database product name=" + con.getMetaData().getDatabaseProductName());
-			System.out.println("Database product version=" + con.getMetaData().getDatabaseProductVersion());
-
-		} catch (SQLException e) {
-
-			e.printStackTrace();
-
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		/*
-		 * 
-		 * { Class.forName("oracle.jdbc.driver.OracleDriver"); Connection con =
-		 * DriverManager.getConnection("jdbc:oracle:thin:@mcndesktop07:1521:xe",
-		 * "", ""); PreparedStatement ps = con.prepareStatement(
-		 * "insert into reg values(?,?,?,?,?,?)"); ps.setString(1, s1);
-		 * ps.setString(2, s2); ps.setString(3, s8); ps.setString(4, s5);
-		 * ps.setString(5, s6); ps.setString(6, s7); ResultSet rs =
-		 * ps.executeQuery(); x++; if (x > 0) {
-		 * JOptionPane.showMessageDialog(buttonSubmit, "Data Saved Successfully"
-		 * ); } } catch (Exception ex) { System.out.println(ex); } }
-		 * 
-		 */
-
-	}
 
 	public static void setupNetworking() {
 
@@ -221,6 +185,12 @@ public class GUIUtil {
 	public static FeeDetails getFeeDetailsforUserid(int userId) throws Exception{
 		return GUIDomain.REMOTE_RPC_SERVICE.getFeeDetailsforUserid(userId);
 	}
+
+	public static int getLoggedInUserId(String userName, String password) throws UserLoginException{
+		return GUIDomain.REMOTE_RPC_SERVICE.login(userName, password);
+	}
+	
+	
 	
 	public static void goToRequestedPage(String goToPage){
 		if(goToPage.equals("Course Content"))
@@ -282,7 +252,7 @@ public class GUIUtil {
 		}
 		
 		else if(goToPage.equals("FeedBack")){
-			FeedBack feedBack = new FeedBack();
+			FeedBackScreen feedBack = new FeedBackScreen();
 			SwingUtilities.invokeLater(new Runnable() {
 
 				@Override
@@ -322,5 +292,24 @@ public class GUIUtil {
 			
 			
 	}
+
+	
+	
+	public static void registernewUser(User user) throws Exception {
+		GUIDomain.REMOTE_RPC_SERVICE.registerUser(user);
+		
+	}
+
+	public static Feedback[] displayUserFeedback(int userId) throws SQLException {
+		return GUIDomain.REMOTE_RPC_SERVICE.getUserFeedback(userId);
+/*		System.out.println(result);
+		System.out.println("hello");*/
+		
+		
+		//return GUIDomain.REMOTE_RPC_SERVICE.getUserFeedback(userId);
+
+	}
+
+
 
 }

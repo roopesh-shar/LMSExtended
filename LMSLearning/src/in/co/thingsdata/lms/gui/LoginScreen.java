@@ -1,6 +1,7 @@
 package in.co.thingsdata.lms.gui;
 
 import in.co.thingsdata.lms.util.GUIDomain;
+import in.co.thingsdata.lms.util.GUIUtil;
 import in.sg.rpc.client.RPCClient;
 import in.sg.rpc.common.RPCService;
 import in.sg.rpc.common.exception.UserExistsException;
@@ -24,6 +25,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+
+import org.omg.CORBA.UserException;
 
 public class LoginScreen {
 
@@ -61,33 +64,33 @@ public class LoginScreen {
 				RPCClient client = new RPCClient();
 				RPCService stub = null;
 				try {
-					
 					stub =client.getRemoteService();
-					
 					GUIDomain.REMOTE_RPC_SERVICE = stub;
-					
 					//GUIDomain.REMOTE_RPC_SERVICE.register("Rsharma", "Qwerty");
-					GUIDomain.REMOTE_RPC_SERVICE.login(userNameTextField.getText(), String.valueOf(passwordTextField.getPassword()));
-					} catch (MalformedURLException e) {
+					int userId =GUIUtil.getLoggedInUserId(userNameTextField.getText(), String.valueOf(passwordTextField.getPassword()));
+					if (userId != 0){
+						frame.setVisible(false);
+						GUIDomain.CURRENT_USER_ID=userId;
+						GUIDomain.CURRENT_USER_NAME=userNameTextField.getText();
+						System.out.println(GUIDomain.CURRENT_USER_ID+","+GUIDomain.CURRENT_USER_NAME);
+						HomeScreen screen = new HomeScreen();
+						screen.setUser (userNameTextField.getText());
+						screen.go();	
+						}
+					else{
+						throw new UserExistsException("Invalid Username or Password");
+					}
+					
+					} catch (UserLoginException | MalformedURLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} catch (UserLoginException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if (isValidUser (userNameTextField.getText(), passwordTextField.getPassword(), instructionsLabel, userDatailPanel)) {
-					//TODO: Go to home screen
-					System.out.println("Validation successful");
-					GUIDomain.CURRENT_USER_NAME=userNameTextField.getText();
-					System.out.println(GUIDomain.CURRENT_USER_NAME+","+GUIDomain.CURRENT_USER_ID);
-					frame.setVisible(false);
-					HomeScreen screen = new HomeScreen();
-					screen.setUser (userNameTextField.getText());
-					screen.go();
-				}
+					} catch (UserExistsException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+
+				
 			}
 			
 		});
@@ -110,54 +113,7 @@ public class LoginScreen {
 		
 	}
 	
-	private boolean isValidUser(String user, char[] pass, JLabel instructionsLabel, JPanel userDatailPanel) {
-		
-		try {
-			String loginUser = user;
-			String loginPassword = String.valueOf(pass);
-			System.out.println(loginUser+","+loginPassword);
-			if (null == loginUser || null == loginPassword) {
-				throw new Exception ("user name or password is null");
-			}
-			if (loginUser.isEmpty() || loginPassword.isEmpty()) {
-				throw new Exception ("user name or password is empty");
-			}
-			
-			//TODO:[Brajveer] The value for username and password shall come from the database/file
-			String userName = "";
-			String password = "";
-			String line;
-			
-			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("resources/out.txt"))));
-			while (null != (line = reader.readLine())  ) {
-				if(String.valueOf(line.split(",")[0]).equalsIgnoreCase(user)){
-				System.out.println(String.valueOf(line.split(",")[0]));
-				userName = line.split(",")[0];
-				password = line.split(",")[1];
-				//System.out.println(userName+","+password);
-			
-				}
-			}	
-			
-			
-			if (!loginUser.equalsIgnoreCase(userName)) {
-				throw new Exception ("Invalid user name.");
-			}
-			if (!loginPassword.equals(password)) {
-				throw new Exception ("Invalid password.");
-			}
-				
-			return true;
-			
-		}catch (Exception e) {
-			instructionsLabel.setForeground(Color.RED);
-			instructionsLabel.setText (e.getMessage());
-			userDatailPanel.repaint();
-		}
-		return false;
-		
-	}
-	
+
 	public static void main(String[] args) {
 		
 		SwingUtilities.invokeLater(new Runnable() {
