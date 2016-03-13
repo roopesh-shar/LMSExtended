@@ -3,6 +3,7 @@ package in.sg.rpc.server.service;
 import in.co.thingsdata.lms.util.GUIDomain;
 import in.co.thingsdata.lms.util.GUIUtil;
 import in.co.thingsdata.lms.util.PropertiesReader;
+import in.sg.rpc.common.Business;
 import in.sg.rpc.common.domain.Course;
 import in.sg.rpc.common.domain.FeeDetails;
 import in.sg.rpc.common.domain.Feedback;
@@ -39,16 +40,7 @@ public class DBService {
 	}
 
 	public static void setUpDB() {
-		GUIUtil.initProperties();
-		GUIDomain.DATABASE_USER = PropertiesReader.getInstance().getProperty(
-				"db.user");
-		GUIDomain.DATABASE_PASSWORD = PropertiesReader.getInstance()
-				.getProperty("db.password");
-		GUIDomain.DATABASE_DRIVER = PropertiesReader.getInstance().getProperty(
-				"db.driver");
-		GUIDomain.DATABASE_URL = PropertiesReader.getInstance().getProperty(
-				"db.url");
-
+		Business.getInstance().initProperties();
 	}
 
 	public User getUserDetails(int userId) /* throws CUSTOMException */{
@@ -204,9 +196,7 @@ public class DBService {
 					e.printStackTrace();
 				}
 			}
-
 		}
-
 		return courseContent;
 	}
 
@@ -251,9 +241,9 @@ public class DBService {
 	}
 
 	public void init() throws SQLException {
-		setUpDB();
+		Business.getInstance().setUpDB();
 		try {
-			Class.forName(GUIDomain.DATABASE_DRIVER);
+			Class.forName(Business.getInstance().getDatabaseDriver());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} finally {
@@ -350,12 +340,7 @@ public class DBService {
 	}
 
 	public Connection getConnection() throws SQLException {
-		System.out.println("DBURL" + GUIDomain.DATABASE_URL);
-		System.out.println("DBUSER" + GUIDomain.DATABASE_USER);
-		System.out.println("DBPASSWORD" + GUIDomain.DATABASE_PASSWORD);
-		System.out.println("DBDRIVER" + GUIDomain.DATABASE_DRIVER);
-		Connection con = DriverManager.getConnection(GUIDomain.DATABASE_URL,
-				GUIDomain.DATABASE_USER, GUIDomain.DATABASE_PASSWORD);
+		Connection con = Business.getInstance().getDBConnection();
 		con.setAutoCommit(false);
 		return con;
 	}
