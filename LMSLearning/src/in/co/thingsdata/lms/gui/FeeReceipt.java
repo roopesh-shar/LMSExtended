@@ -1,9 +1,5 @@
 package in.co.thingsdata.lms.gui;
 
-import in.co.thingsdata.lms.util.GUIDomain;
-import in.co.thingsdata.lms.util.GUIUtil;
-import in.sg.rpc.common.domain.FeeDetails;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -12,7 +8,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -27,7 +22,11 @@ import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
-public class FeeReceipt {
+import in.co.thingsdata.lms.util.GUIDomain;
+import in.co.thingsdata.lms.util.GUIUtil;
+import in.sg.rpc.common.domain.FeeDetails;
+
+public class FeeReceipt extends Screen {
 
 	private JFrame frame;
 	private JPanel linkPanel;
@@ -53,7 +52,7 @@ public class FeeReceipt {
 			public void run() {
 
 				try {
-					feeReciept.go();
+					feeReciept.open();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -65,8 +64,8 @@ public class FeeReceipt {
 			}
 		});
 	}
-
-	public void go() throws Exception {
+	@Override
+	public void open() throws Exception {
 
 		frame = new JFrame("Fee Receipt");
 		linkPanel = new JPanel();
@@ -95,7 +94,11 @@ public class FeeReceipt {
 			    SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-					screen.go();
+					try {
+						screen.open();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					}
 				});
 			}

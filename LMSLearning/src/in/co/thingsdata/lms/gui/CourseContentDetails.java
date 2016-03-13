@@ -1,11 +1,6 @@
 package in.co.thingsdata.lms.gui;
 
-import in.co.thingsdata.lms.util.GUIDomain;
-import in.co.thingsdata.lms.util.GUIUtil;
-import in.sg.rpc.common.domain.Course;
-
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,16 +14,13 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.border.Border;
-import javax.swing.border.MatteBorder;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
 
-public class CourseContentDetails {
+import in.co.thingsdata.lms.util.GUIUtil;
+
+public class CourseContentDetails extends Screen {
 	
 	private JFrame frame;
 	private JPanel linkPanel;
@@ -93,7 +85,12 @@ public class CourseContentDetails {
 			    SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-					screen.go();
+					try {
+						screen.open();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					}
 				});
 			}
@@ -151,6 +148,58 @@ public class CourseContentDetails {
 
 		this.user = user;
 
+	}
+
+	@Override
+	public void open() throws Exception {
+		/*SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					go();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});		*/
+		frame = new JFrame("Course Contents");
+		linkPanel = new JPanel();
+
+		addComponents(frame.getContentPane(), linkPanel);
+
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+		frame.pack();
+		frame.setSize(800, 600);
+
+		frame.setVisible(true);
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				System.exit(0);
+			}
+		});
+
+		goHomePageButton.addActionListener (new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				frame.setVisible(false);
+				HomeScreen screen = new HomeScreen(); // Comments to revert
+			    SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+					try {
+						screen.open();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					}
+				});
+			}
+			});
 	}
 
 }

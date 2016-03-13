@@ -1,44 +1,32 @@
 package in.co.thingsdata.lms.gui;
 
-import in.co.thingsdata.lms.util.GUIUtil;
-import in.sg.rpc.server.service.DBService;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.LayoutManager;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.nio.charset.MalformedInputException;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.RowFilter;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.MatteBorder;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
+import in.co.thingsdata.lms.util.GUIUtil;
 
+public class HomeScreen extends Screen {
 
-public class HomeScreen {
-
-	
+	private JFrame frame;
+	private JPanel linkPanel;
 	private JPanel headerPanel;
 	private JPanel cmpinfoPanel;
 	private JPanel centerpanel;
@@ -47,147 +35,124 @@ public class HomeScreen {
 	private JLabel welcomeLabel;
 	private JLabel noticelabel;
 	private JPanel noticepanel;
-	private DefaultTableModel model;
+	private AbstractTableModel model;
 	private JPanel discusspanel;
 	private JLabel discusslabel;
-	private JScrollPane scrollpane;
 	private JTable table;
 	private Color color;
+	private String user;
 
-	
-	
-	
-	
-	public static void main (String[] args) {
-	
+	public static void main(String[] args) {
 		HomeScreen screen = new HomeScreen(); // Comments to revert
-	    SwingUtilities.invokeLater(new Runnable() {
-			
+		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				
-				screen.go();
-				
+				try {
+					screen.open();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		});
-		
 	}
-
-	public void go() {
-		
-		JFrame frame = new JFrame ("LMS HOME");
-		JPanel linkPanel = new JPanel();
-		
-		addComponents (frame.getContentPane(), linkPanel);
-		
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		
-		frame.setSize(800, 600);
-		//frame.pack();
-		
-		frame.setVisible(true);
+	@Override
+	public void open() throws Exception {
+		frame = GUIUtil.createFrame("LMS HOME");
+		linkPanel = GUIUtil.createPanel();
+		addComponents(frame.getContentPane());
+		GUIUtil.setDefaultCloseOperation(frame, JFrame.DISPOSE_ON_CLOSE);
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
 				System.exit(0);
 			}
 		});
-		
-		table.addMouseListener(new MouseAdapter() {	
-			public void mouseClicked(MouseEvent e){
-				int row=table.rowAtPoint(e.getPoint());
-				int col= table.columnAtPoint(e.getPoint());
-				String goToPage =table.getValueAt(row,col).toString();
-				GUIUtil.goToRequestedPage(goToPage);
+		table.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent event) {
+				int row = table.rowAtPoint(event.getPoint());
+				int col = table.columnAtPoint(event.getPoint());
+				String goToPage = table.getValueAt(row, col).toString();
+				try {
+					GUIUtil.goToRequestedPage(goToPage);
+				} catch (Exception e) {
+					e.printStackTrace();
+					//throw e;
+				}
 				frame.setVisible(false);
-
 			}
-			
-			
-		});		
+		});
+		GUIUtil.setVisible(frame, true);
 	}
 
-	private void addComponents(Container contentPane, JPanel linkPanel) {
-		
-	/* Adding Header panel */
-		headerPanel = new JPanel();
-		headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
-		cmpinfoPanel = new JPanel();
-		cmpnamelebel = new JLabel(GUIUtil.getHeaderTitle());
-		cmpinfoPanel.add(cmpnamelebel);
-		cmpimage = new JLabel(GUIUtil.getIcon());
-		cmpinfoPanel.add(cmpimage);
-		
-		
-		headerPanel.add(cmpinfoPanel);
-		
-		welcomeLabel = new JLabel("Welcome " + getUser());
-		headerPanel.add(welcomeLabel);
-		contentPane.add(headerPanel, BorderLayout.PAGE_START);
-	
-	/* Adding Header Panel*/	
-		model = new DefaultTableModel(); 
-        table = new JTable(model); 
-        
-        model.addColumn("Col1"); 
-        
-        TableColumnModel columnModel = table.getColumnModel();
-        columnModel.getColumn(0).setPreferredWidth(130);
-        color = UIManager.getColor("Table.gridColor");
-        MatteBorder border = new MatteBorder(1, 1, 0, 0, color);
-        table.setBorder(border);
-        
-        //String[] linksArray = new String[]{"Course Content", "Training Schedule","Profile","Evaluation","Certificate","Fee Receipt","Service Request","Softwares","Downloads","Uploads","Assignments","E-Quiz","FeedBack"};
-        String[] linksArray = GUIUtil.getContentList();
-        for(String link : linksArray) {
-        	model.addRow(new Object[]{link});
-        }
-        
-        table.setRowHeight(40);
-        table.setBackground(UIManager.getColor(linkPanel));
-        table.setFont(new JLabel().getFont());
-        linkPanel.add(table);
-        linkPanel.setBorder(BorderFactory.createEtchedBorder());
-		contentPane.add(linkPanel, BorderLayout.WEST);
-	
-	/* Adding Center Panel for Bulletin Board and */	
-		centerpanel = new JPanel();
-		centerpanel.setBorder(BorderFactory.createEtchedBorder());
-		contentPane.add(centerpanel,BorderLayout.CENTER);
-		centerpanel.setLayout(new BoxLayout(centerpanel, 1));
-	/*Adding Bulletin Panel in Center panel*/	
-		noticepanel = new JPanel();
-		noticelabel = new JLabel("Bulletin Board");
-		noticepanel.add(noticelabel);
-		noticepanel.setBorder(BorderFactory.createEtchedBorder());
-		
-		centerpanel.add(noticepanel);
-		
-		
-		
-		/*Adding Discussion Panel in Center panel*/	
-		discusspanel = new JPanel();
-		discusslabel = new JLabel(" Discussion Forum");
+	private void addComponents(Container contentPane) {
+		createHeader(contentPane);
+		createLinks(contentPane);
+		createBulletinBoard(contentPane);
+		createDiscussionPanel(contentPane);
+	}
+
+	private void createDiscussionPanel(Container contentPane) {
+		discusspanel = GUIUtil.createPanel();
+		discusslabel = GUIUtil.createLabel("Discussion Forum");
 		discusspanel.setBorder(BorderFactory.createEtchedBorder());
-		discusspanel.add(discusslabel);
-		centerpanel.add(discusspanel);
-		
-		
-
+		GUIUtil.addComponents(discusspanel, discusslabel);
+		GUIUtil.addComponents(centerpanel, discusspanel);		
 	}
-	
-	
 
-	private String user;
+	private void createBulletinBoard(Container contentPane) {
+		centerpanel = GUIUtil.createPanel();
+		centerpanel.setBorder(BorderFactory.createEtchedBorder());
+		GUIUtil.setLayout(centerpanel, new BoxLayout(centerpanel, 1));
+		GUIUtil.addComponents(contentPane, centerpanel, BorderLayout.CENTER);
+		noticepanel = GUIUtil.createPanel();
+		noticelabel = GUIUtil.createLabel("Bulletin Board");
+		GUIUtil.addComponents(noticepanel, noticelabel);
+		noticepanel.setBorder(BorderFactory.createEtchedBorder());
+		GUIUtil.addComponents(centerpanel, noticepanel);
+	}
+
+	private void createLinks(Container contentPane) {
+		TableColumnModel columnModel;
+		MatteBorder border;
+		String[] linksArray;
+		model = GUIUtil.getDefaultTableModel();
+		table = GUIUtil.createTable(model);
+		((DefaultTableModel) model).addColumn("Col1");
+		columnModel = table.getColumnModel();
+		columnModel.getColumn(0).setPreferredWidth(130);
+		color = UIManager.getColor("Table.gridColor");
+		border = new MatteBorder(1, 1, 0, 0, color);
+		table.setBorder(border);
+		linksArray = GUIUtil.getPageLinks();
+		GUIUtil.populateTableRows(linksArray, model);
+		table.setRowHeight(40);
+		table.setBackground(UIManager.getColor(linkPanel));
+		table.setFont(GUIUtil.getTableFont());
+		GUIUtil.addComponents(linkPanel, table);
+		linkPanel.setBorder(BorderFactory.createEtchedBorder());
+		GUIUtil.addComponents(contentPane, linkPanel, BorderLayout.WEST);
+	}
+
+	private void createHeader(Container contentPane) {
+		headerPanel = GUIUtil.createPanel();
+		GUIUtil.setLayout(headerPanel, new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
+		headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
+		cmpinfoPanel = GUIUtil.createPanel();
+		cmpnamelebel = GUIUtil.createLabel(GUIUtil.getHeaderTitle());
+		cmpimage = GUIUtil.createLabel(GUIUtil.getIcon());
+		GUIUtil.addComponents(cmpinfoPanel, cmpnamelebel, cmpimage);
+		GUIUtil.addComponents(headerPanel, cmpinfoPanel);
+		welcomeLabel = GUIUtil.createLabel("Welcome " + getUser());
+		GUIUtil.addComponents(headerPanel, welcomeLabel);
+		GUIUtil.addComponents(contentPane, headerPanel, BorderLayout.PAGE_START);
+	}
 
 	private String getUser() {
 		return this.user;
 	}
 
 	public void setUser(String user) {
-	
 		this.user = user;
-		
 	}
-	
+
 }

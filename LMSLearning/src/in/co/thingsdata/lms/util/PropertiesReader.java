@@ -15,19 +15,12 @@ public class PropertiesReader {
 	private final static PropertiesReader _INSTANCE = new PropertiesReader();
 	
 	private static void loadProperties(Map<String, String> props, String confPath) {
-		
 		Properties prop;
-		
 		InputStream input;
-		
 		try {
-			
 			prop = new Properties();
-			
 			input = new FileInputStream(confPath + "config.properties");
-			//input = PropertiesReader.class.getClassLoader().getResourceAsStream(Business.getInstance().getConfigPath()+"chart.properties");
 			prop.load(input);
-			
 			populateMap(prop, props);
 		
 		} catch (FileNotFoundException e) {
@@ -36,7 +29,6 @@ public class PropertiesReader {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 
 	private static void populateMap(Properties prop, Map<String, String> props2) {

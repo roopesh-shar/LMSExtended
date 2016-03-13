@@ -1,16 +1,10 @@
 package in.co.thingsdata.lms.gui;
 
 
-import in.co.thingsdata.lms.util.GUIUtil;
-import in.sg.rpc.common.domain.User;
-
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,20 +17,17 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.border.MatteBorder;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
 
-public class ProfileScreen {
+import in.co.thingsdata.lms.util.GUIUtil;
+import in.sg.rpc.common.domain.User;
+
+public class ProfileScreen extends Screen {
 
 	private JLabel lblname = new JLabel("Name");
 	private JLabel lbladdress = new JLabel("Address");
@@ -66,15 +57,20 @@ public class ProfileScreen {
 			@Override
 			public void run() {
 
-				screen.go();
+				try {
+					screen.open();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 
 			}
 		});
 
 	}
-
-	public void go() {
+	@Override
+	public void open() throws Exception {
 
 		JFrame frame = new JFrame("Profile");
 		JPanel profilepanel = new JPanel();
@@ -157,7 +153,11 @@ public class ProfileScreen {
 			    SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-					screen.go();
+					try {
+						screen.open();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					}
 				});
 			}

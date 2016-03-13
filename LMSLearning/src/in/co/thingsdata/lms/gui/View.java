@@ -28,6 +28,7 @@ import in.co.thingsdata.lms.util.GUIDomain;
 import in.co.thingsdata.lms.util.GUIUtil;
 import in.co.thingsdata.lms.util.SpringUtilities;
 import in.sg.rpc.client.RPCClient;
+import in.sg.rpc.common.Business;
 import in.sg.rpc.common.RPCService;
 import in.sg.rpc.common.domain.User;
 
@@ -50,10 +51,10 @@ public class View  extends JFrame {
 
 	public void go() {
 
-		GUIUtil.initProperties();
+		Business.getInstance().initProperties();
 		initializeGUI();
-		GUIUtil.setupNetworking();
-		GUIUtil.setupFileIO();
+		Business.getInstance().setupNetworking();
+		Business.getInstance().setupFileIO();
 		GUIUtil.refreshGUI(view);
 		
 	}
