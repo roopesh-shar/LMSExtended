@@ -22,6 +22,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
 import in.co.thingsdata.lms.util.GUIUtil;
+import in.sg.rpc.common.Business;
 
 public class HomeScreen extends Screen {
 
@@ -43,7 +44,7 @@ public class HomeScreen extends Screen {
 	private String user;
 
 	public static void main(String[] args) {
-		HomeScreen screen = new HomeScreen(); // Comments to revert
+		HomeScreen screen = new HomeScreen(); 
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -55,11 +56,13 @@ public class HomeScreen extends Screen {
 			}
 		});
 	}
+
 	@Override
-	public void open() throws Exception {
+	public void open() {
 		frame = GUIUtil.createFrame("LMS HOME");
 		linkPanel = GUIUtil.createPanel();
 		addComponents(frame.getContentPane());
+
 		GUIUtil.setDefaultCloseOperation(frame, JFrame.DISPOSE_ON_CLOSE);
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
@@ -67,16 +70,17 @@ public class HomeScreen extends Screen {
 				System.exit(0);
 			}
 		});
+
 		table.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent event) {
 				int row = table.rowAtPoint(event.getPoint());
 				int col = table.columnAtPoint(event.getPoint());
 				String goToPage = table.getValueAt(row, col).toString();
 				try {
-					GUIUtil.goToRequestedPage(goToPage);
+					Business.getInstance().setUser(getUser());
+					Business.getInstance().goToRequestedPage(goToPage);
 				} catch (Exception e) {
 					e.printStackTrace();
-					//throw e;
 				}
 				frame.setVisible(false);
 			}
@@ -96,7 +100,7 @@ public class HomeScreen extends Screen {
 		discusslabel = GUIUtil.createLabel("Discussion Forum");
 		discusspanel.setBorder(BorderFactory.createEtchedBorder());
 		GUIUtil.addComponents(discusspanel, discusslabel);
-		GUIUtil.addComponents(centerpanel, discusspanel);		
+		GUIUtil.addComponents(centerpanel, discusspanel);
 	}
 
 	private void createBulletinBoard(Container contentPane) {

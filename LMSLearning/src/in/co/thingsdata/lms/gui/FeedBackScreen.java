@@ -27,8 +27,6 @@ import javax.swing.table.DefaultTableModel;
 
 import in.co.thingsdata.lms.util.GUIDomain;
 import in.co.thingsdata.lms.util.GUIUtil;
-import in.sg.rpc.client.RPCClient;
-import in.sg.rpc.common.RPCService;
 import in.sg.rpc.common.domain.Feedback;
 
 public class FeedBackScreen extends Screen {
@@ -181,10 +179,6 @@ public class FeedBackScreen extends Screen {
 		feedbackSubmitPanel.add(upperPanel, BorderLayout.NORTH);
 		feedbackSubmitPanel.add(lowerPanel, BorderLayout.CENTER);
 		feedbackSubmitPanel.setPreferredSize(new Dimension(600, 100));
-		RPCClient client = new RPCClient();
-		RPCService stub = null;
-		stub = client.getRemoteService();
-		GUIDomain.REMOTE_RPC_SERVICE = stub;
 
 		Feedback[] feedbackMap = GUIUtil.displayUserFeedback(1);
 		/*
@@ -195,9 +189,6 @@ public class FeedBackScreen extends Screen {
 		 * Iterator<String> itr = feedbackMap.iterator() ; while(itr.hasNext()){
 		 * System.out.println(itr.next()); }
 		 */
-		System.out.println(feedbackMap[0].getFeedback());
-		System.out.println(feedbackMap[1].getFeedback());
-
 	}
 
 	private String user;

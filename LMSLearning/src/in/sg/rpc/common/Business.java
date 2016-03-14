@@ -15,6 +15,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import in.co.thingsdata.lms.gui.CourseContentDetails;
+import in.co.thingsdata.lms.gui.FeeReceipt;
+import in.co.thingsdata.lms.gui.FeedBackScreen;
+import in.co.thingsdata.lms.gui.HomeScreen;
+import in.co.thingsdata.lms.gui.ProfileScreen;
+import in.co.thingsdata.lms.gui.Screen;
 import in.co.thingsdata.lms.server.Server;
 import in.co.thingsdata.lms.util.GUIDomain;
 import in.co.thingsdata.lms.util.PropertiesReader;
@@ -22,11 +28,12 @@ import in.sg.rpc.client.RPCClient;
 import in.sg.rpc.common.exception.UserLoginException;
 
 public class Business {
-	
+
 	private static Business _INSTANCE = new Business();
+	private String user;
+	private boolean loaded;
 	
 	private Business() {
-		
 	}
 	public static Business getInstance() {
 		return _INSTANCE;
@@ -37,14 +44,17 @@ public class Business {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			throw e;
-		}		
+		}
 	}
+
 	public void initProperties() {
-
-		GUIDomain.propertiesReader = PropertiesReader.getInstance();
-		GUIDomain.propertiesReader.init("resources/");
-
+		if (!loaded) {
+			GUIDomain.propertiesReader = PropertiesReader.getInstance();
+			GUIDomain.propertiesReader.init("resources/");
+			loaded = true;
+		}
 	}
+
 	public static void writeToFile(Object... fields) {
 		StringBuilder fieldStr = new StringBuilder();
 		for (Object field : fields) {
@@ -56,35 +66,26 @@ public class Business {
 	}
 
 	public void setupFileIO() {
-
 		try {
-
 			GUIDomain.FILE_INPUT_STREAM = new FileInputStream(
 					new File(GUIDomain.propertiesReader.getProperty("file.input.name")));
 			GUIDomain.FILE_OUTPUT_STREAM = new FileOutputStream(
 					new File(GUIDomain.propertiesReader.getProperty("file.output.name")), true);
 			GUIDomain.FILE_WRITER = new PrintWriter(GUIDomain.FILE_OUTPUT_STREAM);
-
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public void setupNetworking() {
-
-		 Server server = new Server();
-		 
+		Server server = new Server();
 		startDummyServer(server);
-		
 		if (!server.isRunning()) {
 			return;
 		}
 		String hostName = GUIDomain.propertiesReader.getProperty("server.host.name");
-		
 		@SuppressWarnings("unused")
 		int portNumber = Integer.parseInt(GUIDomain.propertiesReader.getProperty("server.socket.port"));
-
 		try (Socket socket = new Socket("localhost", 4444);
 				PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -105,42 +106,69 @@ public class Business {
 	}
 
 	private static void startDummyServer(Server server) {
+		server.start();
+		try {
+			Thread.sleep(5000);
+			server.stop();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 
-    server.start();
-     
-     try {
-		Thread.sleep(5000);
-		server.stop();
-		
-	} catch (InterruptedException e) {
-		e.printStackTrace();
-	}
-		
-	}
 	public int getUserId(String userName, String password) throws UserLoginException {
 		int userId = GUIDomain.REMOTE_RPC_SERVICE.login(userName, password);
 		return userId;
 	}
+
 	public void setUpDB() {
 		initProperties();
-		GUIDomain.DATABASE_USER = PropertiesReader.getInstance().getProperty(
-				"db.user");
-		GUIDomain.DATABASE_PASSWORD = PropertiesReader.getInstance()
-				.getProperty("db.password");
-		GUIDomain.DATABASE_DRIVER = PropertiesReader.getInstance().getProperty(
-				"db.driver");
-		GUIDomain.DATABASE_URL = PropertiesReader.getInstance().getProperty(
-				"db.url");
+		GUIDomain.DATABASE_USER = PropertiesReader.getInstance().getProperty("db.user");
+		GUIDomain.DATABASE_PASSWORD = PropertiesReader.getInstance().getProperty("db.password");
+		GUIDomain.DATABASE_DRIVER = PropertiesReader.getInstance().getProperty("db.driver");
+		GUIDomain.DATABASE_URL = PropertiesReader.getInstance().getProperty("db.url");
 	}
+
 	public String getDatabaseDriver() {
 		return GUIDomain.DATABASE_DRIVER;
 	}
+
 	public Connection getDBConnection() throws SQLException {
-		Connection con = DriverManager.getConnection(GUIDomain.DATABASE_URL,
-				GUIDomain.DATABASE_USER, GUIDomain.DATABASE_PASSWORD);
+		Connection con = DriverManager.getConnection(GUIDomain.DATABASE_URL, GUIDomain.DATABASE_USER,
+				GUIDomain.DATABASE_PASSWORD);
 		return con;
 	}
-	
 
-	
+	public String getCourseDetails(int userId) throws Exception {
+		String courseContent = GUIDomain.REMOTE_RPC_SERVICE.getCourseDetailForUser(userId);
+		return courseContent;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+
+	public void goToRequestedPage(String goToPage) throws Exception {
+		if (goToPage.equals("Course Content")) {
+			Screen courseContent = new CourseContentDetails();
+			courseContent.open(courseContent);
+		} else if (goToPage.equals("Profile")) {
+			Screen screen = new ProfileScreen();
+			screen.open(screen);
+		} else if (goToPage.equals("Fee Receipt")) {
+			Screen feeReceipt = new FeeReceipt();
+			feeReceipt.open(feeReceipt);
+		} else if (goToPage.equals("FeedBack")) {
+			Screen feedBack = new FeedBackScreen();
+			feedBack.open(feedBack);
+		} else {
+			Screen homeScreen = new HomeScreen();
+			homeScreen.open(homeScreen);
+		}
+
+	}
+
+	public String getUser() {
+		return user;
+	}
+
 }

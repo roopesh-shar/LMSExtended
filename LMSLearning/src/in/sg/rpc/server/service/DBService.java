@@ -1,14 +1,5 @@
 package in.sg.rpc.server.service;
 
-import in.co.thingsdata.lms.util.GUIDomain;
-import in.co.thingsdata.lms.util.GUIUtil;
-import in.co.thingsdata.lms.util.PropertiesReader;
-import in.sg.rpc.common.Business;
-import in.sg.rpc.common.domain.Course;
-import in.sg.rpc.common.domain.FeeDetails;
-import in.sg.rpc.common.domain.Feedback;
-import in.sg.rpc.common.domain.User;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -20,11 +11,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import in.sg.rpc.common.Business;
+import in.sg.rpc.common.domain.Course;
+import in.sg.rpc.common.domain.FeeDetails;
+import in.sg.rpc.common.domain.Feedback;
+import in.sg.rpc.common.domain.User;
 
 public class DBService {
 
@@ -266,10 +262,10 @@ public class DBService {
 
 	public int returnUserId(String userName, String password)
 			throws SQLException {
-		Connection conn;
-		conn = getConnection();
+		Connection conn = null;
 		try {
-			java.sql.Statement stmt = conn.createStatement();
+			conn = getConnection();
+			Statement stmt = conn.createStatement();
 			String validUser = null;
 			String lSqlString = "select id,user_name from users where user_name='"
 					+ userName + "' and password = '" + password + "'";

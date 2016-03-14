@@ -1,5 +1,6 @@
 package in.co.thingsdata.lms.util;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -16,15 +17,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 
-import in.co.thingsdata.lms.gui.CourseContentDetails;
-import in.co.thingsdata.lms.gui.FeeReceipt;
-import in.co.thingsdata.lms.gui.FeedBackScreen;
-import in.co.thingsdata.lms.gui.HomeScreen;
-import in.co.thingsdata.lms.gui.ProfileScreen;
 import in.sg.rpc.common.Business;
 import in.sg.rpc.common.domain.FeeDetails;
 import in.sg.rpc.common.domain.Feedback;
@@ -75,6 +72,7 @@ public class GUIUtil {
 	}
 
 	public static String getCourseDetailForUser(int userId) throws Exception {
+		Business.getInstance().getCourseDetails(userId);
 		return GUIDomain.REMOTE_RPC_SERVICE.getCourseDetailForUser(userId);
 	}
 
@@ -86,25 +84,7 @@ public class GUIUtil {
 		return GUIDomain.REMOTE_RPC_SERVICE.login(userName, password);
 	}
 
-	public static void goToRequestedPage(String goToPage) throws Exception {
-		if (goToPage.equals("Course Content")) {
-			CourseContentDetails courseContent = new CourseContentDetails(); 
-			courseContent.open();
-		} else if (goToPage.equals("Profile")) {
-			ProfileScreen screen = new ProfileScreen(); 
-			screen.open();
-		} else if (goToPage.equals("Fee Receipt")) {
-			FeeReceipt feeReceipt = new FeeReceipt();
-			feeReceipt.open();
-		} else if (goToPage.equals("FeedBack")) {
-			FeedBackScreen feedBack = new FeedBackScreen();
-			feedBack.open();
-		}else {
-		HomeScreen homeScreen = new HomeScreen();
-		homeScreen.open();
-	}
-
-	}
+	
 
 	public static void registernewUser(User user) throws Exception {
 		GUIDomain.REMOTE_RPC_SERVICE.registerUser(user);
@@ -141,7 +121,6 @@ public class GUIUtil {
 	}
 
 	public static void setVisible(JFrame frame, boolean value) {
-		// frame.pack();
 		frame.setVisible(value);
 	}
 
@@ -195,6 +174,22 @@ public class GUIUtil {
 
 	public static Font getTableFont() {
 		return new JLabel().getFont();
+	}
+
+	public static JTextArea createTextArea(int rows, int columns) {
+		return new JTextArea(rows,columns);
+	}
+
+	public static void setBackground(JTextArea txtAreacourseContent, Color color) {
+		txtAreacourseContent.setBackground(color);		
+	}
+
+	public static void setEditable(JTextArea txtAreacourseContent, boolean value) {
+		txtAreacourseContent.setEditable(value);
+	}
+
+	public static void setText(JTextArea txtAreacourseContent, String courseContent) {
+		txtAreacourseContent.setText(courseContent);		
 	}
 
 }

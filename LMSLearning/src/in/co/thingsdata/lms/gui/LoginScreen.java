@@ -19,6 +19,7 @@ import in.sg.rpc.common.exception.UserExistsException;
 import in.sg.rpc.common.exception.UserLoginException;
 
 public class LoginScreen extends Screen {
+
 	private JFrame frame;
 	private JPanel userDatailPanel;
 	private JLabel instructionsLabel;
@@ -92,7 +93,7 @@ public class LoginScreen extends Screen {
 		System.out.println(GUIDomain.CURRENT_USER_ID + "," + GUIDomain.CURRENT_USER_NAME);
 		HomeScreen screen = new HomeScreen();
 		screen.setUser(userNameTextField.getText());
-		screen.open();
+		screen.open(screen);
 	}
 	private void updateCurrentUser() {
 		GUIDomain.CURRENT_USER_ID = userId;
@@ -102,17 +103,13 @@ public class LoginScreen extends Screen {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				new LoginScreen().initializeLoginScreen();
+				Screen screen = new LoginScreen();
+				screen.open(screen);
 			}
 		});
 	}
 	@Override
 	protected void open() throws Exception {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				new LoginScreen().initializeLoginScreen();
-			}
-		});		
+		initializeLoginScreen();
 	}
 }

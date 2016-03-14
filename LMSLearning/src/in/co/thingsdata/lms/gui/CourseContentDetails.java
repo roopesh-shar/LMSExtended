@@ -19,9 +19,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import in.co.thingsdata.lms.util.GUIUtil;
+import in.sg.rpc.common.Business;
 
 public class CourseContentDetails extends Screen {
-	
+
 	private JFrame frame;
 	private JPanel linkPanel;
 	private JPanel headerPanel;
@@ -32,174 +33,86 @@ public class CourseContentDetails extends Screen {
 	private JTextArea txtAreacourseContent;
 	private JPanel backButtonPanel;
 	private JButton goHomePageButton;
-	
 
 	public static void main(String[] args) {
-
-		CourseContentDetails courseContent = new CourseContentDetails(); // Comments to revert
+		CourseContentDetails courseContent = new CourseContentDetails(); 
 		SwingUtilities.invokeLater(new Runnable() {
-
 			@Override
 			public void run() {
-
 				try {
-					courseContent.go();
+					courseContent.open();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
 			}
 		});
 	}
-
-	public void go() throws Exception {
-
-		frame = new JFrame("Course Contents");
-		linkPanel = new JPanel();
-
-		addComponents(frame.getContentPane(), linkPanel);
-
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-		frame.pack();
-		frame.setSize(800, 600);
-
-		frame.setVisible(true);
-		frame.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosed(WindowEvent e) {
-				System.exit(0);
-			}
-		});
-
-		goHomePageButton.addActionListener (new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				frame.setVisible(false);
-				HomeScreen screen = new HomeScreen(); // Comments to revert
-			    SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-					try {
-						screen.open();
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					}
-				});
-			}
-			});
-		}
-
 	private void addComponents(Container contentPane, JPanel linkPanel) throws Exception {
-
-		/* Adding Header panel */
-		headerPanel = new JPanel();
-		headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
-		cmpinfoPanel = new JPanel();
-		cmpnamelebel = new JLabel(GUIUtil.getHeaderTitle());
-		cmpinfoPanel.add(cmpnamelebel);
-		JLabel cmpimage = new JLabel(GUIUtil.getIcon());
-		cmpinfoPanel.add(cmpimage);
-
-		headerPanel.add(cmpinfoPanel);
-
-		welcomeLabel = new JLabel("Welcome " + getUser());
-		headerPanel.add(welcomeLabel);
-		contentPane.add(headerPanel, BorderLayout.PAGE_START);
-		String courseContent= GUIUtil.getCourseDetailForUser(12345);
-		//System.out.println(course.getCourseId()+","+course.getContentPath());
-		//String coursePath = course.getContentPath();
-		//System.out.println(coursePath);
-		//String courseContent =GUIDomain.REMOTE_RPC_SERVICE.displayCourseDetails(course.getContentPath());//GUIUtil.getCourseContent(coursePath).toString();
-		contentPanel = new JPanel();
-		contentPane.add(contentPanel,BorderLayout.EAST);
-		txtAreacourseContent = new JTextArea(100,50);
-		txtAreacourseContent.setBackground(UIManager.getColor(contentPanel));
-		txtAreacourseContent.setEditable(false);
-		txtAreacourseContent.setText(courseContent);
-		contentPanel.add(txtAreacourseContent);
-		
-
+		createHeaderPanel(contentPane);
+		createContentPanel(contentPane);
+		createCourseContentTextArea(contentPane);
 		backButtonPanel = new JPanel();
 		goHomePageButton = new JButton("Back");
 		backButtonPanel.add(goHomePageButton);
-		contentPane.add(backButtonPanel,BorderLayout.WEST);
-		
+		contentPane.add(backButtonPanel, BorderLayout.WEST);
 		cmpinfoPanel.setBorder(BorderFactory.createEtchedBorder());
 		contentPanel.setBorder(BorderFactory.createEtchedBorder());
-		//backButtonPanel.setBorder(BorderFactory.createEtchedBorder());
-		
+	}
+	private void createCourseContentTextArea(Container contentPane) {
+		String courseContent = null;
+		try {
+			courseContent = GUIUtil.getCourseDetailForUser(12345);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		txtAreacourseContent = GUIUtil.createTextArea(100, 50);
+		GUIUtil.setBackground(txtAreacourseContent, UIManager.getColor(contentPanel));
+		GUIUtil.setEditable(txtAreacourseContent, false);
+		GUIUtil.setText(txtAreacourseContent, courseContent);
+		GUIUtil.addComponents(contentPanel, txtAreacourseContent);
 	}
 
-	private String user;
-
-	private String getUser() {
-		return this.user;
+	private void createContentPanel(Container contentPane) {
+		contentPanel = GUIUtil.createPanel();
+		GUIUtil.addComponents(contentPane, contentPanel, BorderLayout.EAST);
 	}
 
-	public void setUser(String user) {
-
-		this.user = user;
-
+	private void createHeaderPanel(Container contentPane) {
+		headerPanel = GUIUtil.createPanel();
+		GUIUtil.setLayout(headerPanel, new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
+		cmpinfoPanel = GUIUtil.createPanel();
+		cmpnamelebel = GUIUtil.createLabel(GUIUtil.getHeaderTitle());
+		GUIUtil.addComponents(cmpinfoPanel, cmpnamelebel);
+		JLabel cmpimage = GUIUtil.createLabel(GUIUtil.getIcon());
+		GUIUtil.addComponents(cmpinfoPanel, cmpimage);
+		GUIUtil.addComponents(headerPanel, cmpinfoPanel);
+		welcomeLabel = GUIUtil.createLabel("Welcome " + Business.getInstance().getUser());
+		GUIUtil.addComponents(headerPanel, welcomeLabel);
+		GUIUtil.addComponents(contentPane, headerPanel, BorderLayout.PAGE_START);
 	}
-
 	@Override
 	public void open() throws Exception {
-		/*SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					go();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});		*/
-		frame = new JFrame("Course Contents");
+		frame = GUIUtil.createFrame("Course Contents");
+		GUIUtil.setDefaultCloseOperation(frame, JFrame.DISPOSE_ON_CLOSE);
 		linkPanel = new JPanel();
-
 		addComponents(frame.getContentPane(), linkPanel);
-
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-		frame.pack();
-		frame.setSize(800, 600);
-
-		frame.setVisible(true);
+		GUIUtil.setVisible(frame, true);
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(WindowEvent e) {
 				System.exit(0);
 			}
 		});
-
-		goHomePageButton.addActionListener (new ActionListener() {
-			
+		goHomePageButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				frame.setVisible(false);
-				HomeScreen screen = new HomeScreen(); // Comments to revert
-			    SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-					try {
-						screen.open();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					}
-				});
+				Screen screen = new HomeScreen(); 
+				screen.open(screen);
 			}
-			});
+		});
 	}
 
 }
