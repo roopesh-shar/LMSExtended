@@ -17,6 +17,10 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+<<<<<<< HEAD
+=======
+import javax.swing.SwingUtilities;
+>>>>>>> dfb249594f160b4cf1f1e857b29ab0b6dd3c2898
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 
@@ -86,6 +90,7 @@ public class GUIUtil {
 		return GUIDomain.REMOTE_RPC_SERVICE.login(userName, password);
 	}
 
+<<<<<<< HEAD
 	public static void goToRequestedPage(String goToPage) throws Exception {
 		if (goToPage.equals("Course Content")) {
 			CourseContentDetails courseContent = new CourseContentDetails(); 
@@ -106,6 +111,77 @@ public class GUIUtil {
 
 	}
 
+=======
+	public static void goToRequestedPage(String goToPage) {
+		if (goToPage.equals("Course Content")) {
+			CourseContentDetails courseContent = new CourseContentDetails(); // Comments
+																				// to
+																				// revert
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+
+					try {
+						courseContent.go();
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		} else if (goToPage.equals("Profile")) {
+			ProfileScreen screen = new ProfileScreen(); // Comments to revert
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					screen.go();
+				}
+			});
+		} else if (goToPage.equals("Fee Receipt")) {
+			FeeReceipt feeReceipt = new FeeReceipt();
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						feeReceipt.go();
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		} else if (goToPage.equals("FeedBack")) {
+			FeedBackScreen feedBack = new FeedBackScreen();
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						feedBack.go();
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		} else {
+			HomeScreen homeScreen = new HomeScreen();
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						homeScreen.go();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		}
+	}
+>>>>>>> dfb249594f160b4cf1f1e857b29ab0b6dd3c2898
 	public static void registernewUser(User user) throws Exception {
 		GUIDomain.REMOTE_RPC_SERVICE.registerUser(user);
 	}
@@ -113,6 +189,7 @@ public class GUIUtil {
 	public static Feedback[] displayUserFeedback(int userId) throws SQLException {
 		return GUIDomain.REMOTE_RPC_SERVICE.getUserFeedback(userId);
 	}
+<<<<<<< HEAD
 
 	public static JFrame createFrame(String name) {
 		JFrame frame = new JFrame(name);
@@ -140,6 +217,35 @@ public class GUIUtil {
 		frame.setSize(new Dimension(width, height));
 	}
 
+=======
+
+	public static JFrame createFrame(String name) {
+		JFrame frame = new JFrame(name);
+     	frame.setSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
+		return frame;
+	}
+
+	public static void setDefaultCloseOperation(JFrame frame, int disposeOnClose) {
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	}
+
+	public static void setResizable(JFrame frame, boolean value) {
+		frame.setResizable(true);
+	}
+
+	public static JPanel createPanel() {
+		return new JPanel();
+	}
+
+	public static void addPanel(JFrame frame, JPanel userDatailPanel) {
+		frame.getContentPane().add(userDatailPanel);
+	}
+
+	public static void setSize(JFrame frame, int width, int height) {
+		frame.setSize(new Dimension(width, height));
+	}
+
+>>>>>>> dfb249594f160b4cf1f1e857b29ab0b6dd3c2898
 	public static void setVisible(JFrame frame, boolean value) {
 		// frame.pack();
 		frame.setVisible(value);
@@ -174,23 +280,41 @@ public class GUIUtil {
 	}
 
 	public static void addComponents(Container contentPane, JPanel panel, String pageLocation) {
+<<<<<<< HEAD
 		contentPane.add(panel, pageLocation);
 	}
 
 	public static AbstractTableModel getDefaultTableModel() {
 		DefaultTableModel model = new DefaultTableModel();
+=======
+		contentPane.add(panel, pageLocation);		
+	}
+
+	public static AbstractTableModel getDefaultTableModel() {
+		DefaultTableModel model = new DefaultTableModel(); 
+>>>>>>> dfb249594f160b4cf1f1e857b29ab0b6dd3c2898
 		return model;
 	}
 
 	public static JTable createTable(AbstractTableModel model) {
+<<<<<<< HEAD
 		JTable table = new JTable(model);
+=======
+		JTable table = new JTable(model); 
+>>>>>>> dfb249594f160b4cf1f1e857b29ab0b6dd3c2898
 		return table;
 	}
 
 	public static void populateTableRows(String[] linksArray, AbstractTableModel model) {
+<<<<<<< HEAD
 		for (String link : linksArray) {
 			((DefaultTableModel) model).addRow(new Object[] { link });
 		}
+=======
+		for(String link : linksArray) {
+        	((DefaultTableModel) model).addRow(new Object[]{link});
+        }		
+>>>>>>> dfb249594f160b4cf1f1e857b29ab0b6dd3c2898
 	}
 
 	public static Font getTableFont() {

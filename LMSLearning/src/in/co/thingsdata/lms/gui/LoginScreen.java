@@ -18,7 +18,11 @@ import in.sg.rpc.common.Business;
 import in.sg.rpc.common.exception.UserExistsException;
 import in.sg.rpc.common.exception.UserLoginException;
 
+<<<<<<< HEAD
 public class LoginScreen extends Screen {
+=======
+public class LoginScreen {
+>>>>>>> dfb249594f160b4cf1f1e857b29ab0b6dd3c2898
 	private JFrame frame;
 	private JPanel userDatailPanel;
 	private JLabel instructionsLabel;
@@ -86,13 +90,21 @@ public class LoginScreen extends Screen {
 	protected void connectToServer() throws MalformedURLException , Exception{
 		Business.getInstance().connectToServer();
 	}
+<<<<<<< HEAD
 	protected void openHomeScreen() throws Exception {
+=======
+	protected void openHomeScreen() {
+>>>>>>> dfb249594f160b4cf1f1e857b29ab0b6dd3c2898
 		GUIUtil.setVisible(frame,false);
 		updateCurrentUser();
 		System.out.println(GUIDomain.CURRENT_USER_ID + "," + GUIDomain.CURRENT_USER_NAME);
 		HomeScreen screen = new HomeScreen();
 		screen.setUser(userNameTextField.getText());
+<<<<<<< HEAD
 		screen.open();
+=======
+		screen.go();
+>>>>>>> dfb249594f160b4cf1f1e857b29ab0b6dd3c2898
 	}
 	private void updateCurrentUser() {
 		GUIDomain.CURRENT_USER_ID = userId;
@@ -106,6 +118,7 @@ public class LoginScreen extends Screen {
 			}
 		});
 	}
+<<<<<<< HEAD
 	@Override
 	protected void open() throws Exception {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -115,4 +128,6 @@ public class LoginScreen extends Screen {
 			}
 		});		
 	}
+=======
+>>>>>>> dfb249594f160b4cf1f1e857b29ab0b6dd3c2898
 }
