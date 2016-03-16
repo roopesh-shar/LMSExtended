@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -25,7 +23,6 @@ import in.co.thingsdata.lms.util.GUIUtil;
 import in.sg.rpc.common.Business;
 
 public class HomeScreen extends Screen {
-
 	private JFrame frame;
 	private JPanel linkPanel;
 	private JPanel headerPanel;
@@ -62,15 +59,6 @@ public class HomeScreen extends Screen {
 		frame = GUIUtil.createFrame("LMS HOME");
 		linkPanel = GUIUtil.createPanel();
 		addComponents(frame.getContentPane());
-
-		GUIUtil.setDefaultCloseOperation(frame, JFrame.DISPOSE_ON_CLOSE);
-		frame.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosed(WindowEvent e) {
-				System.exit(0);
-			}
-		});
-
 		table.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent event) {
 				int row = table.rowAtPoint(event.getPoint());

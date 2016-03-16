@@ -83,9 +83,6 @@ public class GUIUtil {
 	public static int getLoggedInUserId(String userName, String password) throws UserLoginException {
 		return GUIDomain.REMOTE_RPC_SERVICE.login(userName, password);
 	}
-
-	
-
 	public static void registernewUser(User user) throws Exception {
 		GUIDomain.REMOTE_RPC_SERVICE.registerUser(user);
 	}
@@ -93,7 +90,6 @@ public class GUIUtil {
 	public static Feedback[] displayUserFeedback(int userId) throws SQLException {
 		return GUIDomain.REMOTE_RPC_SERVICE.getUserFeedback(userId);
 	}
-
 	public static JFrame createFrame(String name) {
 		JFrame frame = new JFrame(name);
 		frame.setSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -157,19 +153,19 @@ public class GUIUtil {
 	}
 
 	public static AbstractTableModel getDefaultTableModel() {
-		DefaultTableModel model = new DefaultTableModel();
+		DefaultTableModel model = new DefaultTableModel(); 
 		return model;
 	}
 
 	public static JTable createTable(AbstractTableModel model) {
-		JTable table = new JTable(model);
+		JTable table = new JTable(model); 
 		return table;
 	}
 
 	public static void populateTableRows(String[] linksArray, AbstractTableModel model) {
-		for (String link : linksArray) {
-			((DefaultTableModel) model).addRow(new Object[] { link });
-		}
+		for(String link : linksArray) {
+        	((DefaultTableModel) model).addRow(new Object[]{link});
+        }		
 	}
 
 	public static Font getTableFont() {

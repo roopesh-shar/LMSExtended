@@ -19,7 +19,6 @@ import in.sg.rpc.common.exception.UserExistsException;
 import in.sg.rpc.common.exception.UserLoginException;
 
 public class LoginScreen extends Screen {
-
 	private JFrame frame;
 	private JPanel userDatailPanel;
 	private JLabel instructionsLabel;
@@ -87,7 +86,8 @@ public class LoginScreen extends Screen {
 	protected void connectToServer() throws MalformedURLException , Exception{
 		Business.getInstance().connectToServer();
 	}
-	protected void openHomeScreen() throws Exception {
+
+	protected void openHomeScreen() {
 		GUIUtil.setVisible(frame,false);
 		updateCurrentUser();
 		System.out.println(GUIDomain.CURRENT_USER_ID + "," + GUIDomain.CURRENT_USER_NAME);
