@@ -25,7 +25,9 @@ import in.co.thingsdata.lms.server.Server;
 import in.co.thingsdata.lms.util.GUIDomain;
 import in.co.thingsdata.lms.util.PropertiesReader;
 import in.sg.rpc.client.RPCClient;
+import in.sg.rpc.common.domain.User;
 import in.sg.rpc.common.exception.UserLoginException;
+import in.sg.rpc.server.service.DBService;
 
 public class Business {
 
@@ -169,6 +171,12 @@ public class Business {
 
 	public String getUser() {
 		return user;
+	}
+	public User getUserDetails(int userId) throws Exception {
+		return GUIDomain.REMOTE_RPC_SERVICE.getUserDetails(userId);
+	}
+	public boolean saveUserDetails(User user) throws Exception {
+		return GUIDomain.REMOTE_RPC_SERVICE.saveUserDetails(user);
 	}
 
 }

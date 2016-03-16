@@ -5,11 +5,14 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,6 +22,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 
@@ -65,10 +69,6 @@ public class GUIUtil {
 
 	public static User getUserDetails(int userId) throws NumberFormatException, IOException {
 		return DBService.getInstance().getUserDetails(userId);
-	}
-
-	public static boolean saveUserDetails(User user) throws NumberFormatException, FileNotFoundException, IOException {
-		return DBService.getInstance().saveUserDetails(user);
 	}
 
 	public static String getCourseDetailForUser(int userId) throws Exception {
@@ -140,8 +140,8 @@ public class GUIUtil {
 		return button;
 	}
 
-	public static void setLayout(JPanel headerPanel, LayoutManager layout) {
-		headerPanel.setLayout(layout);
+	public static void setLayout(JPanel panel, LayoutManager layout) {
+		panel.setLayout(layout);
 	}
 
 	public static JLabel createLabel(ImageIcon icon) {
@@ -186,6 +186,21 @@ public class GUIUtil {
 
 	public static void setText(JTextArea txtAreacourseContent, String courseContent) {
 		txtAreacourseContent.setText(courseContent);		
+	}
+
+	public static void setBorder(JPanel detailpanel, Border border) {
+		detailpanel.setBorder(border);		
+	}
+
+	public static GridBagConstraints gridbagContraint() {
+		GridBagConstraints gBC = new GridBagConstraints();
+		gBC.fill = GridBagConstraints.HORIZONTAL;
+		gBC.insets = new Insets(5, 5, 5, 5);
+		gBC.gridwidth = 1;
+		gBC.weightx = 1.0;
+		gBC.gridx = 0;
+		gBC.gridy = 0;
+		return gBC;
 	}
 
 }

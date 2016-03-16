@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import javax.jws.WebService;
 import javax.xml.ws.Endpoint;
 
+import in.co.thingsdata.lms.util.GUIDomain;
 import in.sg.rpc.common.PropertiesReader;
 import in.sg.rpc.common.RPCService;
 import in.sg.rpc.common.UserLogin;
@@ -173,6 +174,17 @@ public class RPCServer implements RPCService {
 			t.printStackTrace();
 			throw t;
 		}
+	}
+
+	@Override
+	public User getUserDetails(int userId) throws Exception {
+		User user = DBService.getInstance().getUserDetails(userId);
+		return user;
+	}
+
+	@Override
+	public boolean saveUserDetails(User user) throws Exception {
+		return  DBService.getInstance().saveUserDetails(user);
 	}
 
 

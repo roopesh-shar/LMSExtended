@@ -76,7 +76,7 @@ public class CourseContentDetails extends Screen {
 
 	private void createContentPanel(Container contentPane) {
 		contentPanel = GUIUtil.createPanel();
-		GUIUtil.addComponents(contentPane, contentPanel, BorderLayout.EAST);
+		GUIUtil.addComponents(contentPane, contentPanel, BorderLayout.CENTER);
 	}
 
 	private void createHeaderPanel(Container contentPane) {
