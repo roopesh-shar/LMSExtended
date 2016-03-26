@@ -41,7 +41,8 @@ public class LoginScreen {
 		
 		placeComponents (userDatailPanel, frame);
 		
-		frame.setSize(new Dimension(1200,900));
+		frame.setLocation(300, 300);
+		frame.setSize(new Dimension(400,300));
 		
 		frame.setVisible(true);
 		

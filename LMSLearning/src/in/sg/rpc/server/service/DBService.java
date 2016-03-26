@@ -6,6 +6,7 @@ import in.co.thingsdata.lms.util.PropertiesReader;
 import in.sg.rpc.common.domain.Course;
 import in.sg.rpc.common.domain.FeeDetails;
 import in.sg.rpc.common.domain.Feedback;
+import in.sg.rpc.common.domain.QuizQuestion;
 import in.sg.rpc.common.domain.User;
 
 import java.io.BufferedReader;
@@ -24,6 +25,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
 
 public class DBService {
 
@@ -51,105 +54,9 @@ public class DBService {
 
 	}
 
-	public User getUserDetails(int userId) /* throws CUSTOMException */{
 
-		String name = null;
-		String address = null;
-		String emailId = null;
-		String dob = null;
-		String course = null;
-		String line;
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new InputStreamReader(
-					new FileInputStream(new File("resources/Userdetail.txt"))));
-			while (null != (line = reader.readLine())) {
-				if (null != line.split(",")[0]
-						&& Integer.valueOf(line.split(",")[0]) == userId) {
-					// userid = Integer.valueOf(line.split(",")[0]);
-					name = line.split(",")[1];
-					address = line.split(",")[2];
-					emailId = line.split(",")[3];
-					dob = line.split(",")[4];
-					course = line.split(",")[5];
-				}
-			}
 
-		} catch (FileNotFoundException e) {
-			// TODO: Use custom exception here and show appropriate message to
-			// user on GUI
-			e.printStackTrace();
-		} catch (NumberFormatException e) {
-			// TODO: Use custom exception here and show appropriate message to
-			// user on GUI
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO: Use custom exception here and show appropriate message to
-			// user on GUI
-			e.printStackTrace();
-		} finally {
-			if (null != reader) {
-				try {
-					reader.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-
-		User userdetails = new User(userId, name, address, emailId, dob, course);
-		return userdetails;
-	}
-
-	public boolean saveUserDetails(User user) throws IOException {
-		String line;
-		BufferedReader reader = null;
-		BufferedWriter out = null;
-		StringBuffer updatedRecord = new StringBuffer();
-		StringBuffer currentRecord = new StringBuffer();
-		boolean status = false;
-		;
-		try {
-			reader = new BufferedReader(new InputStreamReader(
-					new FileInputStream(new File("resources/Userdetail.txt"))));
-
-			while (null != (line = reader.readLine())) {
-				if (null != line.split(",")[0]
-						&& Integer.valueOf(line.split(",")[0]) == user
-								.getUserid()) {
-					currentRecord = currentRecord.append(line);
-					updatedRecord = updatedRecord.append(user.getUserid())
-							.append(",").append(user.getName()).append(",")
-							.append(user.getAddress()).append(",")
-							.append(user.getEmailid()).append(",")
-							.append(user.getDob()).append(",")
-							.append(user.getCourse());
-					out = new BufferedWriter(new OutputStreamWriter(
-							new FileOutputStream(new File(
-									"resources/Userdetail.txt"))));
-					line = line.replace(currentRecord, updatedRecord);
-					out.write(line);
-					status = true;
-				} else {
-					status = false;
-				}
-
-			}
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (null != reader) {
-				reader.close();
-			}
-			if (null != out) {
-				out.close();
-			}
-		}
-		return status;
-	}
+	
 
 	@SuppressWarnings("resource")
 	public String getCourseDetailForUser(int userId) {
@@ -470,4 +377,114 @@ public class DBService {
 		
 	}
 
+	public User getUserDetails(int userId) throws SQLException /* throws CUSTOMException */{
+		Connection conn = null;
+		ResultSet rs = null;
+		User profileDetails = new User();
+		String selectUserDetails = "select u.user_name,P.DOB, P.Address,p.Contact_number, p.email_id, p.country,p.city, p.pincode,p.state, c.course_name  from Profile P inner join users U on U.id = P.user_id inner join Course C on P.course_id = c.ID where U.id = ?";
+		PreparedStatement selectUser = null;
+		try{
+			conn = getConnection();
+			selectUser = conn.prepareStatement(selectUserDetails);
+			selectUser.setInt(1,  userId);
+			rs = selectUser.executeQuery();
+			while(rs.next()){
+				profileDetails.setName(rs.getString("user_name"));
+				profileDetails.setDob(rs.getString("dob"));
+				profileDetails.setAddress(rs.getString("Address"));
+				profileDetails.setEmailid(rs.getString("email_id"));
+				profileDetails.setCountry(rs.getString("Country"));
+				profileDetails.setCity(rs.getString("city"));
+				profileDetails.setAddress(rs.getString("address"));
+				profileDetails.setState(rs.getString("state"));
+				profileDetails.setPinCode(rs.getLong("pincode"));
+				profileDetails.setCourse(rs.getString("course_name"));
+				profileDetails.setPhoneNum(rs.getLong("Contact_number"));
+					
+				return profileDetails;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			conn.close();
+		}
+		return profileDetails;
+	}
+	
+	public boolean saveUserDetails(User user) throws IOException, SQLException {
+		Connection conn = null;
+		String saveUserDetailsToDB = "update LMS.PROFILE set EMAIL_ID = ?, CONTACT_NUMBER =?, ADDRESS=?, COUNTRY = ?, STATE =?, CITY =?, PINCODE =?, DOB =? where USER_ID = ?";
+		PreparedStatement saveUser = null;
+		try{
+			conn = getConnection();
+			saveUser = conn.prepareStatement(saveUserDetailsToDB);
+			saveUser.setString(1, user.getEmailid());
+			saveUser.setLong(2, user.getPhoneNum());
+			saveUser.setString(3,  user.getAddress());
+			saveUser.setString(4, user.getCountry());
+			saveUser.setString(5, user.getState());
+			saveUser.setString(6, user.getCity());
+			saveUser.setLong(7, user.getPinCode());
+			saveUser.setString(8, user.getDob().substring(0,9));
+			saveUser.setLong(9, user.getUserid());
+			System.out.println(user.getEmailid()+","+user.getPhoneNum()+","+user.getAddress()+","+user.getCountry()+"," +user.getState()+","+user.getCity()+","+user.getPinCode()+","+user.getDob()+","+user.getUserid());
+			saveUser.executeUpdate();
+			commit(conn);
+			return true;
+		}catch (SQLException e) {
+			if (conn != null) {
+				try {
+					System.err.print("Transaction is being rolled back");
+					conn.rollback();
+				} catch (SQLException excep) {
+					excep.printStackTrace();
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			conn.close();
+		}
+		return false;
+		
+	}
+
+	public QuizQuestion[] getgetQuizQuestionfromDB(long userId) throws SQLException {
+		Connection conn = null;
+		ResultSet rs = null;
+		QuizQuestion[] quizquestions = 	null;
+		QuizQuestion quizquestion = null;
+		String rowCountSql = "select count(*) from Profile P inner join Course C on P.course_id = C.id inner join quiz_question QQ on C.id = QQ.course_id where P.user_id="+userId;;
+		String lSqlString = "select QQ.Question_number, qq.question, qq.choice_a, qq.choice_b, qq.choice_c,qq.choice_d, qq.choice_correct from Profile P inner join Course C on P.course_id = C.id inner join quiz_question QQ on C.id = QQ.course_id where P.user_id=" +userId;
+		Statement stmt = null;
+		int count = 0;
+		int index = 0;
+		try {
+			conn = getConnection();
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(rowCountSql);
+			rs.next();
+			count = rs.getInt("count(*)");
+			quizquestions = new QuizQuestion[count];
+			rs = stmt.executeQuery(lSqlString);
+			while (rs.next()) {
+				quizquestion = new QuizQuestion();
+				quizquestion.setQuestionNumber(rs.getLong("Question_number"));
+				quizquestion.setQuestion(rs.getString("question"));
+				quizquestion.setChoiceA(rs.getString("choice_a"));
+				quizquestion.setChoiceB(rs.getString("choice_b"));
+				quizquestion.setChoiceC(rs.getString("choice_c"));
+				quizquestion.setChoiceD(rs.getString("choice_d"));
+				quizquestion.setCorrectAnswer(rs.getString("choice_correct"));
+				quizquestions[index++] = quizquestion;
+			}
+		}finally {
+			closeConnection(conn);
+		
+		return quizquestions;
+	}
+	}
+		
 }

@@ -1,6 +1,7 @@
 package in.sg.rpc.common.domain;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 public class User implements Serializable,Cloneable {
 
@@ -21,7 +22,12 @@ public class User implements Serializable,Cloneable {
 	private String firstName;
 	private String lastName;
 	private String userType;
+
 	
+
+	
+
+
 	public String getUserType() {
 		return userType;
 	}
@@ -29,7 +35,7 @@ public class User implements Serializable,Cloneable {
 	public void setUserType(String userType) {
 		this.userType = userType;
 	}
-	
+
 	public String getFirstName() {
 		return firstName;
 	}
@@ -148,8 +154,8 @@ public class User implements Serializable,Cloneable {
 		return dob;
 	}
 
-	public void setDob(String dob) {
-		this.dob = dob;
+	public void setDob(String string) {
+		this.dob = string;
 	}
 
 	public void setCourse (String course) {
@@ -158,7 +164,9 @@ public class User implements Serializable,Cloneable {
 	public String getCourse() {
 		return this.course;
 	}
-	
+
+
+
 
 
 }

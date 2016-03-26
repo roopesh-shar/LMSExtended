@@ -1,5 +1,6 @@
 package in.co.thingsdata.lms.gui;
 
+import in.co.thingsdata.lms.util.GUIDomain;
 import in.co.thingsdata.lms.util.GUIUtil;
 import in.sg.rpc.server.service.DBService;
 
@@ -17,6 +18,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.nio.charset.MalformedInputException;
+import java.sql.SQLException;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -98,7 +100,12 @@ public class HomeScreen {
 				int row=table.rowAtPoint(e.getPoint());
 				int col= table.columnAtPoint(e.getPoint());
 				String goToPage =table.getValueAt(row,col).toString();
-				GUIUtil.goToRequestedPage(goToPage);
+				try {
+					GUIUtil.goToRequestedPage(goToPage);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				frame.setVisible(false);
 
 			}
@@ -136,9 +143,15 @@ public class HomeScreen {
         color = UIManager.getColor("Table.gridColor");
         MatteBorder border = new MatteBorder(1, 1, 0, 0, color);
         table.setBorder(border);
-        
+        String[] linksArray;
         //String[] linksArray = new String[]{"Course Content", "Training Schedule","Profile","Evaluation","Certificate","Fee Receipt","Service Request","Softwares","Downloads","Uploads","Assignments","E-Quiz","FeedBack"};
-        String[] linksArray = GUIUtil.getContentList();
+        if(GUIDomain.CURRENT_USER_NAME.equalsIgnoreCase("admin")){
+        	linksArray= GUIUtil.getContentList(1);	
+        }
+        else{
+        	linksArray = GUIUtil.getContentList(2);
+        }
+
         for(String link : linksArray) {
         	model.addRow(new Object[]{link});
         }

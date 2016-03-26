@@ -1,6 +1,7 @@
 package in.co.thingsdata.lms.gui;
 
 
+import in.co.thingsdata.lms.util.GUIDomain;
 import in.co.thingsdata.lms.util.GUIUtil;
 import in.sg.rpc.common.domain.User;
 
@@ -18,6 +19,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -43,11 +46,22 @@ public class ProfileScreen {
 	private JLabel lbldob = new JLabel("Date of Birth");
 	private JLabel lblemail = new JLabel("Email Id");
 	private JLabel lblcourse = new JLabel("Registered Course");
+	private JLabel lblcountry = new JLabel("Country");
+	private JLabel lblstate = new JLabel("State");
+	private JLabel lblcity = new JLabel("City");
+	private JLabel lblpincode = new JLabel("Pin Code");
+	private JLabel lblphonenum = new JLabel("Contact Number");
+	
 	private JTextField txtname = new JTextField();
 	private JTextField txtaddress = new JTextField();
 	private JTextField txtdob = new JTextField();
 	private JTextField txtemail = new JTextField();
 	private JTextField txtcourse = new JTextField();
+	private JTextField txtcountry = new JTextField();
+	private JTextField txtstate = new JTextField();
+	private JTextField txtcity = new JTextField();
+	private JTextField txtpincode = new JTextField();
+	private JTextField txtphonenum = new JTextField();
 	private int userId;
 	private String userName;
 	private JButton btnEditProfile = new JButton("Edit Profile");
@@ -80,7 +94,12 @@ public class ProfileScreen {
 		JPanel profilepanel = new JPanel();
 
 		try {
-			user = GUIUtil.getUserDetails(12345);
+			try {
+				user = GUIUtil.getUserDetails(GUIDomain.CURRENT_USER_ID);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			setUserName(user.getName());
 		} catch (NumberFormatException e1) {
 			// TODO Auto-generated catch block
@@ -116,6 +135,9 @@ public class ProfileScreen {
 			//User saveUser = new User(12345);
 			try {
 				saveProfile(user);
+			}  catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -172,6 +194,11 @@ public class ProfileScreen {
 		txtemail.setText(user.getEmailid());
 		txtdob.setText(user.getDob());
 		txtcourse.setText(user.getCourse());
+		txtphonenum.setText(String.valueOf(user.getPhoneNum()));
+		txtcity.setText(user.getCity());
+		txtstate.setText(user.getState());
+		txtcountry.setText(user.getCountry());
+		txtpincode.setText(String.valueOf(user.getPinCode()));
 
 	}
 
@@ -181,24 +208,41 @@ public class ProfileScreen {
 		txtemail.setEditable(false);
 		txtdob.setEditable(false);
 		txtcourse.setEditable(false);
+		txtpincode.setEditable(false);
+		txtcity.setEditable(false);
+		txtstate.setEditable(false);
+		txtcountry.setEditable(false);
+		txtphonenum.setEditable(false);
 	}
 	
 	protected  void setTextEditable() {
-		txtname.setEditable(true);
+		txtname.setEditable(false);
 		txtaddress.setEditable(true);
 		txtemail.setEditable(true);
 		txtdob.setEditable(true);
-		txtcourse.setEditable(true);
+		txtcourse.setEditable(false);
+		txtpincode.setEditable(true);
+		txtcity.setEditable(true);
+		txtstate.setEditable(true);
+		txtcountry.setEditable(true);
+		txtphonenum.setEditable(true);
 	}
 	
-	private void saveProfile(User user) throws NumberFormatException, FileNotFoundException, IOException{
+	private void saveProfile(User user) throws  SQLException, NumberFormatException, FileNotFoundException, IOException{
 		//user.setUserid(12345);
 
 		user.setName(txtname.getText());
 		user.setEmailid(txtemail.getText());
 		user.setDob(txtdob.getText());
-		user.setCourse(txtcourse.getText());
 		user.setAddress(txtaddress.getText());
+		user.setCountry(txtcountry.getText());
+		user.setCity(txtcity.getText());
+		user.setState(txtstate.getText());
+		user.setPhoneNum(Long.valueOf(txtphonenum.getText()));
+		user.setPinCode(Long.valueOf(txtpincode.getText()));
+		user.setUserid(GUIDomain.CURRENT_USER_ID);
+		System.out.println(user.getPhoneNum());
+		
 		boolean status =GUIUtil.saveUserDetails(user);
 		if (status=true){
 			JOptionPane.showMessageDialog(new JFrame("Success"), "Profile Successfully Updated");
@@ -258,28 +302,52 @@ public class ProfileScreen {
 		profiledtlpanel.add(txtname, gBC);
 		gBC.gridx = 0;
 		gBC.gridy = 2;
-		profiledtlpanel.add(lbladdress, gBC);
-		gBC.gridx = 1;
-		gBC.gridy = 2;
-		profiledtlpanel.add(txtaddress, gBC);
-		gBC.gridx = 0;
-		gBC.gridy = 4;
 		profiledtlpanel.add(lbldob, gBC);
 		gBC.gridx = 1;
-		gBC.gridy = 4;
+		gBC.gridy = 2;
 		profiledtlpanel.add(txtdob, gBC);
 		gBC.gridx = 0;
-		gBC.gridy = 6;
+		gBC.gridy = 4;
 		profiledtlpanel.add(lblemail, gBC);
 		gBC.gridx = 1;
-		gBC.gridy = 6;
+		gBC.gridy = 4;
 		profiledtlpanel.add(txtemail, gBC);
 		gBC.gridx = 0;
-		gBC.gridy = 7;
+		gBC.gridy = 6;
 		profiledtlpanel.add(lblcourse, gBC);
 		gBC.gridx = 1;
-		gBC.gridy = 7;
+		gBC.gridy = 6;
 		profiledtlpanel.add(txtcourse, gBC);
+		gBC.gridx = 0;
+		gBC.gridy = 7;
+		profiledtlpanel.add(lblcity, gBC);
+		gBC.gridx = 1;
+		gBC.gridy = 7;
+		profiledtlpanel.add(txtcity, gBC);
+		gBC.gridx = 0;
+		gBC.gridy = 8;
+		profiledtlpanel.add(lblstate, gBC);
+		gBC.gridx = 1;
+		gBC.gridy = 8;
+		profiledtlpanel.add(txtstate, gBC);
+		gBC.gridx = 0;
+		gBC.gridy = 9;
+		profiledtlpanel.add(lblcountry, gBC);
+		gBC.gridx = 1;
+		gBC.gridy = 9;
+		profiledtlpanel.add(txtcountry, gBC);
+		gBC.gridx = 0;
+		gBC.gridy = 10;
+		profiledtlpanel.add(lblpincode, gBC);
+		gBC.gridx = 1;
+		gBC.gridy = 10;
+		profiledtlpanel.add(txtpincode, gBC);
+		gBC.gridx = 0;
+		gBC.gridy = 11;
+		profiledtlpanel.add(lblphonenum, gBC);
+		gBC.gridx = 1;
+		gBC.gridy = 11;
+		profiledtlpanel.add(txtphonenum, gBC);
 
 		// profiledtlpanel.add(lblname);
 		JPanel btnPanel = new JPanel();

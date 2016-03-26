@@ -2,6 +2,7 @@ package in.co.thingsdata.lms.util;
 
 
 import in.co.thingsdata.lms.gui.CourseContentDetails;
+import in.co.thingsdata.lms.gui.EQuiz;
 import in.co.thingsdata.lms.gui.FeeReceipt;
 import in.co.thingsdata.lms.gui.FeedBackScreen;
 import in.co.thingsdata.lms.gui.HomeScreen;
@@ -10,6 +11,7 @@ import in.co.thingsdata.lms.server.Server;
 import in.sg.rpc.common.domain.Course;
 import in.sg.rpc.common.domain.FeeDetails;
 import in.sg.rpc.common.domain.Feedback;
+import in.sg.rpc.common.domain.QuizQuestion;
 import in.sg.rpc.common.domain.User;
 import in.sg.rpc.common.exception.UserLoginException;
 import in.sg.rpc.server.service.DBService;
@@ -158,21 +160,27 @@ public class GUIUtil {
 
 	}
 	
-	public static String[] getContentList(){
+	public static String[] getContentList(int i){
 		initProperties();
-		String contentlist=PropertiesReader.getInstance().getProperty("content.list");
+		String contentlist = null;
+		if(i==1){
+			contentlist=PropertiesReader.getInstance().getProperty("admin.content.list");	
+		}else{
+			contentlist=PropertiesReader.getInstance().getProperty("content.list");
+		}
+		
 		String[] linkcontent = contentlist.split(",");
 		return linkcontent;
 				
 	}
 	
 
-	public static User getUserDetails(int userId) throws NumberFormatException, IOException{
-		return DBService.getInstance().getUserDetails(userId);
+	public static User getUserDetails(int userId) throws NumberFormatException, IOException, SQLException{
+		return GUIDomain.REMOTE_RPC_SERVICE.getUserDetails(userId);
 	}
 	
-	public static boolean saveUserDetails(User user) throws NumberFormatException, FileNotFoundException, IOException{
-		return DBService.getInstance().saveUserDetails(user);
+	public static boolean saveUserDetails(User user) throws NumberFormatException, FileNotFoundException, IOException, SQLException{
+		return GUIDomain.REMOTE_RPC_SERVICE.saveUserDetails(user);
 	}
 
 	public static String getCourseDetailForUser(int userId) throws Exception{
@@ -192,7 +200,7 @@ public class GUIUtil {
 	
 	
 	
-	public static void goToRequestedPage(String goToPage){
+	public static void goToRequestedPage(String goToPage) throws SQLException {
 		if(goToPage.equals("Course Content"))
 		{
 			CourseContentDetails courseContent = new CourseContentDetails(); // Comments to revert
@@ -272,6 +280,11 @@ public class GUIUtil {
 			});
 		}
 		
+		else if(goToPage.equals("E-Quiz")){
+			EQuiz equiz = new EQuiz();
+			
+		
+		}
 		else{
 			HomeScreen homeScreen = new HomeScreen();
 			SwingUtilities.invokeLater(new Runnable() {
@@ -310,6 +323,9 @@ public class GUIUtil {
 		
 	}
 
+	public static QuizQuestion[] getQuizQuestionfromDB (long userId) throws SQLException{
+		 return GUIDomain.REMOTE_RPC_SERVICE.getgetQuizQuestionfromDB(userId);
+	}
 
-
+		
 }

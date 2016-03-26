@@ -121,4 +121,21 @@ ALTER TABLE LMS.PROFILE ADD Pincode number(6);
 -- Alter table Profile to Add User_id and Course ID--
 Alter Table Feedback add user_id number(10) not null;
 alter table profile add Course_id number(10);
+alter table profile add dob date;
+/
+
+
+-- Table for Quiz Questions for course Id--
+CREATE TABLE QUIZ_QUESTION(
+ID number(10) NOT NULL PRIMARY KEY,
+COURSE_ID Number(10) NOT NULL,
+QUESTION_NUMBER number(10) NOT NULL,
+QUESTION VARCHAR(500) not NULL,
+CHOICE_A VARCHAR(300) not NULL,
+CHOICE_B VARCHAR(300) not NULL,
+CHOICE_C VARCHAR(300) not NULL,
+CHOICE_D VARCHAR(300) not NULL,
+CHOICE_CORRECT VARCHAR(300) not NULL
+)
+
 /

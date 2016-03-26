@@ -12,6 +12,7 @@ import javax.jws.soap.SOAPBinding.Style;
 
 import in.sg.rpc.common.domain.FeeDetails;
 import in.sg.rpc.common.domain.Feedback;
+import in.sg.rpc.common.domain.QuizQuestion;
 import in.sg.rpc.common.domain.User;
 import in.sg.rpc.common.exception.UserExistsException;
 import in.sg.rpc.common.exception.UserLoginException;
@@ -34,4 +35,10 @@ public interface RPCService {
 	public Feedback[] getUserFeedback(int userId) throws SQLException;
 	@WebMethod
 	public void submitFeedback(Feedback feedbackSubmit) throws SQLException;
+	@WebMethod
+	public User getUserDetails(int userId) throws SQLException;
+	@WebMethod
+	public boolean saveUserDetails(User user) throws IOException, SQLException;
+	@WebMethod
+	public QuizQuestion[] getgetQuizQuestionfromDB(long userId) throws SQLException;
 }
