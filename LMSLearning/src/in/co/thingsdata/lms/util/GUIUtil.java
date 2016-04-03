@@ -1,12 +1,15 @@
 package in.co.thingsdata.lms.util;
 
-
+import in.co.thingsdata.lms.gui.Certificate;
 import in.co.thingsdata.lms.gui.CourseContentDetails;
 import in.co.thingsdata.lms.gui.EQuiz;
+import in.co.thingsdata.lms.gui.Evaluation;
 import in.co.thingsdata.lms.gui.FeeReceipt;
 import in.co.thingsdata.lms.gui.FeedBackScreen;
 import in.co.thingsdata.lms.gui.HomeScreen;
 import in.co.thingsdata.lms.gui.ProfileScreen;
+import in.co.thingsdata.lms.gui.ServiceRequest;
+import in.co.thingsdata.lms.gui.Software;
 import in.co.thingsdata.lms.server.Server;
 import in.sg.rpc.common.domain.Course;
 import in.sg.rpc.common.domain.FeeDetails;
@@ -46,7 +49,8 @@ import javax.swing.SwingUtilities;
 
 public class GUIUtil {
 
-	public static void addComponents(Container container, Component... components) {
+	public static void addComponents(Container container,
+			Component... components) {
 
 		for (Component comp : components) {
 			container.add(comp);
@@ -65,11 +69,14 @@ public class GUIUtil {
 
 		try {
 
-			GUIDomain.FILE_INPUT_STREAM = new FileInputStream(
-					new File(GUIDomain.propertiesReader.getProperty("file.input.name")));
+			GUIDomain.FILE_INPUT_STREAM = new FileInputStream(new File(
+					GUIDomain.propertiesReader.getProperty("file.input.name")));
 			GUIDomain.FILE_OUTPUT_STREAM = new FileOutputStream(
-					new File(GUIDomain.propertiesReader.getProperty("file.output.name")), true);
-			GUIDomain.FILE_WRITER = new PrintWriter(GUIDomain.FILE_OUTPUT_STREAM);
+					new File(
+							GUIDomain.propertiesReader
+									.getProperty("file.output.name")), true);
+			GUIDomain.FILE_WRITER = new PrintWriter(
+					GUIDomain.FILE_OUTPUT_STREAM);
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -77,24 +84,28 @@ public class GUIUtil {
 
 	}
 
-
 	public static void setupNetworking() {
 
-		 Server server = new Server();
-		 
+		Server server = new Server();
+
 		startDummyServer(server);
-		
+
 		if (!server.isRunning()) {
 			return;
 		}
-		String hostName = GUIDomain.propertiesReader.getProperty("server.host.name");
-		
-		int portNumber = Integer.parseInt(GUIDomain.propertiesReader.getProperty("server.socket.port"));
+		String hostName = GUIDomain.propertiesReader
+				.getProperty("server.host.name");
+
+		int portNumber = Integer.parseInt(GUIDomain.propertiesReader
+				.getProperty("server.socket.port"));
 
 		try (Socket socket = new Socket("localhost", 4444);
-				PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in))) {
+				PrintWriter out = new PrintWriter(socket.getOutputStream(),
+						true);
+				BufferedReader in = new BufferedReader(new InputStreamReader(
+						socket.getInputStream()));
+				BufferedReader stdIn = new BufferedReader(
+						new InputStreamReader(System.in))) {
 			String userInput;
 			while (!(userInput = stdIn.readLine()).equalsIgnoreCase("quit")) {
 				out.println(userInput);
@@ -105,24 +116,25 @@ public class GUIUtil {
 			System.err.println("Don't know about host " + hostName);
 			System.exit(1);
 		} catch (IOException e) {
-			System.err.println("Couldn't get I/O for the connection to " + hostName);
+			System.err.println("Couldn't get I/O for the connection to "
+					+ hostName);
 			System.exit(1);
 		}
 	}
 
 	private static void startDummyServer(Server server) {
 
-    server.start();
-     
-     try {
-		Thread.sleep(5000);
-		server.stop();
-		
-	} catch (InterruptedException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-		
+		server.start();
+
+		try {
+			Thread.sleep(5000);
+			server.stop();
+
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	public static void refreshGUI(JFrame view) {
@@ -142,7 +154,8 @@ public class GUIUtil {
 
 	public static ImageIcon getIcon() {
 		initProperties();
-		return new ImageIcon(PropertiesReader.getInstance().getProperty("icon.image.path"));
+		return new ImageIcon(PropertiesReader.getInstance().getProperty(
+				"icon.image.path"));
 
 	}
 
@@ -159,51 +172,55 @@ public class GUIUtil {
 		GUIDomain.FILE_WRITER.flush();
 
 	}
-	
-	public static String[] getContentList(int i){
+
+	public static String[] getContentList(int i) {
 		initProperties();
 		String contentlist = null;
-		if(i==1){
-			contentlist=PropertiesReader.getInstance().getProperty("admin.content.list");	
-		}else{
-			contentlist=PropertiesReader.getInstance().getProperty("content.list");
+		if (i == 1) {
+			contentlist = PropertiesReader.getInstance().getProperty(
+					"admin.content.list");
+		} else {
+			contentlist = PropertiesReader.getInstance().getProperty(
+					"content.list");
 		}
-		
+
 		String[] linkcontent = contentlist.split(",");
 		return linkcontent;
-				
-	}
-	
 
-	public static User getUserDetails(int userId) throws NumberFormatException, IOException, SQLException{
+	}
+
+	public static User getUserDetails(int userId) throws NumberFormatException,
+			IOException, SQLException {
 		return GUIDomain.REMOTE_RPC_SERVICE.getUserDetails(userId);
 	}
-	
-	public static boolean saveUserDetails(User user) throws NumberFormatException, FileNotFoundException, IOException, SQLException{
+
+	public static boolean saveUserDetails(User user)
+			throws NumberFormatException, FileNotFoundException, IOException,
+			SQLException {
 		return GUIDomain.REMOTE_RPC_SERVICE.saveUserDetails(user);
 	}
 
-	public static String getCourseDetailForUser(int userId) throws Exception{
-		//return DBService.getInstance().getCourseDetailForUser(userId);
+	public static String getCourseDetailForUser(int userId) throws Exception {
+		// return DBService.getInstance().getCourseDetailForUser(userId);
 		return GUIDomain.REMOTE_RPC_SERVICE.getCourseDetailForUser(userId);
-		
 
 	}
-	
-	public static FeeDetails getFeeDetailsforUserid(int userId) throws Exception{
+
+	public static FeeDetails getFeeDetailsforUserid(int userId)
+			throws Exception {
 		return GUIDomain.REMOTE_RPC_SERVICE.getFeeDetailsforUserid(userId);
 	}
 
-	public static int getLoggedInUserId(String userName, String password) throws UserLoginException{
+	public static int getLoggedInUserId(String userName, String password)
+			throws UserLoginException {
 		return GUIDomain.REMOTE_RPC_SERVICE.login(userName, password);
 	}
-	
-	
-	
+
 	public static void goToRequestedPage(String goToPage) throws SQLException {
-		if(goToPage.equals("Course Content"))
-		{
-			CourseContentDetails courseContent = new CourseContentDetails(); // Comments to revert
+		if (goToPage.equals("Course Content")) {
+			CourseContentDetails courseContent = new CourseContentDetails(); // Comments
+																				// to
+																				// revert
 			SwingUtilities.invokeLater(new Runnable() {
 
 				@Override
@@ -221,9 +238,7 @@ public class GUIUtil {
 
 				}
 			});
-		}
-		else if(goToPage.equals("Profile"))
-		{
+		} else if (goToPage.equals("Profile")) {
 			ProfileScreen screen = new ProfileScreen(); // Comments to revert
 			SwingUtilities.invokeLater(new Runnable() {
 
@@ -231,13 +246,10 @@ public class GUIUtil {
 				public void run() {
 
 					screen.go();
-					
 
 				}
 			});
-		}
-		else if(goToPage.equals("Fee Receipt"))
-		{
+		} else if (goToPage.equals("Fee Receipt")) {
 			FeeReceipt feeReceipt = new FeeReceipt();
 			SwingUtilities.invokeLater(new Runnable() {
 
@@ -253,13 +265,12 @@ public class GUIUtil {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
 
 				}
 			});
 		}
-		
-		else if(goToPage.equals("FeedBack")){
+
+		else if (goToPage.equals("FeedBack")) {
 			FeedBackScreen feedBack = new FeedBackScreen();
 			SwingUtilities.invokeLater(new Runnable() {
 
@@ -275,17 +286,89 @@ public class GUIUtil {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-								
+
 				}
 			});
 		}
-		
-		else if(goToPage.equals("E-Quiz")){
-			EQuiz equiz = new EQuiz();
-			
-		
+
+		else if (goToPage.equals("Service Request")) {
+			ServiceRequest servicereq = new ServiceRequest();
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+
+					try {
+						servicereq.go();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				}
+			});
 		}
-		else{
+
+		else if (goToPage.equals("Downloads")) {
+			Software Soft = new Software();
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+
+					try {
+						Soft.go();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				}
+			});
+		}
+
+		else if (goToPage.equals("Evaluation")) {
+			Evaluation eval = new Evaluation(); // Comments to revert
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+
+					try {
+						eval.go();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				}
+			});
+		}
+
+		else if (goToPage.equals("Certificate")) {
+			Certificate screen = new Certificate(); // Comments to revert
+			SwingUtilities.invokeLater(new Runnable() {
+
+				@Override
+				public void run() {
+
+					try {
+						screen.go();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+		}
+
+		else if (goToPage.equals("E-Quiz")) {
+			EQuiz equiz = new EQuiz();
+
+		} else {
 			HomeScreen homeScreen = new HomeScreen();
 			SwingUtilities.invokeLater(new Runnable() {
 
@@ -298,34 +381,33 @@ public class GUIUtil {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-								
+
 				}
 			});
 		}
-			
-			
+
 	}
 
-	
-	
 	public static void registernewUser(User user) throws Exception {
 		GUIDomain.REMOTE_RPC_SERVICE.registerUser(user);
-		
+
 	}
 
-	public static Feedback[] displayUserFeedback(int userId) throws SQLException {
+	public static Feedback[] displayUserFeedback(int userId)
+			throws SQLException {
 		return GUIDomain.REMOTE_RPC_SERVICE.getUserFeedback(userId);
 
 	}
 
-	public static void submitFeedback(Feedback feedbackSubmit) throws SQLException {
+	public static void submitFeedback(Feedback feedbackSubmit)
+			throws SQLException {
 		GUIDomain.REMOTE_RPC_SERVICE.submitFeedback(feedbackSubmit);
-		
+
 	}
 
-	public static QuizQuestion[] getQuizQuestionfromDB (long userId) throws SQLException{
-		 return GUIDomain.REMOTE_RPC_SERVICE.getgetQuizQuestionfromDB(userId);
+	public static QuizQuestion[] getQuizQuestionfromDB(long userId)
+			throws SQLException {
+		return GUIDomain.REMOTE_RPC_SERVICE.getgetQuizQuestionfromDB(userId);
 	}
 
-		
 }
