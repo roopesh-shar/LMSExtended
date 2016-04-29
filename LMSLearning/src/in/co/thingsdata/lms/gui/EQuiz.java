@@ -62,7 +62,9 @@ public class EQuiz {
 		                    if(questionId<quizQuestions.length-1){
 		                               	map.put(questionId,getSelection());
 		                                questionId++;
+		                                
 		                                readqa(questionId);
+		                                resetChoices();
 		                                }
 		                    else {
 		                                map.put(questionId,getSelection());
@@ -83,6 +85,13 @@ public class EQuiz {
 		
 	}
 	
+protected void resetChoices() {
+		choice1.setSelected(false);
+		choice2.setSelected(false);
+		choice3.setSelected(false);
+		choice4.setSelected(false);
+	}
+
 public void loadAllQuestionsForUser() throws SQLException{
 		quizQuestions =GUIUtil.getQuizQuestionfromDB(5);
 	}
@@ -117,6 +126,7 @@ public void loadAllQuestionsForUser() throws SQLException{
         bg.add(choice2);
         bg.add(choice3);
         bg.add(choice4);
+        
         lblmess=new JLabel("Choose a correct anwswer");
         lblmess.setForeground(Color.BLUE);
         lblmess.setFont(new Font("Arial", Font.BOLD, 11));

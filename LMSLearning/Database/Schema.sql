@@ -139,3 +139,13 @@ CHOICE_CORRECT VARCHAR(300) not NULL
 )
 
 /
+
+CREATE TABLE CERTIFICATE (
+id NUMBER(10) NOT NULL PRIMARY KEY,
+user_id NUMBER(10) NOT NULL,
+course_ID number(10) NOT NULL,
+certificate_name varchar(100) NOT NULL,
+Download_link varchar(100) NOT NULL,
+remarks varchar(200)
+)
+/

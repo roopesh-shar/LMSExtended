@@ -1,10 +1,155 @@
 package in.co.thingsdata.lms.gui;
 
-public class AdminUploadModule {
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
+
+import javafx.scene.layout.Border;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+
+import in.co.thingsdata.lms.util.GUIUtil;
+import in.sg.rpc.common.Business;
+
+public class AdminUploadModule extends Screen {
+
+	private JFrame frame;
+	private JButton goHomePageButton;
+	private JMenuBar mainMenu;
+	private JMenu adminMenu;
+	private JMenuItem adminFeeUploadMenu;
+	private JMenuItem adminCourseUploadMenu;
+	private JMenuItem adminCertificateUploadMenu;
+	private JMenuItem adminFeedbackApprovalUploadMenu;
+	private JMenuItem adminScheduleUploadMenu;
+	private JMenuItem adminAssignmentUploadMenu;
+	private JMenuItem adminUserCreationMenu;
+	private static JPanel feeUploadPanel;
+	private JPanel courseUploadPanel;
+	private JFileChooser feeFileChooser;
+	//private JMenuItem[] adminMenuItems = {adminFeeUploadMenu,adminCourseUploadMenu, adminCertificateUploadMenu,adminFeedbackApprovalUploadMenu,adminScheduleUploadMenu,adminAssignmentUploadMenu,adminUserCreationMenu };   
 
 	public static void main(String[] args) {
-		
-
+		AdminUploadModule courseContent = new AdminUploadModule(); 
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					courseContent.open();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
+
+
+	private JMenuBar createMenuForAdminUpload(Container contentPane) {
+		mainMenu = GUIUtil.createMenuBar();
+		adminMenu = GUIUtil.createMenu("Admin Upload Menu");
+		adminCourseUploadMenu = GUIUtil.createJMenuItem("Course Uplaod");
+		adminFeeUploadMenu =GUIUtil.createJMenuItem("Fees Upload");
+		adminCertificateUploadMenu =GUIUtil.createJMenuItem("Certificate Uplaod");
+		adminFeedbackApprovalUploadMenu =GUIUtil.createJMenuItem("Feedback Approval");
+		adminScheduleUploadMenu = GUIUtil.createJMenuItem("Schedule Uplaod");
+		adminAssignmentUploadMenu = GUIUtil.createJMenuItem("Assignment Uplaod");
+		adminUserCreationMenu = GUIUtil.createJMenuItem("User Creation");
+		adminMenu.add(adminCourseUploadMenu);
+		adminMenu.add(adminFeeUploadMenu);
+		adminMenu.add(adminCertificateUploadMenu);
+		adminMenu.add(adminFeedbackApprovalUploadMenu);
+		adminMenu.add(adminScheduleUploadMenu);
+		adminMenu.add(adminAssignmentUploadMenu);
+		adminMenu.add(adminUserCreationMenu);
+		//menuPanel.add(mainMenu);
+		mainMenu.add(adminMenu);
+		writeActionsOnFileMenuItems(adminFeeUploadMenu);
+		writeActionsOnFileMenuItems(adminCourseUploadMenu);
+		writeActionsOnFileMenuItems(adminCertificateUploadMenu);
+		writeActionsOnFileMenuItems(adminFeedbackApprovalUploadMenu);
+		writeActionsOnFileMenuItems(adminScheduleUploadMenu);
+		writeActionsOnFileMenuItems(adminAssignmentUploadMenu);
+		writeActionsOnFileMenuItems(adminUserCreationMenu);
+		
+		
+		return mainMenu;
+		
+		
+	}
+	
+	private static void writeActionsOnFileMenuItems(JMenuItem menuItem){
+		menuItem.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("seleted"+ menuItem.getText());
+				openModuleBasedOnSelection(menuItem.getText());
+			}
+		});
+		
+	}
+	
+/*	private JPanel createFeeUploadPanel(Container contentPane){
+		feeUploadPanel = GUIUtil.createPanel();
+		GUIUtil.addComponents(contentPane, feeUploadPanel, BorderLayout.CENTER);
+		return feeUploadPanel;
+	}*/
+	
+	public static void openModuleBasedOnSelection(String moduleName)
+	{
+		if(moduleName == "Fees Upload"){
+			UploadFileContent getPanel = new UploadFileContent();
+			feeUploadPanel = getPanel.createPanelforUplaod("test");
+			
+		}
+	}
+	
+	@Override
+	public void open() throws Exception {
+		frame = GUIUtil.createFrame("Admin Management");
+		frame.setSize(600, 400);
+		GUIUtil.setDefaultCloseOperation(frame, JFrame.DISPOSE_ON_CLOSE);
+		AdminUploadModule upload = new AdminUploadModule();
+		frame.setJMenuBar(upload.createMenuForAdminUpload(frame));
+		//frame.add(upload.createFeeUploadPanel(frame));
+		GUIUtil.setVisible(frame, true);
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				System.exit(0);
+			}
+		});
+		/*goHomePageButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				frame.setVisible(false);
+				Screen screen = new HomeScreen(); 
+				screen.open(screen);
+			}
+		});*/
+		
+	}
+
+
+
 
 }

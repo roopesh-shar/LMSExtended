@@ -1,14 +1,29 @@
-package in.co.thingsdata.lms.gui;
+/*package in.co.thingsdata.lms.gui;
+
+import in.co.thingsdata.lms.util.GUIDomain;
+import in.co.thingsdata.lms.util.GUIUtil_bkp;
+import in.sg.rpc.client.RPCClient;
+import in.sg.rpc.common.RPCService;
+import in.sg.rpc.common.domain.FeeDetails;
+import in.sg.rpc.common.domain.Feedback;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -16,6 +31,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -23,13 +39,13 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 
-import in.co.thingsdata.lms.util.GUIDomain;
-import in.co.thingsdata.lms.util.GUIUtil;
-import in.sg.rpc.common.domain.Feedback;
+import com.sun.xml.internal.ws.api.Component;
 
-public class FeedBackScreen extends Screen {
+public class FeedBackScreen_bkp {
 
 	private JFrame frame;
 	private JPanel linkPanel;
@@ -49,8 +65,9 @@ public class FeedBackScreen extends Screen {
 	private JPanel feedbackSubmitPanel;
 	private JButton submitFeedbackButton;
 	private JLabel feedbackLabel;
-	private String[] feedbackArea = { "", "Course Feedback", "Trainer Feedback" };
-	private String[] courses = { "", "Core Java", "J2EE", "Big Data And Hadoop", "Android", ".NET" };
+	private String[] feedbackArea = { "", "Course Feedback", "Trainer Feedback","Admin Feedback", "General Feedback"  };
+	private String[] courses = { "", "Core Java", "J2EE",
+			"Big Data And Hadoop", "Android", ".NET" };
 	private JComboBox<String> courseList;
 	private JComboBox<String> feedbackAreaList;
 
@@ -62,7 +79,7 @@ public class FeedBackScreen extends Screen {
 			public void run() {
 
 				try {
-					feedBack.open();
+					feedBack.go();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -76,8 +93,7 @@ public class FeedBackScreen extends Screen {
 
 	}
 
-	@Override
-	public void open() throws Exception {
+	public void go() throws Exception {
 
 		frame = new JFrame("Fee Receipt");
 		linkPanel = new JPanel();
@@ -101,30 +117,50 @@ public class FeedBackScreen extends Screen {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				frame.setVisible(false);
-				HomeScreen screen = new HomeScreen(); // Comments to revert
+				HomeScreen_bkp screen = new HomeScreen_bkp(); // Comments to revert
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-						try {
-							screen.open();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+						screen.go();
 					}
 				});
 			}
 		});
+		
+		submitFeedbackButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Feedback feedbackSubmit = new Feedback();
+				feedbackSubmit.setUserId(GUIDomain.CURRENT_USER_ID);
+				feedbackSubmit.setUserName(GUIDomain.CURRENT_USER_NAME);
+				feedbackSubmit.setFeedbackArea(feedbackAreaList.getSelectedItem().toString());
+				feedbackSubmit.setFeedback(submitFeedbackTxtArea.getText());
+				try {
+					GUIUtil_bkp.submitFeedback(feedbackSubmit);
+					JOptionPane.showMessageDialog(new JFrame("Success"), "Feedback Successfully posted");
+					displayFeedbackTxtArea.append(feedbackSubmit.getUserName());
+					displayFeedbackTxtArea.append(" wrote :");
+					displayFeedbackTxtArea.append(submitFeedbackTxtArea.getText() + "\n\n");
+					submitFeedbackTxtArea.setText("");
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
 	}
 
-	private void addComponents(Container contentPane, JPanel linkPanel) throws Exception {
+	private void addComponents(Container contentPane, JPanel linkPanel)
+			throws Exception {
 
-		/* Adding Header panel */
+		 Adding Header panel 
 		headerPanel = new JPanel();
 		headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
 		cmpinfoPanel = new JPanel();
-		cmpnamelebel = new JLabel(GUIUtil.getHeaderTitle());
+		cmpnamelebel = new JLabel(GUIUtil_bkp.getHeaderTitle());
 		cmpinfoPanel.add(cmpnamelebel);
-		JLabel cmpimage = new JLabel(GUIUtil.getIcon());
+		JLabel cmpimage = new JLabel(GUIUtil_bkp.getIcon());
 		cmpinfoPanel.add(cmpimage);
 
 		headerPanel.add(cmpinfoPanel);
@@ -138,8 +174,10 @@ public class FeedBackScreen extends Screen {
 		contentPane.add(feedbackDisplayPanel, BorderLayout.CENTER);
 		displayFeedbackTxtArea = new JTextArea();
 		displayFeedbackTxtArea.setPreferredSize(new Dimension(600, 400));
+		displayFeedbackTxtArea.setLineWrap(true);
 		displayFeedbackTxtArea.setEditable(false);
-		displayFeedbackTxtArea.setBackground(UIManager.getColor(feedbackDisplayPanel));
+		displayFeedbackTxtArea.setBackground(UIManager
+				.getColor(feedbackDisplayPanel));
 		displayFeedbackTxtArea.setBorder(BorderFactory.createEtchedBorder());
 		feedbackDisplayPanel.add(displayFeedbackTxtArea);
 
@@ -157,11 +195,14 @@ public class FeedBackScreen extends Screen {
 		courseList = new JComboBox<String>(courses);
 
 		JPanel upperPanel = new JPanel();
+		// upperPanel.setLayout(new BoxLayout(upperPanel, BoxLayout.X_AXIS));
 		JPanel lowerPanel = new JPanel();
+		// lowerPanel.setLayout(new BoxLayout(lowerPanel, BoxLayout.X_AXIS));
 
 		upperPanel.add(new JLabel("Select Feedback Area"));
 		upperPanel.add(feedbackAreaList);
-		upperPanel.add(courseList);
+
+		//upperPanel.add(courseList);
 
 		feedbackLabel = new JLabel("Type feedback here");
 		lowerPanel.add(feedbackLabel);
@@ -179,16 +220,20 @@ public class FeedBackScreen extends Screen {
 		feedbackSubmitPanel.add(upperPanel, BorderLayout.NORTH);
 		feedbackSubmitPanel.add(lowerPanel, BorderLayout.CENTER);
 		feedbackSubmitPanel.setPreferredSize(new Dimension(600, 100));
+		RPCClient client = new RPCClient();
+		RPCService stub = null;
+		stub = client.getRemoteService();
+		GUIDomain.REMOTE_RPC_SERVICE = stub;
 
-		Feedback[] feedbackMap = GUIUtil.displayUserFeedback(1);
-		/*
-		 * for(Entry<String, String> m:feedbackMap.entrySet()){
-		 * System.out.println(m.getKey()+" "+m.getValue()); }
-		 */
-		/*
-		 * Iterator<String> itr = feedbackMap.iterator() ; while(itr.hasNext()){
-		 * System.out.println(itr.next()); }
-		 */
+		Feedback[] feedbackMap = GUIUtil_bkp.displayUserFeedback(GUIDomain.CURRENT_USER_ID);
+		for (int i = 0; i < feedbackMap.length; i++) {
+			displayFeedbackTxtArea.append(feedbackMap[i].getUserName());
+			displayFeedbackTxtArea.append(" wrote :");
+			displayFeedbackTxtArea
+					.append(feedbackMap[i].getFeedback() + "\n\n");
+
+		}
+
 	}
 
 	private String user;
@@ -213,3 +258,4 @@ public class FeedBackScreen extends Screen {
 	}
 
 }
+*/

@@ -88,7 +88,7 @@ goHomePageButton.addActionListener (new ActionListener() {
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		frame.setVisible(false);
-		HomeScreen screen = new HomeScreen(); // Comments to revert
+		HomeScreen_bkp screen = new HomeScreen_bkp(); // Comments to revert
 	    SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {

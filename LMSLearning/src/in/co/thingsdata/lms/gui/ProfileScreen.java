@@ -1,162 +1,120 @@
 package in.co.thingsdata.lms.gui;
 
-
-import in.co.thingsdata.lms.util.GUIDomain;
-import in.co.thingsdata.lms.util.GUIUtil;
-import in.sg.rpc.common.domain.User;
-
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.border.MatteBorder;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
 
-public class ProfileScreen {
+import in.co.thingsdata.lms.util.GUIDomain;
+import in.co.thingsdata.lms.util.GUIUtil;
+import in.sg.rpc.common.Business;
+import in.sg.rpc.common.domain.User;
 
+public class ProfileScreen extends Screen {
+
+	private JFrame frame;
+	private JPanel profilepanel;
 	private JLabel lblname = new JLabel("Name");
 	private JLabel lbladdress = new JLabel("Address");
 	private JLabel lbldob = new JLabel("Date of Birth");
 	private JLabel lblemail = new JLabel("Email Id");
 	private JLabel lblcourse = new JLabel("Registered Course");
-	private JLabel lblcountry = new JLabel("Country");
-	private JLabel lblstate = new JLabel("State");
-	private JLabel lblcity = new JLabel("City");
-	private JLabel lblpincode = new JLabel("Pin Code");
-	private JLabel lblphonenum = new JLabel("Contact Number");
-	
 	private JTextField txtname = new JTextField();
 	private JTextField txtaddress = new JTextField();
 	private JTextField txtdob = new JTextField();
 	private JTextField txtemail = new JTextField();
 	private JTextField txtcourse = new JTextField();
-	private JTextField txtcountry = new JTextField();
-	private JTextField txtstate = new JTextField();
-	private JTextField txtcity = new JTextField();
-	private JTextField txtpincode = new JTextField();
-	private JTextField txtphonenum = new JTextField();
 	private int userId;
 	private String userName;
 	private JButton btnEditProfile = new JButton("Edit Profile");
 	private JButton btnSaveProfile = new JButton("Save");
 	private JButton btnBack = new JButton("Back");
 
+	private int i = 100;
 
-	private int i=100;
+	private User user = null;
+	private JPanel detailpanel;
+	private JPanel btnPanel;
+	private JPanel profiledtlpanel;
+	private JPanel imagepanel;
+	private JLabel profileimage;
 
-	User user = null;
 	public static void main(String[] args) {
-
-		ProfileScreen screen = new ProfileScreen(); // Comments to revert
+		ProfileScreen screen = new ProfileScreen(); 
 		SwingUtilities.invokeLater(new Runnable() {
-
 			@Override
 			public void run() {
-
-				screen.go();
-				
-
+				try {
+					screen.open();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		});
-
 	}
+	@Override
+	public void open() throws Exception {
 
-	public void go() {
-
-		JFrame frame = new JFrame("Profile");
-		JPanel profilepanel = new JPanel();
-
+		frame = GUIUtil.createFrame("Profile");
+		profilepanel = GUIUtil.createPanel();
 		try {
-			try {
-				user = GUIUtil.getUserDetails(GUIDomain.CURRENT_USER_ID);
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			user = Business.getInstance().getUserDetails(GUIDomain.CURRENT_USER_ID);
 			setUserName(user.getName());
 		} catch (NumberFormatException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-
-		addComponents(frame.getContentPane(), profilepanel);
+		addComponents(frame.getContentPane());
 		setUserData(user);
 		setTextUneditable();
-		
-		
-		/*Handle Click Edit profile button*/
-	btnEditProfile.addActionListener (new ActionListener() {
-			
+		btnEditProfile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				setTextEditable();
 				btnEditProfile.setVisible(false);
 				btnSaveProfile.setVisible(true);
-			
 			}
-			
 		});
-		
-		
-	btnSaveProfile.addActionListener (new ActionListener() {
-		
-		@Override
-		public void actionPerformed(ActionEvent event) {
-			//User saveUser = new User(12345);
-			try {
-				saveProfile(user);
-			}  catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
+		btnSaveProfile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				try {
+					saveProfile(user);
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				setTextUneditable();
+				btnEditProfile.setVisible(true);
+				btnSaveProfile.setVisible(false);
+
 			}
-			setTextUneditable();
-			btnEditProfile.setVisible(true);
-			btnSaveProfile.setVisible(false);
-			
-		}
-		
-	});
-		
-		
+
+		});
+
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		frame.setSize(800, 600);
@@ -169,22 +127,127 @@ public class ProfileScreen {
 				System.exit(0);
 			}
 		});
-		
-		btnBack.addActionListener (new ActionListener() {
-			
+
+		btnBack.addActionListener(new ActionListener() {
+
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				frame.setVisible(false);
-				HomeScreen screen = new HomeScreen(); // Comments to revert
-			    SwingUtilities.invokeLater(new Runnable() {
+				HomeScreen screen = new HomeScreen();
+				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
-					screen.go();
+						try {
+							screen.open();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
 				});
 			}
-			});
+		});
+	}
 
+	private void addComponents(Container contentPane) {
+		createHeaderPanel(contentPane);
+		createDetailsPanel(contentPane);
+		profiledtlpanel = GUIUtil.createPanel();
+		GUIUtil.setLayout(detailpanel, new BorderLayout());
+		GUIUtil.setBorder(profiledtlpanel, BorderFactory.createEtchedBorder());
+		imagepanel = GUIUtil.createPanel();
+		profileimage = GUIUtil.createLabel(GUIUtil.getIcon());
+		GUIUtil.addComponents(imagepanel, profileimage);
+		GUIUtil.addComponents(detailpanel, profiledtlpanel, BorderLayout.CENTER);
+		GUIUtil.addComponents(detailpanel, imagepanel, BorderLayout.EAST);
+		GUIUtil.setLayout(profiledtlpanel, new GridBagLayout());
+		GridBagConstraints gBC = GUIUtil.gridbagContraint();
+		createProfileDataUI(gBC);
+		createButtonPanel(contentPane);
+	}
+
+	private void createProfileDataUI(GridBagConstraints gBC) {
+		profiledtlpanel.add(lblname, gBC);
+		gBC.gridx = 1;
+		gBC.gridy = 0;
+		profiledtlpanel.add(txtname, gBC);
+		gBC.gridx = 0;
+		gBC.gridy = 2;
+		profiledtlpanel.add(lbladdress, gBC);
+		gBC.gridx = 1;
+		gBC.gridy = 2;
+		profiledtlpanel.add(txtaddress, gBC);
+		gBC.gridx = 0;
+		gBC.gridy = 4;
+		profiledtlpanel.add(lbldob, gBC);
+		gBC.gridx = 1;
+		gBC.gridy = 4;
+		profiledtlpanel.add(txtdob, gBC);
+		gBC.gridx = 0;
+		gBC.gridy = 6;
+		profiledtlpanel.add(lblemail, gBC);
+		gBC.gridx = 1;
+		gBC.gridy = 6;
+		profiledtlpanel.add(txtemail, gBC);
+		gBC.gridx = 0;
+		gBC.gridy = 7;
+		profiledtlpanel.add(lblcourse, gBC);
+		gBC.gridx = 1;
+		gBC.gridy = 7;
+		profiledtlpanel.add(txtcourse, gBC);
+	}
+
+	private void createButtonPanel(Container contentPane) {
+		// GUIUtil1.setLayout(detailpanel, new BorderLayout());
+		btnPanel = GUIUtil.createPanel();
+		GUIUtil.setBorder(btnPanel, BorderFactory.createEtchedBorder());
+		btnSaveProfile.setVisible(false);
+		GUIUtil.addComponents(btnPanel, btnBack, btnEditProfile, btnSaveProfile);
+		GUIUtil.addComponents(contentPane, btnPanel, BorderLayout.SOUTH);
+	}
+
+	private void createDetailsPanel(Container contentPane) {
+		detailpanel = GUIUtil.createPanel();
+		GUIUtil.setBorder(detailpanel, BorderFactory.createEtchedBorder());
+		// createProfiledDtPanel();
+		// GUIUtil1.addComponents(detailpanel, profiledtlpanel,
+		// BorderLayout.CENTER);
+		GUIUtil.addComponents(contentPane, detailpanel, BorderLayout.CENTER);
+	}
+
+	/*
+	 * private void createProfiledDtPanel() { profiledtlpanel =
+	 * GUIUtil1.createPanel(); JPanel imagepanel = GUIUtil1.createPanel();
+	 * profiledtlpanel.setBorder(BorderFactory.createEtchedBorder()); JLabel
+	 * profileimage = new JLabel(new
+	 * ImageIcon("C:/Users/roopesh.sharma/workspace/logo_6.png"));
+	 * imagepanel.add(profileimage); profiledtlpanel.setLayout(new
+	 * GridBagLayout()); GridBagConstraints gBC = new GridBagConstraints();
+	 * gBC.fill = GridBagConstraints.HORIZONTAL; gBC.insets = new Insets(5, 5,
+	 * 5, 5); gBC.gridwidth = 1; gBC.weightx = 1.0; gBC.gridx = 0; gBC.gridy =
+	 * 0; profiledtlpanel.add(lblname, gBC); gBC.gridx = 1; gBC.gridy = 0;
+	 * profiledtlpanel.add(txtname, gBC); gBC.gridx = 0; gBC.gridy = 2;
+	 * profiledtlpanel.add(lbladdress, gBC); gBC.gridx = 1; gBC.gridy = 2;
+	 * profiledtlpanel.add(txtaddress, gBC); gBC.gridx = 0; gBC.gridy = 4;
+	 * profiledtlpanel.add(lbldob, gBC); gBC.gridx = 1; gBC.gridy = 4;
+	 * profiledtlpanel.add(txtdob, gBC); gBC.gridx = 0; gBC.gridy = 6;
+	 * profiledtlpanel.add(lblemail, gBC); gBC.gridx = 1; gBC.gridy = 6;
+	 * profiledtlpanel.add(txtemail, gBC); gBC.gridx = 0; gBC.gridy = 7;
+	 * profiledtlpanel.add(lblcourse, gBC); gBC.gridx = 1; gBC.gridy = 7;
+	 * profiledtlpanel.add(txtcourse, gBC); GUIUtil1.addComponents(detailpanel,
+	 * imagepanel, BorderLayout.EAST); }
+	 */
+	private void createHeaderPanel(Container contentPane) {
+		JPanel headerPanel = GUIUtil.createPanel();
+		GUIUtil.setLayout(headerPanel, new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
+		JPanel cmpinfoPanel = GUIUtil.createPanel();
+		JLabel cmpnamelebel = GUIUtil.createLabel(GUIUtil.getHeaderTitle());
+		GUIUtil.addComponents(cmpinfoPanel, cmpnamelebel);
+		JLabel cmpimage = GUIUtil.createLabel(GUIUtil.getIcon());
+		GUIUtil.addComponents(cmpinfoPanel, cmpimage);
+		GUIUtil.addComponents(headerPanel, cmpinfoPanel);
+		JLabel welcomeLabel = GUIUtil.createLabel("Welcome " + getUserName());
+		GUIUtil.addComponents(headerPanel, welcomeLabel);
+		GUIUtil.addComponents(contentPane, headerPanel, BorderLayout.PAGE_START);
 	}
 
 	private void setUserData(User user) {
@@ -194,172 +257,39 @@ public class ProfileScreen {
 		txtemail.setText(user.getEmailid());
 		txtdob.setText(user.getDob());
 		txtcourse.setText(user.getCourse());
-		txtphonenum.setText(String.valueOf(user.getPhoneNum()));
-		txtcity.setText(user.getCity());
-		txtstate.setText(user.getState());
-		txtcountry.setText(user.getCountry());
-		txtpincode.setText(String.valueOf(user.getPinCode()));
 
 	}
 
-	protected  void setTextUneditable() {
+	protected void setTextUneditable() {
 		txtname.setEditable(false);
 		txtaddress.setEditable(false);
 		txtemail.setEditable(false);
 		txtdob.setEditable(false);
 		txtcourse.setEditable(false);
-		txtpincode.setEditable(false);
-		txtcity.setEditable(false);
-		txtstate.setEditable(false);
-		txtcountry.setEditable(false);
-		txtphonenum.setEditable(false);
 	}
-	
-	protected  void setTextEditable() {
-		txtname.setEditable(false);
+
+	protected void setTextEditable() {
+		txtname.setEditable(true);
 		txtaddress.setEditable(true);
 		txtemail.setEditable(true);
 		txtdob.setEditable(true);
-		txtcourse.setEditable(false);
-		txtpincode.setEditable(true);
-		txtcity.setEditable(true);
-		txtstate.setEditable(true);
-		txtcountry.setEditable(true);
-		txtphonenum.setEditable(true);
+		txtcourse.setEditable(true);
 	}
-	
-	private void saveProfile(User user) throws  SQLException, NumberFormatException, FileNotFoundException, IOException{
-		//user.setUserid(12345);
+
+	private void saveProfile(User user) throws Exception {
+		// user.setUserid(12345);
 
 		user.setName(txtname.getText());
 		user.setEmailid(txtemail.getText());
 		user.setDob(txtdob.getText());
+		user.setCourse(txtcourse.getText());
 		user.setAddress(txtaddress.getText());
-		user.setCountry(txtcountry.getText());
-		user.setCity(txtcity.getText());
-		user.setState(txtstate.getText());
-		user.setPhoneNum(Long.valueOf(txtphonenum.getText()));
-		user.setPinCode(Long.valueOf(txtpincode.getText()));
-		user.setUserid(GUIDomain.CURRENT_USER_ID);
-		System.out.println(user.getPhoneNum());
-		
-		boolean status =GUIUtil.saveUserDetails(user);
-		if (status=true){
+		boolean status = Business.getInstance().saveUserDetails(user);
+		if (status = true) {
 			JOptionPane.showMessageDialog(new JFrame("Success"), "Profile Successfully Updated");
-		}
-		else{
+		} else {
 			JOptionPane.showMessageDialog(new JFrame("Success"), "Error in Profile Update, Please try again later");
 		}
-	}
-
-	private void addComponents(Container contentPane, JPanel profilepanel) {
-
-		/* Adding Header panel */
-		JPanel headerPanel = new JPanel();
-		headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
-		JPanel cmpinfoPanel = new JPanel();
-		JLabel cmpnamelebel = new JLabel(GUIUtil.getHeaderTitle());
-		cmpinfoPanel.add(cmpnamelebel);
-		JLabel cmpimage = new JLabel(GUIUtil.getIcon());
-		cmpinfoPanel.add(cmpimage);
-		headerPanel.add(cmpinfoPanel);
-		JLabel welcomeLabel = new JLabel("Welcome " + getUserName());
-		headerPanel.add(welcomeLabel);
-		contentPane.add(headerPanel, BorderLayout.PAGE_START);
-
-		/* Adding panel for details */
-		JPanel detailpanel = new JPanel();
-		detailpanel.setBorder(BorderFactory.createEtchedBorder());
-		contentPane.add(detailpanel, BorderLayout.CENTER);
-
-		/* Adding Panel for Profile details under detailpanel */
-		JPanel profiledtlpanel = new JPanel();
-		detailpanel.setLayout(new BorderLayout());
-		profiledtlpanel.setBorder(BorderFactory.createEtchedBorder());
-
-		/* Adding imagepanel for Profile Image */
-		JPanel imagepanel = new JPanel();
-
-		JLabel profileimage = new JLabel(new ImageIcon(
-				"C:/Users/roopesh.sharma/workspace/logo_6.png"));
-		imagepanel.add(profileimage);
-
-		detailpanel.add(profiledtlpanel, BorderLayout.CENTER);
-		detailpanel.add(imagepanel, BorderLayout.EAST);
-
-		profiledtlpanel.setLayout(new GridBagLayout());
-		GridBagConstraints gBC = new GridBagConstraints();
-		gBC.fill = GridBagConstraints.HORIZONTAL;
-		gBC.insets = new Insets(5, 5, 5, 5);
-		gBC.gridwidth = 1;
-		gBC.weightx = 1.0;
-		gBC.gridx = 0;
-		gBC.gridy = 0;
-
-		profiledtlpanel.add(lblname, gBC);
-		gBC.gridx = 1;
-		gBC.gridy = 0;
-		profiledtlpanel.add(txtname, gBC);
-		gBC.gridx = 0;
-		gBC.gridy = 2;
-		profiledtlpanel.add(lbldob, gBC);
-		gBC.gridx = 1;
-		gBC.gridy = 2;
-		profiledtlpanel.add(txtdob, gBC);
-		gBC.gridx = 0;
-		gBC.gridy = 4;
-		profiledtlpanel.add(lblemail, gBC);
-		gBC.gridx = 1;
-		gBC.gridy = 4;
-		profiledtlpanel.add(txtemail, gBC);
-		gBC.gridx = 0;
-		gBC.gridy = 6;
-		profiledtlpanel.add(lblcourse, gBC);
-		gBC.gridx = 1;
-		gBC.gridy = 6;
-		profiledtlpanel.add(txtcourse, gBC);
-		gBC.gridx = 0;
-		gBC.gridy = 7;
-		profiledtlpanel.add(lblcity, gBC);
-		gBC.gridx = 1;
-		gBC.gridy = 7;
-		profiledtlpanel.add(txtcity, gBC);
-		gBC.gridx = 0;
-		gBC.gridy = 8;
-		profiledtlpanel.add(lblstate, gBC);
-		gBC.gridx = 1;
-		gBC.gridy = 8;
-		profiledtlpanel.add(txtstate, gBC);
-		gBC.gridx = 0;
-		gBC.gridy = 9;
-		profiledtlpanel.add(lblcountry, gBC);
-		gBC.gridx = 1;
-		gBC.gridy = 9;
-		profiledtlpanel.add(txtcountry, gBC);
-		gBC.gridx = 0;
-		gBC.gridy = 10;
-		profiledtlpanel.add(lblpincode, gBC);
-		gBC.gridx = 1;
-		gBC.gridy = 10;
-		profiledtlpanel.add(txtpincode, gBC);
-		gBC.gridx = 0;
-		gBC.gridy = 11;
-		profiledtlpanel.add(lblphonenum, gBC);
-		gBC.gridx = 1;
-		gBC.gridy = 11;
-		profiledtlpanel.add(txtphonenum, gBC);
-
-		// profiledtlpanel.add(lblname);
-		JPanel btnPanel = new JPanel();
-		btnPanel.setBorder(BorderFactory.createEtchedBorder());
-		btnPanel.add(btnBack);
-		btnPanel.add(btnEditProfile);
-		btnPanel.add(btnSaveProfile);
-		btnSaveProfile.setVisible(false);
-		contentPane.add(btnPanel, BorderLayout.SOUTH);
-		
-		
-		
 	}
 
 	private String getUserName() {
