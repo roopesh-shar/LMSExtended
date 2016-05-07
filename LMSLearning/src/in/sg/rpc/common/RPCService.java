@@ -1,5 +1,6 @@
 package in.sg.rpc.common;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -41,4 +42,8 @@ public interface RPCService {
 	public boolean saveUserDetails(User user) throws IOException, SQLException;
 	@WebMethod
 	public QuizQuestion[] getgetQuizQuestionfromDB(long userId) throws SQLException;
+	@WebMethod
+	public Boolean uploadFileManager(File fileStream, String uploadItem, String courseName);
+	
+	
 }

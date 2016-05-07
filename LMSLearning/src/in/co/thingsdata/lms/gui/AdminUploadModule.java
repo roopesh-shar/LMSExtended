@@ -9,7 +9,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 
-import javafx.scene.layout.Border;
+
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -24,14 +24,17 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
 
 import in.co.thingsdata.lms.util.GUIUtil;
 import in.sg.rpc.common.Business;
 
 public class AdminUploadModule extends Screen {
 
-	private JFrame frame;
+	public static JFrame frame  = GUIUtil.createFrame("Admin Management");;
+	
 	private JButton goHomePageButton;
+	
 	private JMenuBar mainMenu;
 	private JMenu adminMenu;
 	private JMenuItem adminFeeUploadMenu;
@@ -44,6 +47,7 @@ public class AdminUploadModule extends Screen {
 	private static JPanel feeUploadPanel;
 	private JPanel courseUploadPanel;
 	private JFileChooser feeFileChooser;
+	private JPanel uploadPanel = new JPanel();
 	//private JMenuItem[] adminMenuItems = {adminFeeUploadMenu,adminCourseUploadMenu, adminCertificateUploadMenu,adminFeedbackApprovalUploadMenu,adminScheduleUploadMenu,adminAssignmentUploadMenu,adminUserCreationMenu };   
 
 	public static void main(String[] args) {
@@ -82,13 +86,13 @@ public class AdminUploadModule extends Screen {
 		adminMenu.add(adminUserCreationMenu);
 		//menuPanel.add(mainMenu);
 		mainMenu.add(adminMenu);
-		writeActionsOnFileMenuItems(adminFeeUploadMenu);
-		writeActionsOnFileMenuItems(adminCourseUploadMenu);
-		writeActionsOnFileMenuItems(adminCertificateUploadMenu);
-		writeActionsOnFileMenuItems(adminFeedbackApprovalUploadMenu);
-		writeActionsOnFileMenuItems(adminScheduleUploadMenu);
-		writeActionsOnFileMenuItems(adminAssignmentUploadMenu);
-		writeActionsOnFileMenuItems(adminUserCreationMenu);
+		writeActionsOnFileMenuItems(adminFeeUploadMenu, frame);
+		writeActionsOnFileMenuItems(adminCourseUploadMenu, frame);
+		writeActionsOnFileMenuItems(adminCertificateUploadMenu, frame);
+		writeActionsOnFileMenuItems(adminFeedbackApprovalUploadMenu, frame);
+		writeActionsOnFileMenuItems(adminScheduleUploadMenu, frame);
+		writeActionsOnFileMenuItems(adminAssignmentUploadMenu, frame);
+		writeActionsOnFileMenuItems(adminUserCreationMenu, frame);
 		
 		
 		return mainMenu;
@@ -96,13 +100,21 @@ public class AdminUploadModule extends Screen {
 		
 	}
 	
-	private static void writeActionsOnFileMenuItems(JMenuItem menuItem){
+	public  void writeActionsOnFileMenuItems(JMenuItem menuItem, JFrame frame){
 		menuItem.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("seleted"+ menuItem.getText());
-				openModuleBasedOnSelection(menuItem.getText());
+				frame.remove(uploadPanel);
+				//frame.invalidate();
+				uploadPanel = openModuleBasedOnSelection(menuItem.getText());
+				frame.add(uploadPanel, BorderLayout.CENTER);
+				frame.revalidate();
+				//frame.pack();
+				
+				//openModuleBasedOnSelection(menuItem.getText());
+				
 			}
 		});
 		
@@ -114,23 +126,25 @@ public class AdminUploadModule extends Screen {
 		return feeUploadPanel;
 	}*/
 	
-	public static void openModuleBasedOnSelection(String moduleName)
+	public JPanel openModuleBasedOnSelection(String moduleName)
 	{
-		if(moduleName == "Fees Upload"){
+		
 			UploadFileContent getPanel = new UploadFileContent();
-			feeUploadPanel = getPanel.createPanelforUplaod("test");
+			feeUploadPanel = getPanel.createPanelforUplaod(moduleName);
 			
-		}
+		
+		return feeUploadPanel;
 	}
+	
+	
 	
 	@Override
 	public void open() throws Exception {
-		frame = GUIUtil.createFrame("Admin Management");
+		
 		frame.setSize(600, 400);
 		GUIUtil.setDefaultCloseOperation(frame, JFrame.DISPOSE_ON_CLOSE);
 		AdminUploadModule upload = new AdminUploadModule();
 		frame.setJMenuBar(upload.createMenuForAdminUpload(frame));
-		//frame.add(upload.createFeeUploadPanel(frame));
 		GUIUtil.setVisible(frame, true);
 		frame.addWindowListener(new WindowAdapter() {
 			@Override

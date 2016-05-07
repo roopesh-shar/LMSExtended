@@ -424,6 +424,13 @@ public QuizQuestion[] getgetQuizQuestionfromDB(long userId) throws SQLException 
 		return quizquestions;
 	}
 	}
+
+		public Boolean uploadCourseManager(File fileStream, String uploadItem, String courseName) {
+			
+			
+			
+			return null;
+		}
 		
 	
 }

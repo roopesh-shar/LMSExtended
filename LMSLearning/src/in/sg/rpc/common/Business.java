@@ -11,9 +11,12 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import in.co.thingsdata.lms.gui.CourseContentDetails;
 import in.co.thingsdata.lms.gui.FeeReceipt;
@@ -180,6 +183,21 @@ public class Business {
 	}
 	public boolean saveUserDetails(User user) throws Exception {
 		return GUIDomain.REMOTE_RPC_SERVICE.saveUserDetails(user);
+	}
+	public Boolean uploadFileManager(File fileStream, String uploadItem, String courseName) throws IOException {
+		// TODO Auto-generated method stub
+		return GUIDomain.REMOTE_RPC_SERVICE.uploadFileManager(fileStream , uploadItem, courseName);
+		/*BufferedReader reader=null;
+		String line;
+		String fileext = Files.probeContentType(fileStream.toPath());
+		System.out.println("extension is " +fileext );
+		reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileStream)));
+		while (null != (line = reader.readLine())) {
+		
+		System.out.println(line);
+		
+		}*/
+		return true;
 	}
 
 }

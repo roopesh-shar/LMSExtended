@@ -1,5 +1,6 @@
 package in.sg.rpc.server;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -199,6 +200,17 @@ public class RPCServer implements RPCService {
 	@Override
 	public QuizQuestion[] getgetQuizQuestionfromDB(long userId) throws SQLException {
 		return DBService.getInstance().getgetQuizQuestionfromDB(userId);
+	}
+
+	@Override
+	public Boolean uploadFileManager(File fileStream, String uploadItem, String courseName) {
+		if (uploadItem.toString().equals("Course Upload")){
+			return DBService.getInstance().uploadCourseManager(fileStream, uploadItem, courseName);
+		}
+		if (uploadItem.toString().equals("Fee Upload")){
+			return DBService.getInstance().uploadFeeManager(fileStream);
+			
+		}
 	}
 
 

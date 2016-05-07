@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.LayoutManager;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -255,6 +256,10 @@ public class GUIUtil {
 		gBC.gridx = 0;
 		gBC.gridy = 0;
 		return gBC;
+	}
+
+	public static File getFileStreamfromFilePath(String filePath) {
+		return new File(filePath);
 	}
 
 }

@@ -1,4 +1,4 @@
-package in.co.thingsdata.lms.gui;
+/*package in.co.thingsdata.lms.gui;
 
 
 import in.co.thingsdata.lms.util.GUIDomain;
@@ -105,7 +105,7 @@ public class Certificate {
 		
 			private void addComponents(Container contentPane, JPanel linkPanel) throws Exception {
 
-				/* Adding Header panel */
+				 Adding Header panel 
 				headerPanel = new JPanel();
 				headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
 				cmpinfoPanel = new JPanel();
@@ -170,3 +170,4 @@ public class Certificate {
 	
 		
 
+*/

@@ -3,8 +3,11 @@ package in.co.thingsdata.lms.gui;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 import in.co.thingsdata.lms.util.GUIUtil;
+import in.sg.rpc.common.Business;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -23,6 +26,7 @@ public class UploadFileContent {
 	public JPanel fileChooserPanel;
 	public JTextField uploadFileName;
 	public JLabel selectFile;
+	public JLabel moduleName;
 	public JButton browseFileButton;
 	public JButton uploadFileButton;
 	public JComboBox<String> courseList; 
@@ -35,12 +39,17 @@ public class UploadFileContent {
 		uploadContent = GUIUtil.createPanel();
 		uploadFileName = GUIUtil.createTextField(50);
 		selectFile = GUIUtil.createLabel("Select File to Uplaod");
+		moduleName = GUIUtil.createLabel(uploadItem);
 		courseList = GUIUtil.createComboBox(courses);
 		browseFileButton = GUIUtil.createButton("Browse");
 		uploadFileButton = GUIUtil.createButton("Upload");
+		GUIUtil.addComponents(uploadContent, moduleName);
 		GUIUtil.addComponents(uploadContent, selectFile);
 		GUIUtil.addComponents(uploadContent, uploadFileName);
-		GUIUtil.addComponents(uploadContent, courseList);
+		if (uploadItem.contains("Course")){
+			GUIUtil.addComponents(uploadContent, courseList);
+		}
+		
 		GUIUtil.addComponents(uploadContent, browseFileButton);
 		GUIUtil.addComponents(uploadContent, uploadFileButton);
 		browseFileButton.addActionListener(new ActionListener() {
@@ -73,6 +82,26 @@ public class UploadFileContent {
 				
 			}
 		});
+		
+		
+		uploadFileButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String filePath = uploadFileName.getText();
+				File fileStream = GUIUtil.getFileStreamfromFilePath(filePath);
+				String courseName = courseList.getSelectedItem().toString(); 
+				try {
+					Boolean uploadStatus = Business.getInstance().uploadFileManager(fileStream, uploadItem , courseName);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				
+			}
+		});
+		
 		
 		return uploadContent;
 	}

@@ -1,4 +1,4 @@
-package in.co.thingsdata.lms.gui;
+/*package in.co.thingsdata.lms.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -97,11 +97,11 @@ public void loadAllQuestionsForUser() throws SQLException{
 	}
 	
 	public void displayQuestionForQuestionNumber(int questionNumber){
-/*		set Question questionSet[questionNumber-1][0];
+		set Question questionSet[questionNumber-1][0];
 		set choiceA questionSet[questionNumber-1][1];
 		set ChoiceB questionSet[questionNumber-1][2];
 		set ChoiceC questionSet[questionNumber-1][3];
-		Set ChoiceD  questionSet[questionNumber-1][4];	*/
+		Set ChoiceD  questionSet[questionNumber-1][4];	
 	}
 	
 	
@@ -258,3 +258,4 @@ public void loadAllQuestionsForUser() throws SQLException{
 	}
 
 }
+*/
