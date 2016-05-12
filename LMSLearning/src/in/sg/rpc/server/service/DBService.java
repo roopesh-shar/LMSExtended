@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -425,11 +426,47 @@ public QuizQuestion[] getgetQuizQuestionfromDB(long userId) throws SQLException 
 	}
 	}
 
-		public Boolean uploadCourseManager(File fileStream, String uploadItem, String courseName) {
+		public Boolean uploadCourseManager(File fileStream, String uploadItem, String courseName) throws IOException {
+			BufferedReader reader=null;
+			String line;
+			String fileext = Files.probeContentType(fileStream.toPath());
+			System.out.println("extension is " +fileext );
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileStream)));
+			while (null != (line = reader.readLine())) {
+			
+			System.out.println(line);
+			
+			}
 			
 			
+			return true;
+		}
+
+		public Boolean uploadFeeManager(File fileStream) throws IOException {
+			BufferedReader reader=null;
+			String line;
+			String fileext = Files.probeContentType(fileStream.toPath());
+			System.out.println("extension is " +fileext );
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileStream)));
+			while (null != (line = reader.readLine())) {
 			
-			return null;
+			System.out.println(line);
+			
+			}
+			
+			return true;
+		}
+
+		public Boolean uploadManager(File fileStream, String uploadItem,String courseName) throws IOException {
+			Boolean status = false;
+			if (uploadItem.toString().equalsIgnoreCase("Fee Upload")){
+				status =  DBService.getInstance().uploadFeeManager(fileStream);
+			}
+			if (uploadItem.toString().equalsIgnoreCase("Course Upload")){
+				status = DBService.getInstance().uploadCourseManager(fileStream, uploadItem, courseName);
+			}
+			
+			return status;
 		}
 		
 	

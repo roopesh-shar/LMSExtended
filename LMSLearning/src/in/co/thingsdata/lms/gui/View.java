@@ -28,56 +28,58 @@ import in.co.thingsdata.lms.util.GUIDomain;
 import in.co.thingsdata.lms.util.GUIUtil;
 import in.co.thingsdata.lms.util.SpringUtilities;
 import in.sg.rpc.client.RPCClient;
+import in.sg.rpc.common.Business;
 import in.sg.rpc.common.RPCService;
 import in.sg.rpc.common.domain.User;
 
-public class View  extends JFrame {
-	
+public class View extends JFrame {
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private JFrame view;
-	private String[] courses = {"", "Core Java", "J2EE", "Big Data And Hadoop", "Android", ".NET" };
+	private String[] courses = { "", "Core Java", "J2EE",
+			"Big Data And Hadoop", "Android", ".NET" };
 	private String courseSelected;
-	
-	public void setView (JFrame view) {
-		
+
+	public void setView(JFrame view) {
+
 		this.view = view;
-		
+
 	}
 
 	public void go() {
 
-		GUIUtil.initProperties();
+		Business.getInstance().initProperties();
 		initializeGUI();
-		GUIUtil.setupNetworking();
-		GUIUtil.setupFileIO();
+		Business.getInstance().setupNetworking();
+		Business.getInstance().setupFileIO();
 		GUIUtil.refreshGUI(view);
-		
+
 	}
 
 	private void initializeGUI() {
-		
+
 		JPanel panelHeader = new JPanel();
 		JPanel panelDetails = new JPanel(new SpringLayout());
 		JPanel panelButtons = new JPanel();
-		
+
 		panelHeader.setLayout(new FlowLayout(SwingConstants.LEFT, 8, 8));
-		
+
 		JLabel labelHeaderName = new JLabel(GUIUtil.getHeaderTitle());
-		
+
 		JLabel labelHeaderImage = new JLabel(GUIUtil.getIcon());
 		labelHeaderName.setPreferredSize(new Dimension(500, 30));
 		labelHeaderImage.setPreferredSize(new Dimension(400, 100));
 		labelHeaderName.setForeground(Color.blue);
 		labelHeaderName.setFont(new Font("Serif", Font.BOLD, 20));
-		
+
 		GUIUtil.addComponents(panelHeader, labelHeaderName, labelHeaderImage);
-		
+
 		view.getContentPane().add(panelHeader, BorderLayout.PAGE_START);
-		
+
 		JLabel labelCourse = new JLabel("Course:");
 		JLabel labelName = new JLabel("User Name:");
 		JLabel labelEmail = new JLabel("Email:");
@@ -88,8 +90,7 @@ public class View  extends JFrame {
 		JLabel labelAddress = new JLabel("Address:");
 		JLabel labelCity = new JLabel("City:");
 		JLabel labelPinCode = new JLabel("Pin Code:");
-		
-		
+
 		JComboBox<String> courseList = new JComboBox<String>(courses);
 		JTextField textFieldName = new JTextField();
 		JTextField textFieldEmail = new JTextField();
@@ -100,84 +101,85 @@ public class View  extends JFrame {
 		JTextField textFieldState = new JTextField();
 		JTextField textFieldCity = new JTextField();
 		JTextField textFieldPinCode = new JTextField();
-		
-		GUIUtil.addComponents (panelDetails,labelCourse, courseList, labelName,textFieldName, labelEmail, textFieldEmail, labelPassword, fieldPassword, labelPhoneNumber, 
-					textFieldPhoneNumber,labelCountry,textFieldCountry,labelState, textFieldState,labelCity, textFieldCity,labelAddress, textFieldAddress,labelPinCode,  textFieldPinCode);
-		
-		SpringUtilities.makeCompactGrid (panelDetails,
-										10, 2, 		 //rows, cols
-										20, 20,        //initX, initY
-										5, 5);       //xPad, yPad
-/*courseList.addActionListener (new ActionListener() {
-			
-			@Override
-			public void actionPerformed (ActionEvent e) {
-				
-				String course = String.valueOf(((JComboBox)e.getSource()).getSelectedItem());
-				
-				GUIDomain.STUDENT_COURSE courseSelected = course;
-				if(courseList.getSelectedIndex()!=0){
-					System.out.println("selection index"+courseList.getSelectedIndex());
-					//System.out.println("You have selected " +  course + " course");	
-				}
-				
-			}
-		});
-*/
+
+		GUIUtil.addComponents(panelDetails, labelCourse, courseList, labelName,
+				textFieldName, labelEmail, textFieldEmail, labelPassword,
+				fieldPassword, labelPhoneNumber, textFieldPhoneNumber,
+				labelCountry, textFieldCountry, labelState, textFieldState,
+				labelCity, textFieldCity, labelAddress, textFieldAddress,
+				labelPinCode, textFieldPinCode);
+
+		SpringUtilities.makeCompactGrid(panelDetails, 10, 2, // rows, cols
+				20, 20, // initX, initY
+				5, 5); // xPad, yPad
+		/*
+		 * courseList.addActionListener (new ActionListener() {
+		 * 
+		 * @Override public void actionPerformed (ActionEvent e) {
+		 * 
+		 * String course =
+		 * String.valueOf(((JComboBox)e.getSource()).getSelectedItem());
+		 * 
+		 * GUIDomain.STUDENT_COURSE courseSelected = course;
+		 * if(courseList.getSelectedIndex()!=0){
+		 * System.out.println("selection index"+courseList.getSelectedIndex());
+		 * //System.out.println("You have selected " + course + " course"); }
+		 * 
+		 * } });
+		 */
 		view.getContentPane().add(panelDetails, BorderLayout.CENTER);
-		
+
 		JButton buttonSubmit = new JButton("Submit");
 		JButton buttonClear = new JButton("Clear");
-		
-		panelButtons.setLayout(new BoxLayout(panelButtons, BoxLayout.LINE_AXIS));
+
+		panelButtons
+				.setLayout(new BoxLayout(panelButtons, BoxLayout.LINE_AXIS));
 		panelButtons.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
-		
+
 		buttonSubmit.addActionListener(new ActionListener() {
-			
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				RPCClient client = new RPCClient();
 				RPCService stub = null;
 				try {
-					stub =client.getRemoteService();
-				
-				GUIDomain.REMOTE_RPC_SERVICE = stub; 
-				String userType = "STUDENT";
-				User user = new User();
-				user.setName(textFieldName.getText());
-				char[] pass = fieldPassword.getPassword();
-				String password = new String (pass);
-				user.setPassword(password);
-				user.setEmailid(textFieldEmail.getText());
-				user.setPhoneNum(Long.valueOf(textFieldPhoneNumber.getText()));
-				user.setAddress(textFieldAddress.getText());
-				user.setCity(textFieldCity.getText());
-				user.setCountry(textFieldCountry.getText());
-				user.setState(textFieldState.getText());
-				user.setCourse(courseList.getSelectedItem().toString());
-				user.setUserType(userType);
-				GUIUtil.registernewUser(user);
+					stub = client.getRemoteService();
+
+					GUIDomain.REMOTE_RPC_SERVICE = stub;
+					String userType = "STUDENT";
+					User user = new User();
+					user.setName(textFieldName.getText());
+					char[] pass = fieldPassword.getPassword();
+					String password = new String(pass);
+					user.setPassword(password);
+					user.setEmailid(textFieldEmail.getText());
+					user.setPhoneNum(Long.valueOf(textFieldPhoneNumber
+							.getText()));
+					user.setAddress(textFieldAddress.getText());
+					user.setCity(textFieldCity.getText());
+					user.setCountry(textFieldCountry.getText());
+					user.setState(textFieldState.getText());
+					user.setCourse(courseList.getSelectedItem().toString());
+					user.setUserType(userType);
+					GUIUtil.registernewUser(user);
 				} catch (MalformedURLException e2) {
 					// TODO Auto-generated catch block
 					e2.printStackTrace();
-				}
-				 catch (Exception e1) {
+				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-						
-					
+
 				view.getContentPane().add(panelHeader, BorderLayout.PAGE_END);
-				
+
 			}
 		});
-		
-		 buttonClear.addActionListener(new ActionListener() {
-			
+
+		buttonClear.addActionListener(new ActionListener() {
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+
 				textFieldName.setText("");
 				fieldPassword.setText("");
 				textFieldEmail.setText("");
@@ -188,20 +190,22 @@ public class View  extends JFrame {
 				textFieldState.setText("");
 				textFieldPinCode.setText("");
 				courseList.setSelectedIndex(0);
-				
+
 			}
 		});
-		
-		GUIUtil.addComponents(panelButtons, Box.createHorizontalGlue(),buttonSubmit,Box.createRigidArea(new Dimension(10, 0)), buttonClear);
-		
+
+		GUIUtil.addComponents(panelButtons, Box.createHorizontalGlue(),
+				buttonSubmit, Box.createRigidArea(new Dimension(10, 0)),
+				buttonClear);
+
 		view.getContentPane().add(panelButtons, BorderLayout.PAGE_END);
-		
+
 		view.setDefaultCloseOperation(View.DISPOSE_ON_CLOSE);
-		
+
 		view.pack();
-		
+
 		view.setVisible(true);
-		
+
 	}
 
 }

@@ -1,4 +1,4 @@
-/*package in.co.thingsdata.lms.gui;
+package in.co.thingsdata.lms.gui;
 
 
 import java.awt.BorderLayout;
@@ -26,7 +26,7 @@ import javax.swing.table.TableColumnModel;
 
 import in.co.thingsdata.lms.util.GUIUtil;
 
-public class Evaluation {
+public class Evaluation extends Screen {
 	
 	private JFrame frame;
 	private JPanel linkPanel;
@@ -51,10 +51,7 @@ public class Evaluation {
 			@Override
 			public void run() {
 				try{
-					eval.go();
-				}
-				catch (IOException e){
-					e.printStackTrace();
+					eval.open(eval);
 				}
 				catch (Exception e){
 				e.printStackTrace();
@@ -62,7 +59,8 @@ public class Evaluation {
 			}
 		});
 	}
-public void go() throws Exception{
+	private void initializeEvaluationScreen() {
+
 		
 	frame = new JFrame ("Evaluation");
 	linkPanel = new JPanel();
@@ -88,11 +86,11 @@ goHomePageButton.addActionListener (new ActionListener() {
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		frame.setVisible(false);
-		HomeScreen_bkp screen = new HomeScreen_bkp(); // Comments to revert
+		HomeScreen screen = new HomeScreen(); // Comments to revert
 	    SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-			screen.go();
+			screen.open(screen);
 			}
 		});
 	}
@@ -102,7 +100,7 @@ goHomePageButton.addActionListener (new ActionListener() {
 
 	private void addComponents(Container contentPane, JPanel linkPanel) {
 		
-	 Adding Header panel 
+//	 Adding Header panel 
 		headerPanel = new JPanel();
 		headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
 		cmpinfoPanel = new JPanel();
@@ -116,7 +114,7 @@ goHomePageButton.addActionListener (new ActionListener() {
 		headerPanel.add(welcomeLabel);
 		contentPane.add(headerPanel, BorderLayout.PAGE_START);
 	
-	 Adding Header Panel	
+	// Adding Header Panel	
 		DefaultTableModel model = new DefaultTableModel(); 
          table = new JTable(model); 
         model.addColumn("Col1"); 
@@ -126,7 +124,7 @@ goHomePageButton.addActionListener (new ActionListener() {
         MatteBorder border = new MatteBorder(1, 1, 0, 0, color);
         table.setBorder(border);
      
-	 Adding Center Panel for Trainer Evalution 	
+	// Adding Center Panel for Trainer Evalution 	
 		JPanel centerpanel = new JPanel();
 		centerpanel.setBorder(BorderFactory.createEtchedBorder());
 		contentPane.add(centerpanel,BorderLayout.CENTER);
@@ -138,14 +136,14 @@ JTable table1 = new JTable(rowData, columnNames);
 
 JScrollPane scrollPane = new JScrollPane(table1);
 //frame.add(scrollPane, BorderLayout.CENTER);
-	Adding Trainer Evalution in Center panel	
+//	Adding Trainer Evalution in Center panel	
 		JPanel trainerpanel = new JPanel();
 		JLabel noticelabel = new JLabel("Trainer Evalution");
 		trainerpanel.add(noticelabel);
 		trainerpanel.setBorder(BorderFactory.createEtchedBorder());
 		centerpanel.add(trainerpanel);
 		
-		Adding Class Panel in Center panel	
+	//	Adding Class Panel in Center panel	
 		JPanel classspanel = new JPanel();
 		JLabel classslabel = new JLabel(" Classs Evalution");
 		classspanel.setBorder(BorderFactory.createEtchedBorder());
@@ -175,7 +173,12 @@ JScrollPane scrollPane = new JScrollPane(table1);
 		this.user = user;
 		
 	}
+	@Override
+	protected void open() throws Exception {
+		initializeEvaluationScreen();
+		
+	}
+
 	
 }
 
-*/

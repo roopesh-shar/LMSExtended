@@ -18,7 +18,11 @@ import java.sql.SQLException;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import in.co.thingsdata.lms.gui.AdminUploadModule;
+import in.co.thingsdata.lms.gui.Certificate;
 import in.co.thingsdata.lms.gui.CourseContentDetails;
+import in.co.thingsdata.lms.gui.EQuiz;
+import in.co.thingsdata.lms.gui.Evaluation;
 import in.co.thingsdata.lms.gui.FeeReceipt;
 import in.co.thingsdata.lms.gui.FeedBackScreen;
 import in.co.thingsdata.lms.gui.HomeScreen;
@@ -26,10 +30,13 @@ import in.co.thingsdata.lms.gui.HomeScreen;
 import in.co.thingsdata.lms.gui.ProfileScreen;
 import in.co.thingsdata.lms.gui.ProfileScreen;
 import in.co.thingsdata.lms.gui.Screen;
+import in.co.thingsdata.lms.gui.ServiceRequest;
+import in.co.thingsdata.lms.gui.Software;
 import in.co.thingsdata.lms.server.Server;
 import in.co.thingsdata.lms.util.GUIDomain;
 import in.co.thingsdata.lms.util.PropertiesReader;
 import in.sg.rpc.client.RPCClient;
+import in.sg.rpc.common.domain.QuizQuestion;
 import in.sg.rpc.common.domain.User;
 import in.sg.rpc.common.exception.UserLoginException;
 import in.sg.rpc.server.service.DBService;
@@ -168,6 +175,30 @@ public class Business {
 			Screen feedBack = new FeedBackScreen();
 			feedBack.open(feedBack);
 		} 
+		else if (goToPage.equals("Admin Management")) {
+			Screen adminScreen = new AdminUploadModule();
+			adminScreen.open(adminScreen);
+		} 
+		else if (goToPage.equals("E-Quiz")) {
+			Screen equiz = new EQuiz();
+			equiz.open(equiz);
+		}	
+		else if (goToPage.equals("Certificate")) {
+			Screen certificate = new Certificate();
+			certificate.open(certificate);
+		}	
+		else if (goToPage.equals("Evaluation")) {
+			Screen evaluation = new Evaluation();
+			evaluation.open(evaluation);
+		}	
+		else if (goToPage.equals("Service Request")) {
+			Screen service = new ServiceRequest();
+			service.open(service);
+		}	
+		else if (goToPage.equals("Downloads")) {
+			Screen software = new Software();
+			software.open(software);
+		}	
 		else {
 			Screen homeScreen = new HomeScreen();
 			homeScreen.open(homeScreen);
@@ -187,17 +218,13 @@ public class Business {
 	public Boolean uploadFileManager(File fileStream, String uploadItem, String courseName) throws IOException {
 		// TODO Auto-generated method stub
 		return GUIDomain.REMOTE_RPC_SERVICE.uploadFileManager(fileStream , uploadItem, courseName);
-		/*BufferedReader reader=null;
-		String line;
-		String fileext = Files.probeContentType(fileStream.toPath());
-		System.out.println("extension is " +fileext );
-		reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileStream)));
-		while (null != (line = reader.readLine())) {
 		
-		System.out.println(line);
 		
-		}*/
-		return true;
+	}
+	
+	public QuizQuestion[] getQuizQuestionfromDB(long userId)
+			throws SQLException {
+		return GUIDomain.REMOTE_RPC_SERVICE.getgetQuizQuestionfromDB(userId);
 	}
 
 }

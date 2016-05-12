@@ -102,9 +102,17 @@ public class GUIUtil {
 		frame.setSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 		return frame;
 	}
+	
+	public static void setFrameSize(JFrame frame , int x, int y){
+		frame.setSize(x, y);
+	}
 
 	public static void setDefaultCloseOperation(JFrame frame, int disposeOnClose) {
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	}
+	
+	public static void setForeGroundColor(Component comp, Color color ){
+		comp.setForeground(color);
 	}
 
 	public static void setResizable(JFrame frame, boolean value) {

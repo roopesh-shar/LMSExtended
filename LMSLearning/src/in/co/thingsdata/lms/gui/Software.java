@@ -5,6 +5,7 @@ import in.co.thingsdata.lms.util.GUIDomain;
 import in.co.thingsdata.lms.util.GUIUtil;
 
 
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -29,7 +30,7 @@ import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
-public class Software {
+public class Software extends Screen {
 
 	private JFrame frame;
 	private JPanel linkPanel;
@@ -52,10 +53,7 @@ public class Software {
 			public void run() {
 
 				try {
-					cer.go();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					cer.open(cer);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -66,7 +64,9 @@ public class Software {
 
 	}
 	
-			public void go() throws Exception {
+		protected void open() throws Exception {
+
+
 
 			frame = new JFrame("Softwares");
 			linkPanel = new JPanel();
@@ -91,11 +91,11 @@ public class Software {
 				@Override
 				public void actionPerformed(ActionEvent event) {
 					frame.setVisible(false);
-					HomeScreen_bkp screen = new HomeScreen_bkp(); // Comments to revert
+					HomeScreen screen = new HomeScreen(); // Comments to revert
 				    SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {
-						screen.go();
+						screen.open(screen);
 						}
 					});
 				}
@@ -162,6 +162,8 @@ public class Software {
 				this.user = GUIDomain.CURRENT_USER_NAME;
 
 			}
+
+
 
 	
 	

@@ -43,7 +43,7 @@ public interface RPCService {
 	@WebMethod
 	public QuizQuestion[] getgetQuizQuestionfromDB(long userId) throws SQLException;
 	@WebMethod
-	public Boolean uploadFileManager(File fileStream, String uploadItem, String courseName);
+	public Boolean uploadFileManager(File fileStream, String uploadItem, String courseName) throws IOException;
 	
 	
 }

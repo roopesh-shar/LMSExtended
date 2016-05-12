@@ -5,6 +5,8 @@ import in.co.thingsdata.lms.util.GUIDomain;
 import in.co.thingsdata.lms.util.GUIUtil;
 
 
+
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -29,7 +31,7 @@ import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
-public class ServiceRequest {
+public class ServiceRequest extends Screen{
 
 	private JFrame frame;
 	private JPanel linkPanel;
@@ -53,10 +55,7 @@ public class ServiceRequest {
 			public void run() {
 
 				try {
-					ser.go();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					ser.open(ser);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -67,7 +66,8 @@ public class ServiceRequest {
 
 	}
 	
-			public void go() throws Exception {
+	private void initializeServiceRequestScreen() throws Exception {
+
 
 			frame = new JFrame("Service Request");
 			linkPanel = new JPanel();
@@ -96,7 +96,7 @@ public class ServiceRequest {
 				    SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {
-						screen.go();
+						screen.open(screen);
 						}
 					});
 				}
@@ -189,6 +189,14 @@ public class ServiceRequest {
 				this.user = GUIDomain.CURRENT_USER_NAME;
 
 			}
+
+			@Override
+			protected void open() throws Exception {
+				initializeServiceRequestScreen();
+				
+			}
+
+
 
 	
 	

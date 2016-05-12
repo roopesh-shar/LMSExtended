@@ -1,8 +1,10 @@
-/*package in.co.thingsdata.lms.gui;
+package in.co.thingsdata.lms.gui;
 
 
 import in.co.thingsdata.lms.util.GUIDomain;
 import in.co.thingsdata.lms.util.GUIUtil;
+
+
 
 
 import java.awt.BorderLayout;
@@ -29,7 +31,7 @@ import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
-public class Certificate {
+public class Certificate extends Screen{
 
 	private JFrame frame;
 	private JPanel linkPanel;
@@ -52,10 +54,7 @@ public class Certificate {
 			public void run() {
 
 				try {
-					cer.go();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					cer.open(cer);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -66,8 +65,7 @@ public class Certificate {
 
 	}
 	
-			public void go() throws Exception {
-
+	private void initializeCertificateScreen() throws Exception {
 			frame = new JFrame("Certificate");
 			linkPanel = new JPanel();
 
@@ -95,7 +93,7 @@ public class Certificate {
 				    SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {
-						screen.go();
+						screen.open(screen);
 						}
 					});
 				}
@@ -105,7 +103,7 @@ public class Certificate {
 		
 			private void addComponents(Container contentPane, JPanel linkPanel) throws Exception {
 
-				 Adding Header panel 
+
 				headerPanel = new JPanel();
 				headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
 				cmpinfoPanel = new JPanel();
@@ -163,6 +161,14 @@ public class Certificate {
 
 			}
 
+			@Override
+			protected void open() throws Exception {
+				initializeCertificateScreen();
+				
+			}
+
+
+
 	
 	
 	}
@@ -170,4 +176,3 @@ public class Certificate {
 	
 		
 
-*/

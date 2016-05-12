@@ -203,14 +203,19 @@ public class RPCServer implements RPCService {
 	}
 
 	@Override
-	public Boolean uploadFileManager(File fileStream, String uploadItem, String courseName) {
+	public Boolean uploadFileManager(File fileStream, String uploadItem, String courseName) throws IOException {
+		/*boolean status = false;
 		if (uploadItem.toString().equals("Course Upload")){
-			return DBService.getInstance().uploadCourseManager(fileStream, uploadItem, courseName);
+			System.out.println(uploadItem.toString());
+			status = DBService.getInstance().uploadCourseManager(fileStream, uploadItem, courseName);
 		}
 		if (uploadItem.toString().equals("Fee Upload")){
-			return DBService.getInstance().uploadFeeManager(fileStream);
-			
+			status = DBService.getInstance().uploadFeeManager(fileStream);
+			System.out.println();
 		}
+		return status;*/
+		
+		return DBService.getInstance().uploadManager(fileStream, uploadItem,courseName);
 	}
 
 
