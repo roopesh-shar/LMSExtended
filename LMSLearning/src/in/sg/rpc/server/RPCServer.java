@@ -1,5 +1,6 @@
 package in.sg.rpc.server;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -21,6 +22,7 @@ import in.sg.rpc.common.UserRegistration;
 import in.sg.rpc.common.domain.Course;
 import in.sg.rpc.common.domain.FeeDetails;
 import in.sg.rpc.common.domain.Feedback;
+import in.sg.rpc.common.domain.QuizQuestion;
 import in.sg.rpc.common.domain.User;
 import in.sg.rpc.common.exception.UserExistsException;
 import in.sg.rpc.common.exception.UserLoginException;
@@ -177,6 +179,32 @@ public class RPCServer implements RPCService {
 			t.printStackTrace();
 			throw t;
 		}
+	}
+
+	@Override
+	public void submitFeedback(Feedback feedbackSubmit) throws SQLException {
+		DBService.getInstance().submitFeedback(feedbackSubmit);
+		
+	}
+
+	@Override
+	public User getUserDetails(int userId) throws SQLException {
+		return DBService.getInstance().getUserDetails(userId);
+	}
+
+	@Override
+	public boolean saveUserDetails(User user) throws IOException, SQLException {
+		return DBService.getInstance().saveUserDetails(user);
+	}
+
+	@Override
+	public QuizQuestion[] getgetQuizQuestionfromDB(long userId) throws SQLException {
+		return DBService.getInstance().getgetQuizQuestionfromDB(userId);
+	}
+
+	@Override
+	public Boolean uploadFileManager(File fileStream, String uploadItem, String courseName) throws IOException {
+		return DBService.getInstance().uploadManager(fileStream, uploadItem,courseName);
 	}
 
 

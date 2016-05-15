@@ -48,3 +48,11 @@ commit;
 insert into fees values (1,1,1,50000,40000,10000);
 commit;
 /
+
+insert into LMS.Course values((select max(id) from LMS.course)+1, 'Core Java', 60000, 120, 'test Core Java content') ; 
+insert into LMS.Course values((select max(id) from LMS.course)+1, 'J2EE', 60000, 120, 'test J2EE content') ; 
+insert into LMS.Course values((select max(id) from LMS.course)+1, 'Big Data And Hadoop', 60000, 120, 'test Big Data And Hadoop content') ;
+insert into LMS.Course values((select max(id) from LMS.course)+1, 'Android', 60000, 120, 'test Android content') ;
+insert into LMS.Course values((select max(id) from LMS.course)+1, '.NET', 60000, 120, 'test .NET content') ;
+commit;
+/

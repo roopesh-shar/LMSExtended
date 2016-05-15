@@ -6,7 +6,6 @@ import in.co.thingsdata.lms.util.GUIUtil;
 
 
 
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -31,7 +30,7 @@ import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
-public class Certificate extends Screen{
+public class Software extends Screen {
 
 	private JFrame frame;
 	private JPanel linkPanel;
@@ -41,13 +40,13 @@ public class Certificate extends Screen{
 	private JLabel welcomeLabel;
 	private JButton goHomePageButton;
 	private JPanel btnpnl;
-	private JButton printButton;
+	private JButton okButton;
 	private JTable table;
 	private DefaultTableModel model;
 	private Color color;
 	
 	public static void main(String[] args) {
-		Certificate cer = new Certificate(); // Comments to revert
+		Software cer = new Software(); // Comments to revert
 		SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
@@ -65,8 +64,11 @@ public class Certificate extends Screen{
 
 	}
 	
-	private void initializeCertificateScreen() throws Exception {
-			frame = new JFrame("Certificate");
+		protected void open() throws Exception {
+
+
+
+			frame = new JFrame("Softwares");
 			linkPanel = new JPanel();
 
 			addComponents(frame.getContentPane(), linkPanel);
@@ -103,7 +105,7 @@ public class Certificate extends Screen{
 		
 			private void addComponents(Container contentPane, JPanel linkPanel) throws Exception {
 
-
+				/* Adding Header panel */
 				headerPanel = new JPanel();
 				headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
 				cmpinfoPanel = new JPanel();
@@ -130,17 +132,17 @@ public class Certificate extends Screen{
 				btnpnl.setBorder(BorderFactory.createEtchedBorder());
 				contentPane.add(btnpnl,BorderLayout.SOUTH);
 				
-				printButton = new JButton("  Print  ");
+				okButton = new JButton("OK");
 				goHomePageButton = new JButton("Back");
 				
-				btnpnl.add(printButton);
+				btnpnl.add(okButton);
 				btnpnl.add(goHomePageButton);
 				
 				
 				
 				Object rowData[][] = { {" ", ""," "," "," "," "," "," "," "," " }
 	    		};
-	    Object columnNames[] = { "S.No.","Course Name", "Certificate Name","Download","Remarks" };
+	    Object columnNames[] = { "Software Name","Download","Remarks" };
 	    JTable table1 = new JTable(rowData, columnNames);
 
 	    JScrollPane scrollPane = new JScrollPane(table1);
@@ -161,12 +163,6 @@ public class Certificate extends Screen{
 
 			}
 
-			@Override
-			protected void open() throws Exception {
-				initializeCertificateScreen();
-				
-			}
-
 
 
 	
@@ -175,4 +171,5 @@ public class Certificate extends Screen{
 	
 	
 		
+
 

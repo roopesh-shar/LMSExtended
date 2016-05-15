@@ -31,7 +31,7 @@ import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
-public class Certificate extends Screen{
+public class ServiceRequest extends Screen{
 
 	private JFrame frame;
 	private JPanel linkPanel;
@@ -41,20 +41,21 @@ public class Certificate extends Screen{
 	private JLabel welcomeLabel;
 	private JButton goHomePageButton;
 	private JPanel btnpnl;
-	private JButton printButton;
+	private JButton applyButton;
+	private JButton cancelButton;
 	private JTable table;
 	private DefaultTableModel model;
 	private Color color;
 	
 	public static void main(String[] args) {
-		Certificate cer = new Certificate(); // Comments to revert
+		ServiceRequest ser = new ServiceRequest(); // Comments to revert
 		SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
 			public void run() {
 
 				try {
-					cer.open(cer);
+					ser.open(ser);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -65,8 +66,10 @@ public class Certificate extends Screen{
 
 	}
 	
-	private void initializeCertificateScreen() throws Exception {
-			frame = new JFrame("Certificate");
+	private void initializeServiceRequestScreen() throws Exception {
+
+
+			frame = new JFrame("Service Request");
 			linkPanel = new JPanel();
 
 			addComponents(frame.getContentPane(), linkPanel);
@@ -103,7 +106,7 @@ public class Certificate extends Screen{
 		
 			private void addComponents(Container contentPane, JPanel linkPanel) throws Exception {
 
-
+				/* Adding Header panel */
 				headerPanel = new JPanel();
 				headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
 				cmpinfoPanel = new JPanel();
@@ -120,31 +123,57 @@ public class Certificate extends Screen{
 				headerPanel.add(welcomeLabel);
 				contentPane.add(headerPanel, BorderLayout.PAGE_START);
 				
-				JPanel certificatePanel = new JPanel();
-				certificatePanel.setBorder(BorderFactory.createEtchedBorder());
+				/*JPanel servicePanel = new JPanel();
+				servicePanel.setBorder(BorderFactory.createEtchedBorder());
 				
-				contentPane.add(certificatePanel,BorderLayout.CENTER);
+				contentPane.add(servicePanel,BorderLayout.CENTER);
+				*/
 				
+			 
 				
 				btnpnl = new JPanel();
 				btnpnl.setBorder(BorderFactory.createEtchedBorder());
 				contentPane.add(btnpnl,BorderLayout.SOUTH);
 				
-				printButton = new JButton("  Print  ");
+				applyButton = new JButton("Apply");
+				cancelButton = new JButton("Cancel");
+				
 				goHomePageButton = new JButton("Back");
 				
-				btnpnl.add(printButton);
+				
+				btnpnl.add(applyButton);
 				btnpnl.add(goHomePageButton);
+				btnpnl.add(cancelButton);
 				
 				
-				
-				Object rowData[][] = { {" ", ""," "," "," "," "," "," "," "," " }
-	    		};
-	    Object columnNames[] = { "S.No.","Course Name", "Certificate Name","Download","Remarks" };
-	    JTable table1 = new JTable(rowData, columnNames);
-
-	    JScrollPane scrollPane = new JScrollPane(table1);
-	    frame.add(scrollPane, BorderLayout.CENTER);
+				/* Adding Student information header panel*/
+				DefaultTableModel model = new DefaultTableModel();
+				JTable studentinfoTable = new JTable(model);
+				model.addColumn("Col1");
+                TableColumnModel columnModel = studentinfoTable.getColumnModel();
+                columnModel.getColumn(0).setPreferredWidth(130);
+                Color color = UIManager.getColor("Table.gridColor");
+                MatteBorder border = new MatteBorder (1,1,0,0, color);
+                studentinfoTable.setBorder(border);
+                
+                JPanel centerpanel = new JPanel();
+                centerpanel.setBorder(BorderFactory.createEtchedBorder());
+        		contentPane.add(centerpanel,BorderLayout.CENTER);
+        		centerpanel.setLayout(new BoxLayout(centerpanel, 1));
+        		
+        		JPanel trainerpanel = new JPanel();
+        		JLabel noticelabel = new JLabel("Student Information");
+        		trainerpanel.add(noticelabel);
+        		trainerpanel.setBorder(BorderFactory.createEtchedBorder());
+        		centerpanel.add(trainerpanel);
+        		
+        		/*Adding request Panel in Center panel*/	
+        		JPanel classspanel = new JPanel();
+        		JLabel classslabel = new JLabel(" Request Description");
+        		classspanel.setBorder(BorderFactory.createEtchedBorder());
+        		classspanel.add(classslabel);
+        		centerpanel.add(classspanel);
+                
 				
 				
 			}
@@ -163,7 +192,7 @@ public class Certificate extends Screen{
 
 			@Override
 			protected void open() throws Exception {
-				initializeCertificateScreen();
+				initializeServiceRequestScreen();
 				
 			}
 
@@ -175,4 +204,5 @@ public class Certificate extends Screen{
 	
 	
 		
+
 

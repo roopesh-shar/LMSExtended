@@ -1,13 +1,5 @@
 package in.sg.rpc.server.service;
 
-import in.co.thingsdata.lms.util.GUIDomain;
-import in.co.thingsdata.lms.util.GUIUtil;
-import in.co.thingsdata.lms.util.PropertiesReader;
-import in.sg.rpc.common.domain.Course;
-import in.sg.rpc.common.domain.FeeDetails;
-import in.sg.rpc.common.domain.Feedback;
-import in.sg.rpc.common.domain.User;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,12 +10,19 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import in.sg.rpc.common.Business;
+import in.sg.rpc.common.domain.Course;
+import in.sg.rpc.common.domain.FeeDetails;
+import in.sg.rpc.common.domain.Feedback;
+import in.sg.rpc.common.domain.QuizQuestion;
+import in.sg.rpc.common.domain.User;
 
 public class DBService {
 
@@ -39,113 +38,57 @@ public class DBService {
 	}
 
 	public static void setUpDB() {
-		GUIUtil.initProperties();
-		GUIDomain.DATABASE_USER = PropertiesReader.getInstance().getProperty(
-				"db.user");
-		GUIDomain.DATABASE_PASSWORD = PropertiesReader.getInstance()
-				.getProperty("db.password");
-		GUIDomain.DATABASE_DRIVER = PropertiesReader.getInstance().getProperty(
-				"db.driver");
-		GUIDomain.DATABASE_URL = PropertiesReader.getInstance().getProperty(
-				"db.url");
-
+		Business.getInstance().initProperties();
 	}
 
-	public User getUserDetails(int userId) /* throws CUSTOMException */{
-
-		String name = null;
-		String address = null;
-		String emailId = null;
-		String dob = null;
-		String course = null;
-		String line;
-		BufferedReader reader = null;
+	public User getUserDetails(int userId) /* throws CUSTOMException */ {
+		Statement stmt = null;
+		Connection con = null;
+		User user = null;
 		try {
-			reader = new BufferedReader(new InputStreamReader(
-					new FileInputStream(new File("resources/Userdetail.txt"))));
-			while (null != (line = reader.readLine())) {
-				if (null != line.split(",")[0]
-						&& Integer.valueOf(line.split(",")[0]) == userId) {
-					// userid = Integer.valueOf(line.split(",")[0]);
-					name = line.split(",")[1];
-					address = line.split(",")[2];
-					emailId = line.split(",")[3];
-					dob = line.split(",")[4];
-					course = line.split(",")[5];
-				}
+			user = new User();
+			con = getConnection();
+			String lSqlString = "select * from users where id=" + userId;
+			stmt = con.createStatement();
+			ResultSet rs = null;
+			rs = stmt.executeQuery(lSqlString);
+			while (rs.next()) {
+				user.setName(rs.getString("user_name"));
 			}
-
-		} catch (FileNotFoundException e) {
-			// TODO: Use custom exception here and show appropriate message to
-			// user on GUI
-			e.printStackTrace();
-		} catch (NumberFormatException e) {
-			// TODO: Use custom exception here and show appropriate message to
-			// user on GUI
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO: Use custom exception here and show appropriate message to
-			// user on GUI
+		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			if (null != reader) {
-				try {
-					reader.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
-
-		User userdetails = new User(userId, name, address, emailId, dob, course);
-		return userdetails;
+		return user;
 	}
 
-	public boolean saveUserDetails(User user) throws IOException {
-		String line;
-		BufferedReader reader = null;
-		BufferedWriter out = null;
-		StringBuffer updatedRecord = new StringBuffer();
-		StringBuffer currentRecord = new StringBuffer();
+	public boolean saveUserDetails(User user) throws IOException, SQLException {
+		Statement stmt = null;
+		Connection con = null;
 		boolean status = false;
-		;
+		int rowCount;
 		try {
-			reader = new BufferedReader(new InputStreamReader(
-					new FileInputStream(new File("resources/Userdetail.txt"))));
-
-			while (null != (line = reader.readLine())) {
-				if (null != line.split(",")[0]
-						&& Integer.valueOf(line.split(",")[0]) == user
-								.getUserid()) {
-					currentRecord = currentRecord.append(line);
-					updatedRecord = updatedRecord.append(user.getUserid())
-							.append(",").append(user.getName()).append(",")
-							.append(user.getAddress()).append(",")
-							.append(user.getEmailid()).append(",")
-							.append(user.getDob()).append(",")
-							.append(user.getCourse());
-					out = new BufferedWriter(new OutputStreamWriter(
-							new FileOutputStream(new File(
-									"resources/Userdetail.txt"))));
-					line = line.replace(currentRecord, updatedRecord);
-					out.write(line);
-					status = true;
-				} else {
-					status = false;
-				}
-
-			}
-
-		} catch (FileNotFoundException e) {
+			user = new User();
+			con = getConnection();
+			String lSqlString = "update users set user_name=" + user.getName() + " where id=" + user.getUserid();
+			stmt = con.createStatement();
+			ResultSet rs = null;
+			rowCount = stmt.executeUpdate(lSqlString);
+			con.commit();
+			status = true;
+		} catch (SQLException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+			con.rollback();
 		} finally {
-			if (null != reader) {
-				reader.close();
-			}
-			if (null != out) {
-				out.close();
+			try {
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
 		return status;
@@ -161,11 +104,9 @@ public class DBService {
 
 		try {
 			reader = new BufferedReader(
-					new InputStreamReader(new FileInputStream(new File(
-							"resources/CourseDetails.txt"))));
+					new InputStreamReader(new FileInputStream(new File("resources/CourseDetails.txt"))));
 			while (null != (line = reader.readLine())) {
-				if (null != line.split(",")[0]
-						&& Integer.valueOf(line.split(",")[1]) == userId) {
+				if (null != line.split(",")[0] && Integer.valueOf(line.split(",")[1]) == userId) {
 					coursecontentpath = line.split(",")[3];
 				}
 			}
@@ -204,9 +145,7 @@ public class DBService {
 					e.printStackTrace();
 				}
 			}
-
 		}
-
 		return courseContent;
 	}
 
@@ -215,20 +154,16 @@ public class DBService {
 		String line;
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new InputStreamReader(
-					new FileInputStream(new File("resources/FeeReceipt.txt"))));
+			reader = new BufferedReader(
+					new InputStreamReader(new FileInputStream(new File("resources/FeeReceipt.txt"))));
 			while (null != (line = reader.readLine())) {
-				if (null != line.split(",")[0]
-						&& Integer.valueOf(line.split(",")[0]) == userId) {
+				if (null != line.split(",")[0] && Integer.valueOf(line.split(",")[0]) == userId) {
 					feeDetails = new FeeDetails(userId);
 					feeDetails.setCourseId(Integer.valueOf(line.split(",")[1]));
-					feeDetails
-							.setCourseName(String.valueOf(line.split(",")[2]));
-					feeDetails
-							.setCourseFee((Integer.valueOf(line.split(",")[3])));
+					feeDetails.setCourseName(String.valueOf(line.split(",")[2]));
+					feeDetails.setCourseFee((Integer.valueOf(line.split(",")[3])));
 					feeDetails.setPaidFees(Integer.valueOf(line.split(",")[4]));
-					feeDetails
-							.setRemainingFees(Integer.valueOf(line.split(",")[4]));
+					feeDetails.setRemainingFees(Integer.valueOf(line.split(",")[4]));
 
 				}
 			}
@@ -251,9 +186,9 @@ public class DBService {
 	}
 
 	public void init() throws SQLException {
-		setUpDB();
+		Business.getInstance().setUpDB();
 		try {
-			Class.forName(GUIDomain.DATABASE_DRIVER);
+			Class.forName(Business.getInstance().getDatabaseDriver());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} finally {
@@ -274,15 +209,14 @@ public class DBService {
 		closeConnection(conn);
 	}
 
-	public int returnUserId(String userName, String password)
-			throws SQLException {
-		Connection conn;
-		conn = getConnection();
+	public int returnUserId(String userName, String password) throws SQLException {
+		Connection conn = null;
 		try {
-			java.sql.Statement stmt = conn.createStatement();
+			conn = getConnection();
+			Statement stmt = conn.createStatement();
 			String validUser = null;
-			String lSqlString = "select id,user_name from users where user_name='"
-					+ userName + "' and password = '" + password + "'";
+			String lSqlString = "select id,user_name from users where user_name='" + userName + "' and password = '"
+					+ password + "'";
 			ResultSet rs = null;
 			rs = stmt.executeQuery(lSqlString);
 			if (rs.next()) {
@@ -306,8 +240,7 @@ public class DBService {
 		Connection conn = null;
 		String insertUserProfile = "insert into LMS.PROFILE values("
 				+ " ((select max(id) from profile) +1), (select id from users where user_name = ?) , "
-				+ " ?, 'testfname','testlname' , 'testfathername' ,"
-				+ " ? , ?, ? , ?, ?, ?, ?)";
+				+ " ?, 'testfname','testlname' , 'testfathername' ," + " ? , ?, ? , ?, ?, ?, ?)";
 		String insertUserStatement = "insert into LMS.USERS values( ((select max(id) from LMS.Users) +1) , ?, ?,0)";
 		PreparedStatement insertProfile = null;
 		PreparedStatement insertUser = null;
@@ -350,12 +283,7 @@ public class DBService {
 	}
 
 	public Connection getConnection() throws SQLException {
-		System.out.println("DBURL" + GUIDomain.DATABASE_URL);
-		System.out.println("DBUSER" + GUIDomain.DATABASE_USER);
-		System.out.println("DBPASSWORD" + GUIDomain.DATABASE_PASSWORD);
-		System.out.println("DBDRIVER" + GUIDomain.DATABASE_DRIVER);
-		Connection con = DriverManager.getConnection(GUIDomain.DATABASE_URL,
-				GUIDomain.DATABASE_USER, GUIDomain.DATABASE_PASSWORD);
+		Connection con = Business.getInstance().getDBConnection();
 		con.setAutoCommit(false);
 		return con;
 	}
@@ -369,8 +297,7 @@ public class DBService {
 				}
 			}
 		} catch (Exception e) {
-			System.err.println("Error occured while closing connection."
-					+ e.getMessage());
+			System.err.println("Error occured while closing connection." + e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -419,5 +346,128 @@ public class DBService {
 		}
 		return feedbacks;
 	}
+	
+	public void submitFeedback(Feedback feedbackSubmit) throws SQLException {
+		Connection conn = null;
+		String insertFeedbackStatement = "insert into LMS.Feedback Values ((select max(id) from LMS.Feedback) +1,"
+				+ "(select course_id from LMS.Profile where user_id = ?),"
+				+ "?,?,0,?)";
+		
+		
+				
+		PreparedStatement insertFeedback = null;
+		try{
+			conn = getConnection();
+			insertFeedback = conn.prepareStatement(insertFeedbackStatement);
+			insertFeedback.setLong(1, feedbackSubmit.getUserId());
+			insertFeedback.setString(2, feedbackSubmit.getFeedbackArea());
+			insertFeedback.setString(3, feedbackSubmit.getFeedback());
+			insertFeedback.setLong(4, feedbackSubmit.getUserId());
+			//System.out.println(feedbackSubmit.getCourseName()+" "+feedbackSubmit.getFeedbackArea() +" "+feedbackSubmit.getFeedback() +" "+ feedbackSubmit.getUserId());
+			insertFeedback.execute();
+			commit(conn);
+		}catch (SQLException e) {
+			if (conn != null) {
+				try {
+					System.err.print("Transaction is being rolled back");
+					conn.rollback();
+				} catch (SQLException excep) {
+					excep.printStackTrace();
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (insertFeedback != null) {
+				insertFeedback.close();
+			}
 
+			conn.close();
+		}
+		
+		
+	}
+	
+
+public QuizQuestion[] getgetQuizQuestionfromDB(long userId) throws SQLException {
+		Connection conn = null;
+		ResultSet rs = null;
+		QuizQuestion[] quizquestions = 	null;
+		QuizQuestion quizquestion = null;
+		String rowCountSql = "select count(*) from Profile P inner join Course C on P.course_id = C.id inner join quiz_question QQ on C.id = QQ.course_id where P.user_id="+userId;;
+		String lSqlString = "select QQ.Question_number, qq.question, qq.choice_a, qq.choice_b, qq.choice_c,qq.choice_d, qq.choice_correct from Profile P inner join Course C on P.course_id = C.id inner join quiz_question QQ on C.id = QQ.course_id where P.user_id=" +userId;
+		Statement stmt = null;
+		int count = 0;
+		int index = 0;
+		try {
+			conn = getConnection();
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(rowCountSql);
+			rs.next();
+			count = rs.getInt("count(*)");
+			quizquestions = new QuizQuestion[count];
+			rs = stmt.executeQuery(lSqlString);
+			while (rs.next()) {
+				quizquestion = new QuizQuestion();
+				quizquestion.setQuestionNumber(rs.getLong("Question_number"));
+				quizquestion.setQuestion(rs.getString("question"));
+				quizquestion.setChoiceA(rs.getString("choice_a"));
+				quizquestion.setChoiceB(rs.getString("choice_b"));
+				quizquestion.setChoiceC(rs.getString("choice_c"));
+				quizquestion.setChoiceD(rs.getString("choice_d"));
+				quizquestion.setCorrectAnswer(rs.getString("choice_correct"));
+				quizquestions[index++] = quizquestion;
+			}
+		}finally {
+			closeConnection(conn);
+		
+		return quizquestions;
+	}
+	}
+
+		public Boolean uploadCourseManager(File fileStream, String uploadItem, String courseName) throws IOException {
+			BufferedReader reader=null;
+			String line;
+			String fileext = Files.probeContentType(fileStream.toPath());
+			System.out.println("extension is " +fileext );
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileStream)));
+			while (null != (line = reader.readLine())) {
+			
+			System.out.println(line);
+			
+			}
+			
+			
+			return true;
+		}
+
+		public Boolean uploadFeeManager(File fileStream) throws IOException {
+			BufferedReader reader=null;
+			String line;
+			String fileext = Files.probeContentType(fileStream.toPath());
+			System.out.println("extension is " +fileext );
+			reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileStream)));
+			while (null != (line = reader.readLine())) {
+			
+			System.out.println(line);
+			
+			}
+			
+			return true;
+		}
+
+		public Boolean uploadManager(File fileStream, String uploadItem,String courseName) throws IOException {
+			Boolean status = false;
+			if (uploadItem.toString().equalsIgnoreCase("Fees Upload")){
+				status =  DBService.getInstance().uploadFeeManager(fileStream);
+			}
+			if (uploadItem.toString().equalsIgnoreCase("Course Upload")){
+				status = DBService.getInstance().uploadCourseManager(fileStream, uploadItem, courseName);
+			}
+			
+			return status;
+		}
+		
+	
 }
