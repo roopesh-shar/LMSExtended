@@ -1,7 +1,6 @@
 package in.co.thingsdata.lms.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -9,24 +8,23 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-
+import java.sql.SQLException;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.table.DefaultTableModel;
-
 import in.co.thingsdata.lms.util.GUIDomain;
 import in.co.thingsdata.lms.util.GUIUtil;
+import in.sg.rpc.common.Business;
 import in.sg.rpc.common.domain.Feedback;
 
 public class FeedBackScreen extends Screen {
@@ -39,10 +37,6 @@ public class FeedBackScreen extends Screen {
 	private JLabel welcomeLabel;
 	private JButton goHomePageButton;
 	private JPanel btnpnl;
-	private JButton printButton;
-	private JTable table;
-	private DefaultTableModel model;
-	private Color color;
 	private JTextArea displayFeedbackTxtArea;
 	private JTextArea submitFeedbackTxtArea;
 	private JPanel feedbackDisplayPanel;
@@ -78,17 +72,12 @@ public class FeedBackScreen extends Screen {
 
 	@Override
 	public void open() throws Exception {
-
 		frame = new JFrame("Fee Receipt");
 		linkPanel = new JPanel();
-
 		addComponents(frame.getContentPane(), linkPanel);
-
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
 		frame.pack();
 		frame.setSize(800, 600);
-
 		frame.setVisible(true);
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
@@ -106,12 +95,36 @@ public class FeedBackScreen extends Screen {
 					@Override
 					public void run() {
 						try {
-							screen.open();
+							screen.open(screen);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					}
 				});
+			}
+		});
+
+		submitFeedbackButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Feedback feedbackSubmit = new Feedback();
+				feedbackSubmit.setUserId(GUIDomain.CURRENT_USER_ID);
+				feedbackSubmit.setUserName(GUIDomain.CURRENT_USER_NAME);
+				feedbackSubmit.setFeedbackArea(feedbackAreaList.getSelectedItem().toString());
+				feedbackSubmit.setFeedback(submitFeedbackTxtArea.getText());
+				try {
+					Business.getInstance();
+					Business.submitFeedback(feedbackSubmit);
+					JOptionPane.showMessageDialog(new JFrame("Success"), "Feedback Successfully posted");
+					displayFeedbackTxtArea.append(feedbackSubmit.getUserName());
+					displayFeedbackTxtArea.append(" wrote :");
+					displayFeedbackTxtArea.append(submitFeedbackTxtArea.getText() + "\n\n");
+					submitFeedbackTxtArea.setText("");
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 	}
@@ -170,30 +183,19 @@ public class FeedBackScreen extends Screen {
 		submitFeedbackTxtArea.setBorder(BorderFactory.createEtchedBorder());
 		submitFeedbackTxtArea.setLineWrap(true);
 		JScrollPane jp = new JScrollPane(submitFeedbackTxtArea);
-
 		lowerPanel.add(jp);
 		jp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		submitFeedbackButton = new JButton("Submit");
 		lowerPanel.add(submitFeedbackButton);
-
 		feedbackSubmitPanel.add(upperPanel, BorderLayout.NORTH);
 		feedbackSubmitPanel.add(lowerPanel, BorderLayout.CENTER);
 		feedbackSubmitPanel.setPreferredSize(new Dimension(600, 100));
+		GUIUtil.displayUserFeedback(1);
 
-		Feedback[] feedbackMap = GUIUtil.displayUserFeedback(1);
-		/*
-		 * for(Entry<String, String> m:feedbackMap.entrySet()){
-		 * System.out.println(m.getKey()+" "+m.getValue()); }
-		 */
-		/*
-		 * Iterator<String> itr = feedbackMap.iterator() ; while(itr.hasNext()){
-		 * System.out.println(itr.next()); }
-		 */
 	}
 
 	private String user;
 	private int userId;
-
 	public int getUserId() {
 		return userId;
 	}
@@ -207,9 +209,7 @@ public class FeedBackScreen extends Screen {
 	}
 
 	public void setUser(String user) {
-
 		this.user = GUIDomain.CURRENT_USER_NAME;
-
 	}
 
 }
