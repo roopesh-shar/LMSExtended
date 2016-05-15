@@ -36,6 +36,7 @@ import in.co.thingsdata.lms.server.Server;
 import in.co.thingsdata.lms.util.GUIDomain;
 import in.co.thingsdata.lms.util.PropertiesReader;
 import in.sg.rpc.client.RPCClient;
+import in.sg.rpc.common.domain.Feedback;
 import in.sg.rpc.common.domain.QuizQuestion;
 import in.sg.rpc.common.domain.User;
 import in.sg.rpc.common.exception.UserLoginException;
@@ -225,6 +226,12 @@ public class Business {
 	public QuizQuestion[] getQuizQuestionfromDB(long userId)
 			throws SQLException {
 		return GUIDomain.REMOTE_RPC_SERVICE.getgetQuizQuestionfromDB(userId);
+	}
+	
+	public static void submitFeedback(Feedback feedbackSubmit)
+			throws SQLException {
+		GUIDomain.REMOTE_RPC_SERVICE.submitFeedback(feedbackSubmit);
+
 	}
 
 }

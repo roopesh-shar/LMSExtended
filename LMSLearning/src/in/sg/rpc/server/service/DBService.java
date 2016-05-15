@@ -459,7 +459,7 @@ public QuizQuestion[] getgetQuizQuestionfromDB(long userId) throws SQLException 
 
 		public Boolean uploadManager(File fileStream, String uploadItem,String courseName) throws IOException {
 			Boolean status = false;
-			if (uploadItem.toString().equalsIgnoreCase("Fee Upload")){
+			if (uploadItem.toString().equalsIgnoreCase("Fees Upload")){
 				status =  DBService.getInstance().uploadFeeManager(fileStream);
 			}
 			if (uploadItem.toString().equalsIgnoreCase("Course Upload")){
