@@ -56,6 +56,7 @@ public class LoginScreen extends Screen {
 					} else {
 						throw new UserExistsException("Invalid Username or Password");
 					}
+					GUIDomain.CURRENT_USER_ID = userId;
 				} catch (UserLoginException | MalformedURLException e) {
 					e.printStackTrace();
 				} catch (UserExistsException e) {

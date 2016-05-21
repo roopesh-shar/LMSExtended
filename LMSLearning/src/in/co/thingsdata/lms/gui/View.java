@@ -161,7 +161,7 @@ public class View extends JFrame {
 					user.setState(textFieldState.getText());
 					user.setCourse(courseList.getSelectedItem().toString());
 					user.setUserType(userType);
-					GUIUtil.registernewUser(user);
+					Business.registernewUser(user);
 				} catch (MalformedURLException e2) {
 					// TODO Auto-generated catch block
 					e2.printStackTrace();

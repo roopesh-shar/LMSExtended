@@ -73,30 +73,6 @@ public class GUIUtil {
 		String[] linkcontent = contentlist.split(",");
 		return linkcontent;
 	}
-
-	public static User getUserDetails(int userId) throws NumberFormatException, IOException, SQLException {
-		return DBService.getInstance().getUserDetails(userId);
-	}
-
-	public static String getCourseDetailForUser(int userId) throws Exception {
-		Business.getInstance().getCourseDetails(userId);
-		return GUIDomain.REMOTE_RPC_SERVICE.getCourseDetailForUser(userId);
-	}
-
-	public static FeeDetails getFeeDetailsforUserid(int userId) throws Exception {
-		return GUIDomain.REMOTE_RPC_SERVICE.getFeeDetailsforUserid(userId);
-	}
-
-	public static int getLoggedInUserId(String userName, String password) throws UserLoginException {
-		return GUIDomain.REMOTE_RPC_SERVICE.login(userName, password);
-	}
-	public static void registernewUser(User user) throws Exception {
-		GUIDomain.REMOTE_RPC_SERVICE.registerUser(user);
-	}
-
-	public static Feedback[] displayUserFeedback(int userId) throws SQLException {
-		return GUIDomain.REMOTE_RPC_SERVICE.getUserFeedback(userId);
-	}
 	public static JFrame createFrame(String name) {
 		JFrame frame = new JFrame(name);
 		frame.setSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));

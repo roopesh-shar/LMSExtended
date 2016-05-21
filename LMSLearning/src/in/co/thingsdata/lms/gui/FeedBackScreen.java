@@ -190,7 +190,7 @@ public class FeedBackScreen extends Screen {
 		feedbackSubmitPanel.add(upperPanel, BorderLayout.NORTH);
 		feedbackSubmitPanel.add(lowerPanel, BorderLayout.CENTER);
 		feedbackSubmitPanel.setPreferredSize(new Dimension(600, 100));
-		GUIUtil.displayUserFeedback(1);
+		Business.displayUserFeedback(1);
 
 	}
 

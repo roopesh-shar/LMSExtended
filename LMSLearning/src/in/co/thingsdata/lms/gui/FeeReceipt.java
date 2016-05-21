@@ -24,6 +24,7 @@ import javax.swing.table.TableColumnModel;
 
 import in.co.thingsdata.lms.util.GUIDomain;
 import in.co.thingsdata.lms.util.GUIUtil;
+import in.sg.rpc.common.Business;
 import in.sg.rpc.common.domain.FeeDetails;
 
 public class FeeReceipt extends Screen {
@@ -164,7 +165,7 @@ public class FeeReceipt extends Screen {
 		feeReceiptpnl.add(table);
 		
 		
-		FeeDetails feeDetails = GUIUtil.getFeeDetailsforUserid(12345);
+		FeeDetails feeDetails = Business.getFeeDetailsforUserid(12345);
 		table.setValueAt((Object)GUIDomain.CURRENT_USER_NAME, 0, 1);
 		table.setValueAt((Object)String.valueOf(feeDetails.getCourseName()), 1, 1);
 		table.setValueAt((Object)String.valueOf(feeDetails.getCourseFee()).concat(" INR"), 2, 1);

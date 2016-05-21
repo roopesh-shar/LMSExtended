@@ -18,6 +18,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import in.co.thingsdata.lms.util.GUIDomain;
 import in.co.thingsdata.lms.util.GUIUtil;
 import in.sg.rpc.common.Business;
 
@@ -63,7 +64,7 @@ public class CourseContentDetails extends Screen {
 	private void createCourseContentTextArea(Container contentPane) {
 		String courseContent = null;
 		try {
-			courseContent = GUIUtil.getCourseDetailForUser(12345);
+			courseContent = Business.getCourseDetailForUser(GUIDomain.CURRENT_USER_ID);//GUIUtil.getCourseDetailForUser(12345);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -134,7 +134,11 @@ public class HomeScreen extends Screen {
 		cmpimage = GUIUtil.createLabel(GUIUtil.getIcon());
 		GUIUtil.addComponents(cmpinfoPanel, cmpnamelebel, cmpimage);
 		GUIUtil.addComponents(headerPanel, cmpinfoPanel);
-		welcomeLabel = GUIUtil.createLabel("Welcome " + getUser());
+		String userId = getUser();
+		if (null == userId || userId.isEmpty()) {
+			userId = Business.getInstance().getUser();
+		}
+		welcomeLabel = GUIUtil.createLabel("Welcome " + userId);
 		GUIUtil.addComponents(headerPanel, welcomeLabel);
 		GUIUtil.addComponents(contentPane, headerPanel, BorderLayout.PAGE_START);
 	}

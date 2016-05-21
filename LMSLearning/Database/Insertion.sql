@@ -1,4 +1,7 @@
-insert into users values (1,'testuser','testpassword',1);
+--insert into users values (1,'testuser','testpassword',1);
+insert into lms.users (id,user_name,password,is_active,name,courseId,email,streetAddress1,mobileNum,city,state,zipCode,country) values (1,'testuser','testpassword',1,'testuser',1,'test@mail.com','Nooida','1111111','Noida','U.P',201301,'India');
+
+
 commit;
 /
 

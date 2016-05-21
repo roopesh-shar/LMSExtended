@@ -137,7 +137,9 @@ public class DBService {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
 			if (null != reader) {
 				try {
 					reader.close();
